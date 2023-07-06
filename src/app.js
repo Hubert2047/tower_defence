@@ -1,23 +1,15 @@
 import { resetCanvas } from './context2D.js'
-import {
-    createEnemies,
-    createPlacementTiles,
-    createTower,
-    updateEnemy,
-    updatePlacementTile,
-    updateTowers,
-} from './helper/index.js'
-
-const enemies = createEnemies({ count: 10 })
+import currentEnemies from './data/enemies.js'
+import { createPlacementTiles, createTower, updateEnemy, updatePlacementTile, updateTowers } from './helper/index.js'
 const placementTiles = createPlacementTiles()
 const towers = []
 let activeTile = null
 const mouse = { x: undefined, y: undefined }
 function startGame() {
     resetCanvas()
-    updateEnemy(enemies)
+    updateEnemy(currentEnemies)
     updatePlacementTile({ placementTiles, mouse })
-    updateTowers(towers)
+    updateTowers({ towers })
     requestAnimationFrame(startGame)
 }
 startGame()

@@ -5,6 +5,12 @@ import { TILE_SIZE } from '../constants/index.js'
 import c from '../context2D.js'
 import { placementTiles2D } from '../data/index.js'
 
+function calculateDistanceTwoPoint(pointA, pointB) {
+    const dx = pointA.x - pointB.x
+    const dy = pointA.y - pointB.y
+    const distance = Math.sqrt(dx * dx + dy * dy)
+    return distance
+}
 function getVectorNomalized(startPointLocation, endPointLocation) {
     const v = {
         x: endPointLocation.x - startPointLocation.x,
@@ -23,9 +29,9 @@ function createBackground() {
 }
 function createEnemies({ count }) {
     const enemies = []
-    for (let i = 1; i < count; i++) {
+    for (let i = 0; i < count; i++) {
         const offsetX = i * 100
-        enemies.push(new Enemy({ position: { x: -10 - offsetX, y: 484 }, moveSpeed: 2 }))
+        enemies.push(new Enemy({ position: { x: -10 - offsetX, y: 484 }, moveSpeed: 3 }))
     }
     return enemies
 }
@@ -53,7 +59,7 @@ function updatePlacementTile({ placementTiles, mouse }) {
         placementTile.update(mouse)
     })
 }
-function updateTowers(towers) {
+function updateTowers({ towers }) {
     towers.forEach((tower) => {
         tower.update()
     })
@@ -67,4 +73,5 @@ export {
     createPlacementTiles,
     createTower,
     updateTowers,
+    calculateDistanceTwoPoint,
 }
