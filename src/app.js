@@ -1,18 +1,34 @@
-import Enermy from './classes/enermy.js'
 import { resetCanvas } from './context2D.js'
-import { placementTiles2D } from './data.js'
+import {
+    createEnemies,
+    createPlacementTiles,
+    createTower,
+    updateEnemy,
+    updatePlacementTile,
+    updateTowers,
+} from './helper/index.js'
 
-const enermys = []
-console.log(placementTiles2D)
-for (let i = 1; i < 10; i++) {
-    const offsetX = i * 100
-    enermys.push(new Enermy({ position: { x: -10 - offsetX, y: 484 }, moveSpeed: 2 }))
-}
+const enemies = createEnemies({ count: 10 })
+const placementTiles = createPlacementTiles()
+const towers = []
+let activeTile = null
+const mouse = { x: undefined, y: undefined }
 function startGame() {
     resetCanvas()
-    for (let i = 0; i < enermys.length; i++) {
-        enermys[i].update()
-    }
+    updateEnemy(enemies)
+    updatePlacementTile({ placementTiles, mouse })
+    updateTowers(towers)
     requestAnimationFrame(startGame)
 }
 startGame()
+window.addEventListener('mousemove', (event) => {
+    mouse.x = event.clientX
+    mouse.y = event.clientY
+    activeTile = placementTiles.find((tile) => tile.hasCollisionWithMouse(mouse)) ?? null
+})
+window.addEventListener('click', (event) => {
+    if (activeTile && !activeTile.isOccupied) {
+        activeTile.isOccupied = true
+        towers.push(createTower(activeTile.position))
+    }
+})

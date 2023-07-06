@@ -1,7 +1,7 @@
 import c from '../context2D.js'
-import { waypoints } from '../data.js'
+import { waypoints } from '../data/index.js'
 import { getVectorNomalized } from '../helper/index.js'
-class Enermy {
+class Enemy {
     constructor({ position = { x: 0, y: 0 }, moveSpeed = 1 }) {
         this.position = position
         this.width = 50
@@ -46,4 +46,4 @@ class Enermy {
         this.velocityY = this.moveSpeed * v_normalized.y
     }
 }
-export default Enermy
+export default Enemy
