@@ -1,6 +1,5 @@
-import Enemy from '../classes/Enemy.js';
 import PlacementTile from '../classes/PlacementTile.js';
-import Tower from '../classes/Tower.js';
+import BloodMoon from '../classes/Towers/BloodMoon.tower.js';
 import { TILE_SIZE } from '../constants/index.js';
 import context2D from '../context2D/index.js';
 import { placementTiles2D } from '../data/index.js';
@@ -43,14 +42,14 @@ function createBackground() {
     if (context2D)
         context2D.drawImage(image, 0, 0);
 }
-function createEnemies({ count, moveSpeed }) {
-    const enemies = [];
-    for (let i = 0; i < count; i++) {
-        const offsetX = i * 100;
-        enemies.push(new Enemy({ position: { x: -10 - offsetX, y: 484 }, moveSpeed }));
-    }
-    return enemies;
-}
+// function createEnemies({ count, moveSpeed }: { count: number; moveSpeed?: number }): Enemy[] {
+//     const enemies: Enemy[] = []
+//     for (let i = 0; i < count; i++) {
+//         const offsetX: number = i * 100
+//         enemies.push(new Enemy({ position: { x: -10 - offsetX, y: 484 }, moveSpeed }))
+//     }
+//     return enemies
+// }
 function createPlacementTiles() {
     const placementTiles = [];
     placementTiles2D.forEach((row, y) => {
@@ -63,7 +62,7 @@ function createPlacementTiles() {
     return placementTiles;
 }
 function createTower(position) {
-    return new Tower({ position: position });
+    return new BloodMoon({ position: position });
 }
 function updatePlacementTiles({ placementTiles, mouse }) {
     placementTiles.forEach((placementTile) => {
@@ -75,4 +74,6 @@ function updateTowers({ towers }) {
         tower.update();
     });
 }
-export { calculateDistanceTwoPoint, createBackground, createEnemies, createImageSources, createPlacementTiles, createTower, getAngleFromPointAToPointB, getVectorNomalized, updatePlacementTiles, updateTowers, };
+export { calculateDistanceTwoPoint, createBackground, 
+// createEnemies,
+createImageSources, createPlacementTiles, createTower, getAngleFromPointAToPointB, getVectorNomalized, updatePlacementTiles, updateTowers, };

@@ -1,5 +1,5 @@
-import { createImageSources } from '../helper/index.js';
-import Enemy from './Enemies/Enemy.js';
+import { createImageSources } from '../../helper/index.js';
+import Enemy from './index.js';
 export default class Fox extends Enemy {
     constructor({ position = { x: 0, y: 0 } }) {
         const sources = [
@@ -9,6 +9,14 @@ export default class Fox extends Enemy {
             '../../public/src/assets/images/Fox/bottom_180.png',
         ];
         const imageSources = createImageSources(sources);
-        super({ position, imageSources, frameMaxX: 4, frameMaxY: 4, moveSpeed: 8, offset: { x: 65, y: 65 } });
+        super({
+            position,
+            imageSources,
+            frameMaxX: 4,
+            frameMaxY: 4,
+            moveSpeed: 8,
+            HP: 5000000,
+            offset: { x: 65, y: 65 },
+        });
     }
 }

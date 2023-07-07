@@ -1,5 +1,5 @@
 import PlacementTile from './classes/PlacementTile.js'
-import Tower from './classes/Tower.js'
+import Tower from './classes/Towers/index.js'
 import { resetCanvas } from './context2D/index.js'
 import { updateEnemies } from './data/enemies.js'
 import { createPlacementTiles, createTower, updatePlacementTiles, updateTowers } from './helper/index.js'
@@ -24,7 +24,6 @@ window.addEventListener('mousemove', (event) => {
 window.addEventListener('click', (event) => {
     if (activeTile && !activeTile.isOccupied) {
         activeTile.isOccupied = true
-        console.log('active', activeTile.position)
         towers.push(createTower(activeTile.position))
     }
 })

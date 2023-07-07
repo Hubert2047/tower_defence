@@ -1,8 +1,25 @@
-import { createEnemies } from '../helper/index.js';
-let currentEnemies = createEnemies({ count: 1, moveSpeed: 3 });
+import Bear from '../classes/Enemies/Bear.js';
+import BroodMother from '../classes/Enemies/BroodMother.js';
+import Dragon from '../classes/Enemies/Dragon.js';
+import Fox from '../classes/Enemies/Fox.js';
+import Siren from '../classes/Enemies/Siren.js';
+// let currentEnemies: Enemy[] = createEnemies({ count: 1, moveSpeed: 6 })
+let currentEnemies = [
+    new Fox({ position: { x: -10, y: 484 } }),
+    new Bear({ position: { x: -200, y: 484 } }),
+    new Dragon({ position: { x: -300, y: 484 } }),
+    new Siren({ position: { x: -400, y: 484 } }),
+    new BroodMother({ position: { x: -500, y: 484 } }),
+];
 function updateEnemies() {
     if (currentEnemies.length <= 0) {
-        currentEnemies = createEnemies({ count: 1, moveSpeed: 3 });
+        currentEnemies = [
+            new Fox({ position: { x: -10, y: 484 } }),
+            new Bear({ position: { x: -200, y: 484 } }),
+            new Dragon({ position: { x: -300, y: 484 } }),
+            new Siren({ position: { x: -400, y: 484 } }),
+            new BroodMother({ position: { x: -200, y: 484 } }),
+        ];
     }
     for (let i = currentEnemies.length - 1; i >= 0; i--) {
         const currentEnemy = currentEnemies[i];
@@ -17,5 +34,5 @@ function updateEnemies() {
 function getCurrentEnemies() {
     return currentEnemies;
 }
-export { updateEnemies, getCurrentEnemies };
+export { getCurrentEnemies, updateEnemies };
 export default currentEnemies;

@@ -1,6 +1,6 @@
-import { waypoints } from '../data/index.js';
-import { getAngleFromPointAToPointB, getVectorNomalized } from '../helper/index.js';
-import Sprite from './Sprite.js';
+import { waypoints } from '../../data/index.js';
+import { getAngleFromPointAToPointB, getVectorNomalized } from '../../helper/index.js';
+import Sprite from '../Sprite/index.js';
 var DragonSourceIndex;
 (function (DragonSourceIndex) {
     DragonSourceIndex[DragonSourceIndex["TopSource"] = 0] = "TopSource";

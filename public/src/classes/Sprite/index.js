@@ -1,4 +1,4 @@
-import context2D from '../context2D/index.js';
+import context2D from '../../context2D/index.js';
 export default class Sprite {
     constructor({ position = { x: 0, y: 0 }, offset = { x: 0, y: 0 }, width = 200, height = 200, imageSources, frameMaxX = 1, frameMaxY = 1, frameTime = 4, }) {
         this.position = position;
