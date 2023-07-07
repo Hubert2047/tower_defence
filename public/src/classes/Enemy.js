@@ -1,9 +1,23 @@
 import { waypoints } from '../data/index.js';
-import { getVectorNomalized } from '../helper/index.js';
+import { createImageSources, getAngleFromPointAToPointB, getVectorNomalized } from '../helper/index.js';
 import Sprite from './Sprite.js';
 export default class Enemy extends Sprite {
-    constructor({ position = { x: 0, y: 0 }, moveSpeed = 1, HP = 1000, }) {
-        super({ position, imageSrc: '../../public/src/assets/images/knight.png', frameMax: 8, width: 100, height: 100 });
+    constructor({ position = { x: 0, y: 0 }, moveSpeed = 2, HP = 1000, }) {
+        const sources = [
+            '../../public/src/assets/images/dragon_top.png',
+            '../../public/src/assets/images/dragon_left.png',
+            '../../public/src/assets/images/dragon_right.png',
+            '../../public/src/assets/images/dragon_bottom.png',
+        ];
+        const imageSources = createImageSources(sources);
+        super({
+            position,
+            imageSources,
+            frameMaxX: 4,
+            frameMaxY: 4,
+            width: 20,
+            height: 20,
+        });
         this.moveSpeed = moveSpeed;
         this.velocityX = 0;
         this.velocityY = 0;
@@ -22,7 +36,7 @@ export default class Enemy extends Sprite {
         }
     }
     update() {
-        this.draw();
+        this.draw(2);
         this.updatePosition();
     }
     updatePosition() {
@@ -43,6 +57,8 @@ export default class Enemy extends Sprite {
     }
     updateVelocity() {
         const v_normalized = getVectorNomalized(this.position, waypoints[this.currentWayPointIndex]);
+        const angel = getAngleFromPointAToPointB(this.position, waypoints[this.currentWayPointIndex]);
+        console.log('Enemy ~ updateVelocity ~ angel:', angel);
         this.velocityX = this.moveSpeed * v_normalized.x;
         this.velocityY = this.moveSpeed * v_normalized.y;
     }

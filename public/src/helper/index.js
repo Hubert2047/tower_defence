@@ -21,17 +21,33 @@ function getVectorNomalized(startPointLocation, endPointLocation) {
     };
     return v_normalized;
 }
+function createImageSources(sources) {
+    const imageSources = [];
+    sources.forEach((src) => {
+        const image = new Image();
+        image.src = src;
+        imageSources.push(image);
+    });
+    return imageSources;
+}
+function getAngleFromPointAToPointB(pointA, pointB) {
+    const dx = pointB.x - pointA.x;
+    const dy = pointB.y - pointA.y;
+    const angleRad = Math.atan2(dy, dx);
+    const angleDeg = angleRad * (180 / Math.PI);
+    return angleDeg;
+}
 function createBackground() {
     const image = new Image();
     image.src = '../../public/src/assets/images/gameMap.png';
     if (context2D)
         context2D.drawImage(image, 0, 0);
 }
-function createEnemies({ count }) {
+function createEnemies({ count, moveSpeed }) {
     const enemies = [];
     for (let i = 0; i < count; i++) {
         const offsetX = i * 100;
-        enemies.push(new Enemy({ position: { x: -10 - offsetX, y: 484 }, moveSpeed: 3 }));
+        enemies.push(new Enemy({ position: { x: -10 - offsetX, y: 484 }, moveSpeed }));
     }
     return enemies;
 }
@@ -59,4 +75,4 @@ function updateTowers({ towers }) {
         tower.update();
     });
 }
-export { calculateDistanceTwoPoint, createBackground, createEnemies, createPlacementTiles, createTower, getVectorNomalized, updatePlacementTiles, updateTowers, };
+export { calculateDistanceTwoPoint, createBackground, createEnemies, createImageSources, createPlacementTiles, createTower, getAngleFromPointAToPointB, getVectorNomalized, updatePlacementTiles, updateTowers, };

@@ -1,5 +1,5 @@
 import { waypoints } from '../data/index.js'
-import { getVectorNomalized } from '../helper/index.js'
+import { createImageSources, getAngleFromPointAToPointB, getVectorNomalized } from '../helper/index.js'
 import { position } from '../types/index.js'
 import Projectile from './Projectile.js'
 import Sprite from './Sprite.js'
@@ -11,14 +11,28 @@ export default class Enemy extends Sprite {
     private _HP: number
     constructor({
         position = { x: 0, y: 0 },
-        moveSpeed = 1,
+        moveSpeed = 2,
         HP = 1000,
     }: {
         position: position
         moveSpeed?: number
         HP?: number
     }) {
-        super({ position, imageSrc: '../../public/src/assets/images/knight.png', frameMax: 8, width: 100, height: 100 })
+        const sources = [
+            '../../public/src/assets/images/dragon_top.png',
+            '../../public/src/assets/images/dragon_left.png',
+            '../../public/src/assets/images/dragon_right.png',
+            '../../public/src/assets/images/dragon_bottom.png',
+        ]
+        const imageSources: HTMLImageElement[] = createImageSources(sources)
+        super({
+            position,
+            imageSources,
+            frameMaxX: 4,
+            frameMaxY: 4,
+            width: 20,
+            height: 20,
+        })
         this.moveSpeed = moveSpeed
         this.velocityX = 0
         this.velocityY = 0
@@ -36,7 +50,7 @@ export default class Enemy extends Sprite {
         }
     }
     public update(): void {
-        this.draw()
+        this.draw(2)
         this.updatePosition()
     }
     private updatePosition(): void {
@@ -59,6 +73,8 @@ export default class Enemy extends Sprite {
     }
     private updateVelocity(): void {
         const v_normalized: position = getVectorNomalized(this.position, waypoints[this.currentWayPointIndex])
+        const angel = getAngleFromPointAToPointB(this.position, waypoints[this.currentWayPointIndex])
+        console.log('Enemy ~ updateVelocity ~ angel:', angel)
         this.velocityX = this.moveSpeed * v_normalized.x
         this.velocityY = this.moveSpeed * v_normalized.y
     }

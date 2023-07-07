@@ -1,14 +1,11 @@
 import { TILE_SIZE } from '../constants/index.js'
-import context2D from '../context2D/index.js'
 import currentEnemies from '../data/enemies.js'
-import { calculateDistanceTwoPoint } from '../helper/index.js'
+import { calculateDistanceTwoPoint, createImageSources } from '../helper/index.js'
 import { position } from '../types/index.js'
 import Enemy from './Enemy.js'
 import Projectile from './Projectile.js'
-export default class Tower {
-    public position: position
-    private width: number
-    private height: number
+import Sprite from './Sprite.js'
+export default class Tower extends Sprite {
     public attackSpeed: number
     private center: position
     public attackIntervalId: number | null
@@ -24,29 +21,34 @@ export default class Tower {
         attackSpeed?: number
         damage?: number
     }) {
-        this.position = position
-        this.width = 2 * TILE_SIZE
-        this.height = TILE_SIZE
+        const sources = [
+            '../../public/src/assets/images/dragon_top.png',
+            '../../public/src/assets/images/dragon_left.png',
+            '../../public/src/assets/images/dragon_right.png',
+            '../../public/src/assets/images/dragon_bottom.png',
+        ]
+        const imageSources: HTMLImageElement[] = createImageSources(sources)
+        super({ position, imageSources, width: 2 * TILE_SIZE, height: TILE_SIZE })
         this.attackSpeed = attackSpeed
-        this.center = { x: position.x + this.width / 2, y: position.y + this.height / 2 }
+        this.center = { x: position.x + super.width / 2, y: position.y + super.height / 2 }
         this.attackIntervalId = null
         this.attackArea = 300
         this.damage = damage
         this.projectiles = []
         this.startAttack()
     }
-    private draw(): void {
-        if (context2D) {
-            context2D.fillStyle = 'green'
-            context2D.fillRect(this.position.x, this.position.y, this.width, this.height)
-            context2D.beginPath()
-            context2D.arc(this.center.x, this.center.y, this.attackArea, 0, 2 * Math.PI)
-            context2D.fillStyle = 'rgba(255,255,255,0.15)'
-            context2D.fill()
-        }
-    }
+    // protected draw(): void {
+    //     if (context2D) {
+    //         context2D.fillStyle = 'green'
+    //         context2D.fillRect(this.position.x, this.position.y, this.width, this.height)
+    //         context2D.beginPath()
+    //         context2D.arc(this.center.x, this.center.y, this.attackArea, 0, 2 * Math.PI)
+    //         context2D.fillStyle = 'rgba(255,255,255,0.15)'
+    //         context2D.fill()
+    //     }
+    // }
     public update(): void {
-        this.draw()
+        this.draw(2)
         this.updateProjectile()
     }
     private startAttack(): void {

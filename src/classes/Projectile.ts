@@ -1,5 +1,4 @@
-import context2D from '../context2D/index.js'
-import { getVectorNomalized } from '../helper/index.js'
+import { createImageSources, getVectorNomalized } from '../helper/index.js'
 import { position } from '../types/index.js'
 import Enemy from './Enemy.js'
 import Sprite from './Sprite.js'
@@ -21,7 +20,14 @@ export default class Projectile extends Sprite {
         damage: number
         enemy: Enemy
     }) {
-        super({ position, imageSrc: '' })
+        const sources = [
+            '../../public/src/assets/images/dragon_top.png',
+            '../../public/src/assets/images/dragon_left.png',
+            '../../public/src/assets/images/dragon_right.png',
+            '../../public/src/assets/images/dragon_bottom.png',
+        ]
+        const imageSources: HTMLImageElement[] = createImageSources(sources)
+        super({ position, imageSources })
         this.moveSpeed = moveSpeed
         this.velocityX = 0
         this.velocityY = 0
@@ -30,16 +36,16 @@ export default class Projectile extends Sprite {
         this.targetEnemy = enemy
     }
 
-    protected draw(): void {
-        if (context2D) {
-            context2D.beginPath()
-            context2D.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI)
-            context2D.fillStyle = 'orange'
-            context2D.fill()
-        }
-    }
+    // protected draw(): void {
+    //     if (context2D) {
+    //         context2D.beginPath()
+    //         context2D.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI)
+    //         context2D.fillStyle = 'orange'
+    //         context2D.fill()
+    //     }
+    // }
     public update(): void {
-        this.draw()
+        this.draw(1)
         this.updatePosition()
     }
     private updatePosition(): void {

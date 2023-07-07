@@ -23,16 +23,32 @@ function getVectorNomalized(startPointLocation: position, endPointLocation: posi
     }
     return v_normalized
 }
+function createImageSources(sources: string[]): HTMLImageElement[] {
+    const imageSources: HTMLImageElement[] = []
+    sources.forEach((src) => {
+        const image = new Image()
+        image.src = src
+        imageSources.push(image)
+    })
+    return imageSources
+}
+function getAngleFromPointAToPointB(pointA: position, pointB: position): number {
+    const dx: number = pointB.x - pointA.x
+    const dy: number = pointB.y - pointA.y
+    const angleRad: number = Math.atan2(dy, dx)
+    const angleDeg: number = angleRad * (180 / Math.PI)
+    return angleDeg
+}
 function createBackground(): void {
     const image: HTMLImageElement = new Image()
     image.src = '../../public/src/assets/images/gameMap.png'
     if (context2D) context2D.drawImage(image, 0, 0)
 }
-function createEnemies({ count }: { count: number }): Enemy[] {
+function createEnemies({ count, moveSpeed }: { count: number; moveSpeed?: number }): Enemy[] {
     const enemies: Enemy[] = []
     for (let i = 0; i < count; i++) {
         const offsetX: number = i * 100
-        enemies.push(new Enemy({ position: { x: -10 - offsetX, y: 484 }, moveSpeed: 3 }))
+        enemies.push(new Enemy({ position: { x: -10 - offsetX, y: 484 }, moveSpeed }))
     }
     return enemies
 }
@@ -65,8 +81,10 @@ export {
     calculateDistanceTwoPoint,
     createBackground,
     createEnemies,
+    createImageSources,
     createPlacementTiles,
     createTower,
+    getAngleFromPointAToPointB,
     getVectorNomalized,
     updatePlacementTiles,
     updateTowers,
