@@ -22,6 +22,7 @@ window.addEventListener('mousemove', (event) => {
 window.addEventListener('click', (event) => {
     if (activeTile && !activeTile.isOccupied) {
         activeTile.isOccupied = true;
+        console.log('active', activeTile.position);
         towers.push(createTower(activeTile.position));
     }
 });

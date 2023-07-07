@@ -22,7 +22,7 @@ export default class PlacementTile {
     }
     public update(mouse: position): void {
         this.draw()
-        if (this.hasCollisionWithMouse(mouse)) {
+        if (this.hasCollisionWithMouse(mouse) && !this.isOccupied) {
             this.color = this.collisionColor
         } else {
             this.color = this.defaultColor

@@ -1,21 +1,25 @@
 import context2D from '../context2D/index.js';
 export default class Sprite {
-    constructor({ position = { x: 0, y: 0 }, width = 100, height = 100, imageSources, frameMaxX = 1, frameMaxY = 1, frameTime = 5, }) {
+    constructor({ position = { x: 0, y: 0 }, offset = { x: 0, y: 0 }, width = 200, height = 200, imageSources, frameMaxX = 1, frameMaxY = 1, frameTime = 4, }) {
         this.position = position;
+        this.offset = offset;
         this.width = width;
         this.height = height;
         this.frameMaxX = frameMaxX;
         this.frameMaxY = frameMaxY;
-        this.frameTime = frameTime;
+        this.frameTime = parseInt(frameTime.toString());
         this.imageSources = imageSources;
         this.cropPosition = { x: 0, y: 0 };
-        // this.image = new Image()
-        // this.image.src = imageSourcesrc
         this.countFrameTime = 0;
     }
-    draw(sortIndex) {
+    draw(sourceIndex) {
         if (context2D) {
-            context2D.drawImage(this.imageSources[sortIndex], (this.cropPosition.x * this.imageSources[sortIndex].width) / this.frameMaxX, (this.cropPosition.y * this.imageSources[sortIndex].height) / this.frameMaxY, this.imageSources[sortIndex].width / this.frameMaxX, this.imageSources[sortIndex].height / this.frameMaxY, this.position.x - this.width / 2, this.position.y - this.height / 2, this.width, this.height);
+            // console.log(this.position)
+            context2D.drawImage(this.imageSources[sourceIndex], (this.cropPosition.x * this.imageSources[sourceIndex].width) / this.frameMaxX, (this.cropPosition.y * this.imageSources[sourceIndex].height) / this.frameMaxY, this.imageSources[sourceIndex].width / this.frameMaxX, this.imageSources[sourceIndex].height / this.frameMaxY, this.position.x - this.width / 2 - this.offset.x, 
+            // this.position.x,
+            this.position.y - this.height - this.offset.y, 
+            // this.position.y,
+            this.width, this.height);
             this.updateFrameIndex();
         }
     }

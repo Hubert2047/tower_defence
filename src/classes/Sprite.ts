@@ -10,16 +10,19 @@ export default class Sprite {
     private frameTime: number
     private countFrameTime: number
     private cropPosition: position
+    protected offset: position
     constructor({
         position = { x: 0, y: 0 },
-        width = 100,
-        height = 100,
+        offset = { x: 0, y: 0 },
+        width = 200,
+        height = 200,
         imageSources,
         frameMaxX = 1,
         frameMaxY = 1,
-        frameTime = 5,
+        frameTime = 4,
     }: {
         position: position
+        offset?: position
         width?: number
         height?: number
         imageSources: HTMLImageElement[]
@@ -28,27 +31,29 @@ export default class Sprite {
         frameTime?: number
     }) {
         this.position = position
+        this.offset = offset
         this.width = width
         this.height = height
         this.frameMaxX = frameMaxX
         this.frameMaxY = frameMaxY
-        this.frameTime = frameTime
+        this.frameTime = parseInt(frameTime.toString())
         this.imageSources = imageSources
         this.cropPosition = { x: 0, y: 0 }
-        // this.image = new Image()
-        // this.image.src = imageSourcesrc
         this.countFrameTime = 0
     }
-    protected draw(sortIndex: number): void {
+    protected draw(sourceIndex: number): void {
         if (context2D) {
+            // console.log(this.position)
             context2D.drawImage(
-                this.imageSources[sortIndex],
-                (this.cropPosition.x * this.imageSources[sortIndex].width) / this.frameMaxX,
-                (this.cropPosition.y * this.imageSources[sortIndex].height) / this.frameMaxY,
-                this.imageSources[sortIndex].width / this.frameMaxX,
-                this.imageSources[sortIndex].height / this.frameMaxY,
-                this.position.x - this.width / 2,
-                this.position.y - this.height / 2,
+                this.imageSources[sourceIndex],
+                (this.cropPosition.x * this.imageSources[sourceIndex].width) / this.frameMaxX,
+                (this.cropPosition.y * this.imageSources[sourceIndex].height) / this.frameMaxY,
+                this.imageSources[sourceIndex].width / this.frameMaxX,
+                this.imageSources[sourceIndex].height / this.frameMaxY,
+                this.position.x - this.width / 2 - this.offset.x,
+                // this.position.x,
+                this.position.y - this.height - this.offset.y,
+                // this.position.y,
                 this.width,
                 this.height
             )

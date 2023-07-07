@@ -16,7 +16,7 @@ export default class PlacementTile {
     }
     update(mouse) {
         this.draw();
-        if (this.hasCollisionWithMouse(mouse)) {
+        if (this.hasCollisionWithMouse(mouse) && !this.isOccupied) {
             this.color = this.collisionColor;
         }
         else {
