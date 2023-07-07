@@ -1,22 +1,24 @@
-import context2D from '../context2D/index.js';
 import { waypoints } from '../data/index.js';
 import { getVectorNomalized } from '../helper/index.js';
-class Enemy {
+import Sprite from './Sprite.js';
+export default class Enemy extends Sprite {
     constructor({ position = { x: 0, y: 0 }, moveSpeed = 1, HP = 1000, }) {
-        this.position = position;
+        super({ position, imageSrc: '../../public/src/assets/images/knight.png', frameMax: 8, width: 100, height: 100 });
         this.moveSpeed = moveSpeed;
         this.velocityX = 0;
         this.velocityY = 0;
         this.currentWayPointIndex = 0;
-        this.radius = 30;
-        this.HP = HP;
+        this._HP = HP;
     }
-    draw() {
-        if (context2D) {
-            context2D.beginPath();
-            context2D.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
-            context2D.fillStyle = 'red';
-            context2D.fill();
+    get HP() {
+        return this._HP;
+    }
+    set HP(hp) {
+        if (hp <= 0) {
+            this._HP = 0;
+        }
+        else {
+            this._HP = hp;
         }
     }
     update() {
@@ -46,8 +48,5 @@ class Enemy {
     }
     attacked(projectile) {
         this.HP -= projectile.damage;
-        if (this.HP < 0)
-            this.HP = 0;
     }
 }
-export default Enemy;

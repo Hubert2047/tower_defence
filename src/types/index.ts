@@ -1,4 +1,4 @@
-interface position {
+type position = {
     x: number
     y: number
 }

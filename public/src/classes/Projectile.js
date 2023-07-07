@@ -1,8 +1,9 @@
 import context2D from '../context2D/index.js';
 import { getVectorNomalized } from '../helper/index.js';
-export default class Projectile {
+import Sprite from './Sprite.js';
+export default class Projectile extends Sprite {
     constructor({ position = { x: 0, y: 0 }, moveSpeed = 5, enemy, damage, }) {
-        this.position = position;
+        super({ position, imageSrc: '' });
         this.moveSpeed = moveSpeed;
         this.velocityX = 0;
         this.velocityY = 0;

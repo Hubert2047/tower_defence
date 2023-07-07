@@ -49,12 +49,7 @@ function createPlacementTiles() {
 function createTower(position) {
     return new Tower({ position: position });
 }
-function updateEnemy(enemies) {
-    enemies.forEach((enemy) => {
-        enemy.update();
-    });
-}
-function updatePlacementTile({ placementTiles, mouse }) {
+function updatePlacementTiles({ placementTiles, mouse }) {
     placementTiles.forEach((placementTile) => {
         placementTile.update(mouse);
     });
@@ -64,4 +59,4 @@ function updateTowers({ towers }) {
         tower.update();
     });
 }
-export { calculateDistanceTwoPoint, createBackground, createEnemies, createPlacementTiles, createTower, getVectorNomalized, updateEnemy, updatePlacementTile, updateTowers, };
+export { calculateDistanceTwoPoint, createBackground, createEnemies, createPlacementTiles, createTower, getVectorNomalized, updatePlacementTiles, updateTowers, };

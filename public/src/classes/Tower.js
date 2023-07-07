@@ -4,7 +4,7 @@ import currentEnemies from '../data/enemies.js';
 import { calculateDistanceTwoPoint } from '../helper/index.js';
 import Projectile from './Projectile.js';
 export default class Tower {
-    constructor({ position = { x: 0, y: 0 }, attackSpeed = 1, damage = 1, }) {
+    constructor({ position = { x: 0, y: 0 }, attackSpeed = 1, damage = 300, }) {
         this.position = position;
         this.width = 2 * TILE_SIZE;
         this.height = TILE_SIZE;
@@ -65,12 +65,12 @@ export default class Tower {
         }
     }
     updateProjectile() {
-        for (let i = 0; i < this.projectiles.length; i++) {
+        for (var i = this.projectiles.length - 1; i >= 0; i--) {
             const currentProjectile = this.projectiles[i];
             const distance = calculateDistanceTwoPoint(currentProjectile.position, currentProjectile.targetEnemy.position);
             if (distance < 20) {
                 currentProjectile.targetEnemy.attacked(currentProjectile);
-                i--;
+                this.projectiles.splice(i, 1);
             }
             else {
                 currentProjectile.update();

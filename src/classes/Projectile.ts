@@ -1,10 +1,9 @@
 import context2D from '../context2D/index.js'
 import { getVectorNomalized } from '../helper/index.js'
-import { position } from '../interface/index.js'
+import { position } from '../types/index.js'
 import Enemy from './Enemy.js'
-
-export default class Projectile {
-    public position: position
+import Sprite from './Sprite.js'
+export default class Projectile extends Sprite {
     public moveSpeed: number
     private velocityX: number
     private velocityY: number
@@ -22,7 +21,7 @@ export default class Projectile {
         damage: number
         enemy: Enemy
     }) {
-        this.position = position
+        super({ position, imageSrc: '' })
         this.moveSpeed = moveSpeed
         this.velocityX = 0
         this.velocityY = 0
@@ -31,7 +30,7 @@ export default class Projectile {
         this.targetEnemy = enemy
     }
 
-    private draw(): void {
+    protected draw(): void {
         if (context2D) {
             context2D.beginPath()
             context2D.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI)

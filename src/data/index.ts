@@ -1,4 +1,4 @@
-import { position } from '../interface/index.js'
+import { position } from '../types/index.js'
 const waypoints: position[] = [
     {
         x: 286,

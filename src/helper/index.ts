@@ -4,7 +4,8 @@ import Tower from '../classes/Tower.js'
 import { TILE_SIZE } from '../constants/index.js'
 import context2D from '../context2D/index.js'
 import { placementTiles2D } from '../data/index.js'
-import { position } from '../interface/index.js'
+import { position } from '../types/index.js'
+
 function calculateDistanceTwoPoint(pointA: position, pointB: position): number {
     const dx: number = pointA.x - pointB.x
     const dy: number = pointA.y - pointB.y
@@ -49,12 +50,8 @@ function createPlacementTiles(): PlacementTile[] {
 function createTower(position: position): Tower {
     return new Tower({ position: position })
 }
-function updateEnemy(enemies: Enemy[]): void {
-    enemies.forEach((enemy) => {
-        enemy.update()
-    })
-}
-function updatePlacementTile({ placementTiles, mouse }: { placementTiles: PlacementTile[]; mouse: position }): void {
+
+function updatePlacementTiles({ placementTiles, mouse }: { placementTiles: PlacementTile[]; mouse: position }): void {
     placementTiles.forEach((placementTile) => {
         placementTile.update(mouse)
     })
@@ -71,7 +68,6 @@ export {
     createPlacementTiles,
     createTower,
     getVectorNomalized,
-    updateEnemy,
-    updatePlacementTile,
+    updatePlacementTiles,
     updateTowers,
 }

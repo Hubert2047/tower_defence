@@ -2,7 +2,7 @@ import { TILE_SIZE } from '../constants/index.js'
 import context2D from '../context2D/index.js'
 import currentEnemies from '../data/enemies.js'
 import { calculateDistanceTwoPoint } from '../helper/index.js'
-import { position } from '../interface/index.js'
+import { position } from '../types/index.js'
 import Enemy from './Enemy.js'
 import Projectile from './Projectile.js'
 export default class Tower {
@@ -18,7 +18,7 @@ export default class Tower {
     constructor({
         position = { x: 0, y: 0 },
         attackSpeed = 1,
-        damage = 1,
+        damage = 300,
     }: {
         position: position
         attackSpeed?: number
@@ -83,7 +83,7 @@ export default class Tower {
         }
     }
     private updateProjectile() {
-        for (let i = 0; i < this.projectiles.length; i++) {
+        for (var i = this.projectiles.length - 1; i >= 0; i--) {
             const currentProjectile: Projectile = this.projectiles[i]
             const distance: number = calculateDistanceTwoPoint(
                 currentProjectile.position,
@@ -91,7 +91,7 @@ export default class Tower {
             )
             if (distance < 20) {
                 currentProjectile.targetEnemy.attacked(currentProjectile)
-                i--
+                this.projectiles.splice(i, 1)
             } else {
                 currentProjectile.update()
             }

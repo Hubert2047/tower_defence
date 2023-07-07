@@ -1,6 +1,6 @@
 import { TILE_SIZE } from '../constants/index.js'
 import context2D from '../context2D/index.js'
-import { position } from '../interface/index.js'
+import { position } from '../types/index.js'
 export default class PlacementTile {
     public position: position
     private defaultColor: string
