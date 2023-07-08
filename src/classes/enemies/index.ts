@@ -15,6 +15,7 @@ interface props {
     height?: number
     imageSources: HTMLImageElement[]
     frame?: T_frame
+    coins?: number
     moveSpeed?: number
     HP?: number
 }
@@ -22,6 +23,7 @@ export default class Enemy extends Sprite {
     private moveSpeed: number
     private velocityX: number
     private velocityY: number
+    public coins: number
     private currentWayPointIndex: number
     private _HP: number
     constructor({
@@ -31,6 +33,7 @@ export default class Enemy extends Sprite {
         height = 200,
         imageSources,
         frame,
+        coins = 1,
         moveSpeed = 2,
         HP = 1000,
     }: props) {
@@ -46,6 +49,7 @@ export default class Enemy extends Sprite {
         this.velocityX = 0
         this.velocityY = 0
         this.currentWayPointIndex = 0
+        this.coins = coins
         this._HP = HP
     }
     get HP() {

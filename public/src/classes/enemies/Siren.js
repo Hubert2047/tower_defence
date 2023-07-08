@@ -15,7 +15,8 @@ export default class Siren extends Enemy {
         const moveSpeed = 5;
         const holdTime = calculateHoldTime({ maxX, maxY, moveSpeed });
         const frame = { maxX, maxY, holdTime };
-        const HP = 3000;
-        super({ position, offset, imageSources, frame, moveSpeed, HP });
+        const coins = 3;
+        const HP = 7500;
+        super({ position, offset, imageSources, frame, moveSpeed, HP, coins });
     }
 }

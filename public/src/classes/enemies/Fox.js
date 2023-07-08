@@ -15,7 +15,8 @@ export default class Fox extends Enemy {
         const moveSpeed = 5;
         const holdTime = calculateHoldTime({ maxX, maxY, moveSpeed });
         const frame = { maxX, maxY, holdTime };
-        const HP = 1000;
-        super({ position, offset, imageSources, frame, moveSpeed, HP });
+        const coins = 5;
+        const HP = 25000;
+        super({ position, offset, imageSources, frame, moveSpeed, HP, coins });
     }
 }

@@ -45,7 +45,7 @@ export default class Tower extends Sprite {
         this.projectileType = projectileType
         this.projectiles = []
         this.countAttackTime = 0
-        this.holdAttack = parseInt((10 / attackSpeed).toString())
+        this.holdAttack = parseInt((50 / attackSpeed).toString())
     }
     public draw({ sourceIndex }: { sourceIndex: number }): void {
         super.draw({ sourceIndex })

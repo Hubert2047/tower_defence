@@ -15,7 +15,8 @@ export default class BroodMother extends Enemy {
         const moveSpeed = 4;
         const holdTime = calculateHoldTime({ maxX, maxY, moveSpeed });
         const frame = { maxX, maxY, holdTime };
-        const HP = 2000;
-        super({ position, offset, imageSources, frame, moveSpeed, HP });
+        const coins = 1;
+        const HP = 2500;
+        super({ position, offset, imageSources, frame, moveSpeed, HP, coins });
     }
 }

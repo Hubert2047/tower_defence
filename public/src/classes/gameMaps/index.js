@@ -8,7 +8,7 @@ import Fox from '../enemies/Fox.js';
 import Siren from '../enemies/Siren.js';
 import BloodMoon from '../towers/BloodMoon.tower.js';
 export default class GameMap {
-    constructor({ rounds, placementTiles2D, waypoints, backgoundImage, limitAttacks }) {
+    constructor({ rounds, placementTiles2D, waypoints, backgoundImage, limitAttacks, startCoins }) {
         this._currentEnemiesData = [];
         this.rounds = rounds;
         this.waypoints = waypoints;
@@ -18,6 +18,7 @@ export default class GameMap {
         this.placementTiles = this.getPlacementTiles(placementTiles2D);
         this.towers = [];
         this.isGameOver = false;
+        this.coins = startCoins;
         this.isVictory = false;
         this._activeTile = null;
         this.createCurrentRoundEnemies();
@@ -26,10 +27,24 @@ export default class GameMap {
         this.updateEnemies();
         this.updatePlacementTiles(mouse);
         this.updateTowers();
+        this.updateCoins();
+        this.updateMapHP();
         return [this.isGameOver, this.isVictory];
     }
     get activeTile() {
         return this._activeTile;
+    }
+    updateMapHP() {
+        const coinsHtml = document.querySelector('#hearts');
+        if (coinsHtml) {
+            coinsHtml.textContent = this.limitAttacks.toString();
+        }
+    }
+    updateCoins() {
+        const coinsHtml = document.querySelector('#coins');
+        if (coinsHtml) {
+            coinsHtml.textContent = this.coins.toString();
+        }
     }
     get currentEnemiesData() {
         return this._currentEnemiesData;
@@ -67,6 +82,7 @@ export default class GameMap {
             }
             if (currentEnemy.HP <= 0) {
                 this._currentEnemiesData.splice(i, 1);
+                this.coins += currentEnemy.coins;
                 continue;
             }
             currentEnemy.update(this.waypoints);
@@ -78,7 +94,10 @@ export default class GameMap {
             return;
         switch (towerType) {
             case E_TowerType.BLOOD_MOON:
+                if (this.coins < BloodMoon.prices)
+                    return;
                 this.towers.push(new BloodMoon({ position: (_a = this.activeTile) === null || _a === void 0 ? void 0 : _a.position }));
+                this.coins -= BloodMoon.prices;
                 break;
             default:
                 throw new Error('we dont have this tower');

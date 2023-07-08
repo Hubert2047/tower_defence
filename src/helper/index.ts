@@ -51,6 +51,7 @@ function getGameMapData(gameMapType: E_GameMap): T_gameMapData | undefined {
             backgoundImage: data.backgoundImage,
             waypoints: deepClone(data.waypoints),
             limitAttacks: data.limitAttacks,
+            startCoins: data.startCoins,
         }
     }
     return undefined

@@ -15,7 +15,8 @@ export default class Dragon extends Enemy {
         const moveSpeed = 5;
         const holdTime = calculateHoldTime({ maxX, maxY, moveSpeed });
         const frame = { maxX, maxY, holdTime };
-        const HP = 5000;
-        super({ position, offset, imageSources, frame, moveSpeed, HP });
+        const coins = 4;
+        const HP = 10000;
+        super({ position, offset, imageSources, frame, moveSpeed, HP, coins });
     }
 }

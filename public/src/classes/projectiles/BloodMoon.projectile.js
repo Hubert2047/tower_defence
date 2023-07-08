@@ -5,7 +5,7 @@ export default class BloodMoonProjectile extends Projectile {
         const sources = ['../../public/src/assets/images/Tower/BloodMoon/projectile_bloodmoon.png'];
         const imageSources = createImageSources(sources);
         const offset = { x: -60, y: 30 };
-        const width = 30;
+        const width = 100;
         const height = 30;
         const frame = { maxX: 1, maxY: 1, holdTime: 3 };
         super({

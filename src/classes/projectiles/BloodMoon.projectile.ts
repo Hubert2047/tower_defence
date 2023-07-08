@@ -1,5 +1,5 @@
 import { createImageSources } from '../../helper/index.js'
-import { T_position, T_frame } from '../../types/index'
+import { T_frame, T_position } from '../../types/index'
 import Enemy from '../enemies/index'
 import Projectile from './index.js'
 interface props {
@@ -16,7 +16,7 @@ export default class BloodMoonProjectile extends Projectile {
         const sources = ['../../public/src/assets/images/Tower/BloodMoon/projectile_bloodmoon.png']
         const imageSources: HTMLImageElement[] = createImageSources(sources)
         const offset = { x: -60, y: 30 }
-        const width = 30
+        const width = 100
         const height = 30
         const frame: T_frame = { maxX: 1, maxY: 1, holdTime: 3 }
         super({

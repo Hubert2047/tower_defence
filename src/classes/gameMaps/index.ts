@@ -23,10 +23,11 @@ export default class GameMap {
     private towers: Tower[]
     private waypoints: T_position[]
     private limitAttacks: number
+    public coins: number
     private isGameOver: boolean
     private isVictory: boolean
     private _activeTile: PlacementTile | null
-    constructor({ rounds, placementTiles2D, waypoints, backgoundImage, limitAttacks }: T_gameMapData) {
+    constructor({ rounds, placementTiles2D, waypoints, backgoundImage, limitAttacks, startCoins }: T_gameMapData) {
         this._currentEnemiesData = []
         this.rounds = rounds
         this.waypoints = waypoints
@@ -36,6 +37,7 @@ export default class GameMap {
         this.placementTiles = this.getPlacementTiles(placementTiles2D)
         this.towers = []
         this.isGameOver = false
+        this.coins = startCoins
         this.isVictory = false
         this._activeTile = null
         this.createCurrentRoundEnemies()
@@ -44,10 +46,24 @@ export default class GameMap {
         this.updateEnemies()
         this.updatePlacementTiles(mouse)
         this.updateTowers()
+        this.updateCoins()
+        this.updateMapHP()
         return [this.isGameOver, this.isVictory]
     }
     public get activeTile(): PlacementTile | null {
         return this._activeTile
+    }
+    public updateMapHP() {
+        const coinsHtml: Element | null = document.querySelector('#hearts')
+        if (coinsHtml) {
+            coinsHtml.textContent = this.limitAttacks.toString()
+        }
+    }
+    private updateCoins(): void {
+        const coinsHtml: Element | null = document.querySelector('#coins')
+        if (coinsHtml) {
+            coinsHtml.textContent = this.coins.toString()
+        }
     }
     public get currentEnemiesData() {
         return this._currentEnemiesData
@@ -62,7 +78,7 @@ export default class GameMap {
             tower.update({ enemies: this._currentEnemiesData })
         })
     }
-    public updateEnemies() {
+    public updateEnemies(): void {
         if (this._currentEnemiesData.length <= 0) {
             if (this.currentRoundIndex < this.rounds.length - 1) {
                 this.currentRoundIndex++
@@ -84,6 +100,7 @@ export default class GameMap {
             }
             if (currentEnemy.HP <= 0) {
                 this._currentEnemiesData.splice(i, 1)
+                this.coins += currentEnemy.coins
                 continue
             }
             currentEnemy.update(this.waypoints)
@@ -93,7 +110,9 @@ export default class GameMap {
         if (!this.activeTile) return
         switch (towerType) {
             case E_TowerType.BLOOD_MOON:
+                if (this.coins < BloodMoon.prices) return
                 this.towers.push(new BloodMoon({ position: this.activeTile?.position }))
+                this.coins -= BloodMoon.prices
                 break
             default:
                 throw new Error('we dont have this tower')

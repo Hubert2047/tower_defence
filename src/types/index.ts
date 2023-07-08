@@ -20,6 +20,7 @@ type T_gameMapData = {
     rounds: T_round[]
     placementTiles2D: number[][]
     backgoundImage: HTMLImageElement
+    startCoins: number
     waypoints: T_position[]
     limitAttacks: number
 }

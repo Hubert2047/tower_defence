@@ -8,7 +8,7 @@ var DragonSourceIndex;
     DragonSourceIndex[DragonSourceIndex["BottomSource"] = 3] = "BottomSource";
 })(DragonSourceIndex || (DragonSourceIndex = {}));
 export default class Enemy extends Sprite {
-    constructor({ position = { x: 0, y: 0 }, offset, width = 200, height = 200, imageSources, frame, moveSpeed = 2, HP = 1000, }) {
+    constructor({ position = { x: 0, y: 0 }, offset, width = 200, height = 200, imageSources, frame, coins = 1, moveSpeed = 2, HP = 1000, }) {
         super({
             position,
             offset,
@@ -21,6 +21,7 @@ export default class Enemy extends Sprite {
         this.velocityX = 0;
         this.velocityY = 0;
         this.currentWayPointIndex = 0;
+        this.coins = coins;
         this._HP = HP;
     }
     get HP() {

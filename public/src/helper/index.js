@@ -50,6 +50,7 @@ function getGameMapData(gameMapType) {
             backgoundImage: data.backgoundImage,
             waypoints: deepClone(data.waypoints),
             limitAttacks: data.limitAttacks,
+            startCoins: data.startCoins,
         };
     }
     return undefined;
