@@ -2,19 +2,19 @@ import { createImageSources } from '../../helper/index.js';
 import Tower from './index.js';
 export default class BloodMoon extends Tower {
     constructor({ position = { x: 0, y: 0 } }) {
-        const towerSourceString = ['../../public/src/assets/images/Tower/BloodMoon/tower_bloodmoon.png'];
-        const projectileSourceString = ['../../public/src/assets/images/Tower/BloodMoon/projectile_bloodmoon.png'];
-        const towerSources = createImageSources(towerSourceString);
-        const projectileSources = createImageSources(projectileSourceString);
+        const sources = ['../../public/src/assets/images/Tower/BloodMoon/tower_bloodmoon.png'];
+        const imageSources = createImageSources(sources);
+        const offset = { x: 20, y: 70 };
+        const damage = 500;
+        const attackSpeed = 5;
+        const frame = { maxX: 11, maxY: 1, holdTime: 4 };
         super({
             position,
-            offset: { x: 20, y: 70 },
-            imageSources: towerSources,
-            projectileSources,
-            frameMaxX: 11,
-            frameMaxY: 1,
-            attackSpeed: 5,
-            damage: 10000000000,
+            offset,
+            imageSources,
+            frame,
+            attackSpeed,
+            damage,
         });
     }
 }

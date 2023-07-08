@@ -1,23 +1,30 @@
-import PlacementTile from '../classes/PlacementTile.js'
-import BloodMoon from '../classes/Towers/BloodMoon.tower.js'
-import Tower from '../classes/Towers/index.js'
-import { TILE_SIZE } from '../constants/index.js'
 import context2D from '../context2D/index.js'
-import { placementTiles2D } from '../data/index.js'
-import { position } from '../types/index.js'
-
-function calculateDistanceTwoPoint(pointA: position, pointB: position): number {
+import gameData from '../data/index.js'
+import { E_GameMap } from '../enum/index.js'
+import { T_gameMapData, T_position } from '../types/index.js'
+function calculateDistanceTwoPoint(pointA: T_position, pointB: T_position): number {
     const dx: number = pointA.x - pointB.x
     const dy: number = pointA.y - pointB.y
     const distance: number = Math.sqrt(dx * dx + dy * dy)
     return distance
 }
-function getVectorNomalized(startPointLocation: position, endPointLocation: position): position {
-    const v: position = {
+function calculateHoldTime({ maxX, maxY, moveSpeed }: { maxX: number; maxY: number; moveSpeed: number }): number {
+    const holdTime = (maxX * maxY) / 2 / moveSpeed
+    return parseInt(holdTime.toString())
+}
+function calAngleFromPointAToPointB(pointA: T_position, pointB: T_position): number {
+    const dx: number = pointB.x - pointA.x
+    const dy: number = pointB.y - pointA.y
+    const angleRad: number = Math.atan2(dy, dx)
+    const angleDeg: number = angleRad * (180 / Math.PI)
+    return angleDeg
+}
+function getVectorNomalized(startPointLocation: T_position, endPointLocation: T_position): T_position {
+    const v: T_position = {
         x: endPointLocation.x - startPointLocation.x,
         y: endPointLocation.y - startPointLocation.y,
     }
-    const v_normalized: position = {
+    const v_normalized: T_position = {
         x: v.x / Math.sqrt(v.x * v.x + v.y * v.y),
         y: v.y / Math.sqrt(v.x * v.x + v.y * v.y),
     }
@@ -32,60 +39,40 @@ function createImageSources(sources: string[]): HTMLImageElement[] {
     })
     return imageSources
 }
-function getAngleFromPointAToPointB(pointA: position, pointB: position): number {
-    const dx: number = pointB.x - pointA.x
-    const dy: number = pointB.y - pointA.y
-    const angleRad: number = Math.atan2(dy, dx)
-    const angleDeg: number = angleRad * (180 / Math.PI)
-    return angleDeg
+function createBackground({ backgroundImage }: { backgroundImage: HTMLImageElement }): void {
+    if (context2D) context2D.drawImage(backgroundImage, 0, 0)
 }
-function createBackground(): void {
-    const image: HTMLImageElement = new Image()
-    image.src = '../../public/src/assets/images/gameMap.png'
-    if (context2D) context2D.drawImage(image, 0, 0)
+function getGameMapData(gameMapType: E_GameMap): T_gameMapData | undefined {
+    const data: T_gameMapData | undefined = gameData.get(gameMapType)
+    if (data) {
+        return {
+            rounds: deepClone(data.rounds),
+            placementTiles2D: deepClone(data.placementTiles2D),
+            backgoundImage: data.backgoundImage,
+            waypoints: deepClone(data.waypoints),
+            limitAttacks: data.limitAttacks,
+        }
+    }
+    return undefined
 }
-// function createEnemies({ count, moveSpeed }: { count: number; moveSpeed?: number }): Enemy[] {
-//     const enemies: Enemy[] = []
-//     for (let i = 0; i < count; i++) {
-//         const offsetX: number = i * 100
-//         enemies.push(new Enemy({ position: { x: -10 - offsetX, y: 484 }, moveSpeed }))
-//     }
-//     return enemies
-// }
-function createPlacementTiles(): PlacementTile[] {
-    const placementTiles: PlacementTile[] = []
-    placementTiles2D.forEach((row: number[], y: number) => {
-        row.forEach((symbol: number, x: number) => {
-            if (symbol === 14) {
-                placementTiles.push(new PlacementTile({ position: { x: x * TILE_SIZE, y: y * TILE_SIZE } }))
-            }
-        })
-    })
-    return placementTiles
-}
-function createTower(position: position): Tower {
-    return new BloodMoon({ position: position })
-}
-
-function updatePlacementTiles({ placementTiles, mouse }: { placementTiles: PlacementTile[]; mouse: position }): void {
-    placementTiles.forEach((placementTile) => {
-        placementTile.update(mouse)
-    })
-}
-function updateTowers({ towers }: { towers: Tower[] }): void {
-    towers.forEach((tower: Tower) => {
-        tower.update()
-    })
+function deepClone(data: any) {
+    if (typeof data !== 'object' || data === null) {
+        return data
+    }
+    const clone: any = Array.isArray(data) ? [] : {}
+    for (let key in data) {
+        if (data.hasOwnProperty(key)) {
+            clone[key] = deepClone(data[key])
+        }
+    }
+    return clone
 }
 export {
+    calAngleFromPointAToPointB,
     calculateDistanceTwoPoint,
+    calculateHoldTime,
     createBackground,
-    // createEnemies,
     createImageSources,
-    createPlacementTiles,
-    createTower,
-    getAngleFromPointAToPointB,
+    getGameMapData,
     getVectorNomalized,
-    updatePlacementTiles,
-    updateTowers,
 }

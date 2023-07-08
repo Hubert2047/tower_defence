@@ -9,10 +9,10 @@ if (canvas) {
     if (context) context.fillRect(0, 0, canvas.width, canvas.height)
 }
 
-function resetCanvas() {
+function resetCanvas({ backgroundImage }: { backgroundImage: HTMLImageElement }) {
     if (context && canvas) {
         context.clearRect(0, 0, canvas.width, canvas.height)
-        createBackground()
+        createBackground({ backgroundImage })
     }
 }
 export { resetCanvas }

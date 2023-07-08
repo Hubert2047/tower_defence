@@ -9,16 +9,14 @@ var DragonSourceIndex;
     DragonSourceIndex[DragonSourceIndex["BottomSource"] = 3] = "BottomSource";
 })(DragonSourceIndex || (DragonSourceIndex = {}));
 export default class Enemy extends Sprite {
-    constructor({ position = { x: 0, y: 0 }, moveSpeed = 2, HP = 1000, imageSources, frameMaxX = 1, frameMaxY = 1, offset, width = 200, height = 200, }) {
+    constructor({ position = { x: 0, y: 0 }, offset, width = 200, height = 200, imageSources, frame, moveSpeed = 2, HP = 1000, }) {
         super({
             position,
-            imageSources,
-            frameMaxX,
-            frameMaxY,
+            offset,
             width,
             height,
-            frameTime: 10 / moveSpeed,
-            offset,
+            imageSources,
+            frame,
         });
         this.moveSpeed = moveSpeed;
         this.velocityX = 0;
@@ -36,6 +34,9 @@ export default class Enemy extends Sprite {
         else {
             this._HP = hp;
         }
+    }
+    draw(sourceIndex) {
+        super.draw(sourceIndex);
     }
     update() {
         this.draw(this.getCurrentImageSourceIndex());

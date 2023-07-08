@@ -1,6 +1,9 @@
 {
     "index": ["index"],
     "compilerOptions": {
+        "paths": {
+            "lodash": ["node_modules/lodash/lodash.js"]
+        },
         /* Visit https://aka.ms/tsconfig to read more about this file */
         "allowJs": true,
         // "incremental": true,                              /* Save .tsbuildinfo files to allow for incremental compilation of projects. */
@@ -57,9 +60,6 @@
         // "outFile": "./",                                  /* Specify a file that bundles all outputs into one JavaScript file. If 'declaration' is true, also designates a file that bundles all .d.ts output. */
         "outDir": "./public/src" /* Specify an output folder for all emitted files. */,
         "baseUrl": ".",
-        "paths": {
-            "@/*": ["src/*"]
-        },
         // "removeComments": true,                           /* Disable emitting comments. */
         // "noEmit": true /* Disable emitting files from a compilation. */,
         // "importHelpers": true,                            /* Allow importing helper functions from tslib once per project, instead of including them per-file. */

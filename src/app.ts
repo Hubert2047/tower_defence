@@ -1,29 +1,77 @@
-import PlacementTile from './classes/PlacementTile.js'
-import Tower from './classes/Towers/index.js'
+import GameMap from './classes/gameMaps/index.js'
 import { resetCanvas } from './context2D/index.js'
-import { updateEnemies } from './data/enemies.js'
-import { createPlacementTiles, createTower, updatePlacementTiles, updateTowers } from './helper/index.js'
-import { position } from './types/index.js'
-const placementTiles: PlacementTile[] = createPlacementTiles()
-const towers: Tower[] = []
-let activeTile: PlacementTile | null = null
-const mouse: position = { x: 0, y: 0 }
-function startGame(): void {
-    resetCanvas()
-    updateEnemies()
-    updatePlacementTiles({ placementTiles, mouse })
-    updateTowers({ towers })
-    requestAnimationFrame(startGame)
+import { E_GameMap, E_TowerType } from './enum/index.js'
+import { getGameMapData } from './helper/index.js'
+import { T_position } from './types/index.js'
+main()
+function main() {
+    newGame()
 }
-startGame()
-window.addEventListener('mousemove', (event) => {
-    mouse.x = event.clientX
-    mouse.y = event.clientY
-    activeTile = placementTiles.find((tile) => tile.hasCollisionWithMouse(mouse)) ?? null
-})
-window.addEventListener('click', (event) => {
-    if (activeTile && !activeTile.isOccupied) {
-        activeTile.isOccupied = true
-        towers.push(createTower(activeTile.position))
+function newGame() {
+    const gameMapType: E_GameMap = E_GameMap.DESERT
+    const currentMapData = getGameMapData(gameMapType)
+    const mouse: T_position = { x: 0, y: 0 }
+    if (currentMapData) {
+        const currentMap = new GameMap(currentMapData)
+        handleAddEventGame({ gameMap: currentMap, mouse })
+        startGame({ gameMap: currentMap, mouse })
     }
-})
+    resetHTML()
+}
+function startGame({ gameMap, mouse }: { gameMap: GameMap; mouse: T_position }): void {
+    resetCanvas({ backgroundImage: gameMap.backgoundImage })
+    const [isGameOver, isVictory] = gameMap.updateMap(mouse)
+    if (isGameOver) {
+        handleFinishedGame({ text: 'Game Over' })
+        return
+    }
+    if (isVictory) {
+        handleFinishedGame({ text: 'Victory' })
+        return
+    }
+    requestAnimationFrame(() => {
+        startGame({ gameMap, mouse })
+    })
+}
+function handleAddEventGame({ gameMap, mouse }: { gameMap: GameMap; mouse: T_position }) {
+    const canvas = document.querySelector('canvas')
+    const startGameBtn = document.querySelector('.start-game-btn')
+    if (canvas) {
+        canvas.addEventListener('mousemove', handleEventMousemove)
+        canvas.addEventListener('click', handleEventClick)
+    }
+    if (startGameBtn) {
+        startGameBtn.addEventListener('click', newGame)
+    }
+    function handleEventClick() {
+        if (gameMap.activeTile && !gameMap.activeTile.isOccupied) {
+            gameMap.activeTile.isOccupied = true
+            gameMap.addTower({ towerType: E_TowerType.BLOOD_MOON })
+        }
+    }
+    function handleEventMousemove(event: MouseEvent) {
+        mouse.x = event.offsetX
+        mouse.y = event.offsetY
+        gameMap.checkActiveTile({ mouse })
+    }
+}
+
+function handleFinishedGame({ text }: { text: string }) {
+    const gameInfoContainer = document.querySelector('.game-info-container')
+    const gameSatus = document.querySelector('.game-status')
+    const textStatus = document.querySelector('.text-status')
+    if (gameSatus && gameInfoContainer && textStatus) {
+        gameInfoContainer.classList.add('game-finished')
+        gameSatus.classList.add('display')
+        textStatus.textContent = text
+    }
+}
+function resetHTML() {
+    const gameInfoContainer = document.querySelector('.game-info-container')
+    const gameSatus = document.querySelector('.game-status')
+    const textStatus = document.querySelector('.text-status')
+    if (gameSatus && gameInfoContainer && textStatus) {
+        gameInfoContainer.classList.remove('game-finished')
+        gameSatus.classList.remove('display')
+    }
+}

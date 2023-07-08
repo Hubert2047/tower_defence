@@ -1,31 +1,29 @@
 import context2D from '../../context2D/index.js';
 export default class Sprite {
-    constructor({ position = { x: 0, y: 0 }, offset = { x: 0, y: 0 }, width = 200, height = 200, imageSources, frameMaxX = 1, frameMaxY = 1, frameTime = 4, }) {
+    constructor({ position = { x: 0, y: 0 }, offset = { x: 0, y: 0 }, width = 200, height = 200, imageSources, frame = { maxX: 1, maxY: 1, holdTime: 4 }, }) {
         this.position = position;
         this.offset = offset;
         this.width = width;
         this.height = height;
-        this.frameMaxX = frameMaxX;
-        this.frameMaxY = frameMaxY;
-        this.frameTime = parseInt(frameTime.toString());
+        this.frame = frame;
         this.imageSources = imageSources;
         this.cropPosition = { x: 0, y: 0 };
         this.countFrameTime = 0;
     }
     draw(sourceIndex) {
         if (context2D) {
-            context2D.drawImage(this.imageSources[sourceIndex], (this.cropPosition.x * this.imageSources[sourceIndex].width) / this.frameMaxX, (this.cropPosition.y * this.imageSources[sourceIndex].height) / this.frameMaxY, this.imageSources[sourceIndex].width / this.frameMaxX, this.imageSources[sourceIndex].height / this.frameMaxY, this.position.x - this.offset.x, this.position.y - this.height + this.offset.y, this.width, this.height);
+            context2D.drawImage(this.imageSources[sourceIndex], (this.cropPosition.x * this.imageSources[sourceIndex].width) / this.frame.maxX, (this.cropPosition.y * this.imageSources[sourceIndex].height) / this.frame.maxY, this.imageSources[sourceIndex].width / this.frame.maxX, this.imageSources[sourceIndex].height / this.frame.maxY, this.position.x - this.offset.x, this.position.y - this.height + this.offset.y, this.width, this.height);
             this.updateFrameIndex();
         }
     }
     updateFrameIndex() {
         this.countFrameTime++;
-        if (this.countFrameTime === this.frameTime) {
+        if (this.countFrameTime === this.frame.holdTime) {
             this.countFrameTime = 0;
-            if (this.cropPosition.x === this.frameMaxX - 1 && this.cropPosition.y === this.frameMaxY - 1) {
+            if (this.cropPosition.x === this.frame.maxX - 1 && this.cropPosition.y === this.frame.maxY - 1) {
                 this.cropPosition = { x: 0, y: 0 };
             }
-            else if (this.cropPosition.x === this.frameMaxX - 1) {
+            else if (this.cropPosition.x === this.frame.maxX - 1) {
                 this.cropPosition.x = 0;
                 this.cropPosition.y++;
             }

@@ -1,13 +1,21 @@
-import PlacementTile from '../classes/PlacementTile.js';
-import BloodMoon from '../classes/Towers/BloodMoon.tower.js';
-import { TILE_SIZE } from '../constants/index.js';
 import context2D from '../context2D/index.js';
-import { placementTiles2D } from '../data/index.js';
+import gameData from '../data/index.js';
 function calculateDistanceTwoPoint(pointA, pointB) {
     const dx = pointA.x - pointB.x;
     const dy = pointA.y - pointB.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
     return distance;
+}
+function calculateHoldTime({ maxX, maxY, moveSpeed }) {
+    const holdTime = (maxX * maxY) / 2 / moveSpeed;
+    return parseInt(holdTime.toString());
+}
+function calAngleFromPointAToPointB(pointA, pointB) {
+    const dx = pointB.x - pointA.x;
+    const dy = pointB.y - pointA.y;
+    const angleRad = Math.atan2(dy, dx);
+    const angleDeg = angleRad * (180 / Math.PI);
+    return angleDeg;
 }
 function getVectorNomalized(startPointLocation, endPointLocation) {
     const v = {
@@ -29,51 +37,33 @@ function createImageSources(sources) {
     });
     return imageSources;
 }
-function getAngleFromPointAToPointB(pointA, pointB) {
-    const dx = pointB.x - pointA.x;
-    const dy = pointB.y - pointA.y;
-    const angleRad = Math.atan2(dy, dx);
-    const angleDeg = angleRad * (180 / Math.PI);
-    return angleDeg;
-}
-function createBackground() {
-    const image = new Image();
-    image.src = '../../public/src/assets/images/gameMap.png';
+function createBackground({ backgroundImage }) {
     if (context2D)
-        context2D.drawImage(image, 0, 0);
+        context2D.drawImage(backgroundImage, 0, 0);
 }
-// function createEnemies({ count, moveSpeed }: { count: number; moveSpeed?: number }): Enemy[] {
-//     const enemies: Enemy[] = []
-//     for (let i = 0; i < count; i++) {
-//         const offsetX: number = i * 100
-//         enemies.push(new Enemy({ position: { x: -10 - offsetX, y: 484 }, moveSpeed }))
-//     }
-//     return enemies
-// }
-function createPlacementTiles() {
-    const placementTiles = [];
-    placementTiles2D.forEach((row, y) => {
-        row.forEach((symbol, x) => {
-            if (symbol === 14) {
-                placementTiles.push(new PlacementTile({ position: { x: x * TILE_SIZE, y: y * TILE_SIZE } }));
-            }
-        });
-    });
-    return placementTiles;
+function getGameMapData(gameMapType) {
+    const data = gameData.get(gameMapType);
+    if (data) {
+        return {
+            rounds: deepClone(data.rounds),
+            placementTiles2D: deepClone(data.placementTiles2D),
+            backgoundImage: data.backgoundImage,
+            waypoints: deepClone(data.waypoints),
+            limitAttacks: data.limitAttacks,
+        };
+    }
+    return undefined;
 }
-function createTower(position) {
-    return new BloodMoon({ position: position });
+function deepClone(data) {
+    if (typeof data !== 'object' || data === null) {
+        return data;
+    }
+    const clone = Array.isArray(data) ? [] : {};
+    for (let key in data) {
+        if (data.hasOwnProperty(key)) {
+            clone[key] = deepClone(data[key]);
+        }
+    }
+    return clone;
 }
-function updatePlacementTiles({ placementTiles, mouse }) {
-    placementTiles.forEach((placementTile) => {
-        placementTile.update(mouse);
-    });
-}
-function updateTowers({ towers }) {
-    towers.forEach((tower) => {
-        tower.update();
-    });
-}
-export { calculateDistanceTwoPoint, createBackground, 
-// createEnemies,
-createImageSources, createPlacementTiles, createTower, getAngleFromPointAToPointB, getVectorNomalized, updatePlacementTiles, updateTowers, };
+export { calAngleFromPointAToPointB, calculateDistanceTwoPoint, calculateHoldTime, createBackground, createImageSources, getGameMapData, getVectorNomalized, };

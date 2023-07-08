@@ -1,17 +1,15 @@
 // import context2D from '../../context2D/index.js'
 import { getCurrentEnemies } from '../../data/enemies.js';
 import { calculateDistanceTwoPoint } from '../../helper/index.js';
-import BloodMoonProjectile from '../Projectiles/BloodMoon.projectile.js';
-import Sprite from '../Sprite/index.js';
+import BloodMoonProjectile from '../projectiles/BloodMoon.projectile.js';
+import Sprite from '../sprite/index.js';
 export default class Tower extends Sprite {
-    constructor({ position = { x: 0, y: 0 }, offset, width = 100, height = 200, frameMaxX = 1, frameMaxY = 1, imageSources, projectileSources, attackSpeed = 1, damage = 300, }) {
-        super({ position, offset, width, height, imageSources, frameMaxX, frameMaxY });
+    constructor({ position = { x: 0, y: 0 }, offset, width = 100, height = 200, frame, imageSources, attackSpeed = 1, damage = 300, }) {
+        super({ position, offset, width, height, imageSources, frame });
         this.attackSpeed = attackSpeed;
-        this.center = { x: position.x + width / 2, y: position.y + height / 2 };
         this.attackIntervalId = null;
         this.attackArea = 300;
         this.damage = damage;
-        this.projectileImageSources = projectileSources;
         this.projectiles = [];
         this.startAttack();
     }
@@ -46,22 +44,20 @@ export default class Tower extends Sprite {
             return;
         const enemiesInRange = this.getEnemiesInAttackRange(currentEnemies);
         if (enemiesInRange.length > 0) {
-            const newProjectile = new BloodMoonProjectile({
-                position: {
-                    x: this.position.x - this.width / 2,
-                    y: this.position.y - this.height / 2,
-                },
-                damage: this.damage,
-                projectileSources: this.projectileImageSources,
-                enemy: enemiesInRange[0],
-                frameMaxX: 1,
-                frameMaxY: 1,
-                width: 30,
-                height: 30,
-                moveSpeed: 20,
-            });
+            const newProjectile = this.createBloodMoonProjectile(enemiesInRange[0]);
             this.projectiles.push(newProjectile);
         }
+    }
+    createBloodMoonProjectile(enemy) {
+        return new BloodMoonProjectile({
+            position: {
+                x: this.position.x - this.width / 2,
+                y: this.position.y - this.height / 2,
+            },
+            damage: this.damage,
+            enemy,
+            moveSpeed: 20,
+        });
     }
     getEnemiesInAttackRange(currentEnemies) {
         const enemiesInRange = [];

@@ -1,8 +1,8 @@
-import Bear from '../classes/Enemies/Bear.js';
-import BroodMother from '../classes/Enemies/BroodMother.js';
-import Dragon from '../classes/Enemies/Dragon.js';
-import Fox from '../classes/Enemies/Fox.js';
-import Siren from '../classes/Enemies/Siren.js';
+import Bear from '../classes/enemies/Bear.js';
+import BroodMother from '../classes/enemies/BroodMother.js';
+import Dragon from '../classes/enemies/Dragon.js';
+import Fox from '../classes/enemies/Fox.js';
+import Siren from '../classes/enemies/Siren.js';
 // let currentEnemies: Enemy[] = createEnemies({ count: 1, moveSpeed: 6 })
 let currentEnemies = [
     new Fox({ position: { x: -10, y: 484 } }),

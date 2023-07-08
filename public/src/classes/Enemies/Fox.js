@@ -1,4 +1,4 @@
-import { createImageSources } from '../../helper/index.js';
+import { calculateHoldTime, createImageSources } from '../../helper/index.js';
 import Enemy from './index.js';
 export default class Fox extends Enemy {
     constructor({ position = { x: 0, y: 0 } }) {
@@ -9,14 +9,13 @@ export default class Fox extends Enemy {
             '../../public/src/assets/images/Fox/bottom_180.png',
         ];
         const imageSources = createImageSources(sources);
-        super({
-            position,
-            imageSources,
-            frameMaxX: 4,
-            frameMaxY: 4,
-            moveSpeed: 8,
-            HP: 5000000,
-            offset: { x: 65, y: 65 },
-        });
+        const offset = { x: 65, y: 65 };
+        const maxX = 4;
+        const maxY = 4;
+        const moveSpeed = 5;
+        const holdTime = calculateHoldTime({ maxX, maxY, moveSpeed });
+        const frame = { maxX, maxY, holdTime };
+        const HP = 100000000;
+        super({ position, offset, imageSources, frame, moveSpeed, HP });
     }
 }
