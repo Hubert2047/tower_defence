@@ -1,5 +1,5 @@
 import { getVectorNomalized } from '../../helper/index.js'
-import { T_frame, T_position } from '../../types/index.js'
+import { T_explosionProjectileInfo, T_frame, T_position } from '../../types/index.js'
 import Enemy from '../enemies/index.js'
 import Sprite from '../sprite/index.js'
 interface props {
@@ -8,6 +8,7 @@ interface props {
     width: number
     height: number
     imageSources: HTMLImageElement[]
+    explosionProjectileInfo: T_explosionProjectileInfo
     frame: T_frame
     moveSpeed: number
     damage: number
@@ -19,13 +20,26 @@ export default class Projectile extends Sprite {
     private velocityY: number
     public targetEnemy: Enemy
     public damage: number
-    constructor({ position, offset, width, height, imageSources, frame, moveSpeed, damage, enemy }: props) {
+    public explosionProjectileInfo: T_explosionProjectileInfo
+    constructor({
+        position,
+        offset,
+        width,
+        height,
+        imageSources,
+        explosionProjectileInfo,
+        frame,
+        moveSpeed,
+        damage,
+        enemy,
+    }: props) {
         super({ position, offset, width, height, imageSources, frame })
         this.moveSpeed = moveSpeed
         this.velocityX = 0
         this.velocityY = 0
         this.damage = damage
         this.targetEnemy = enemy
+        this.explosionProjectileInfo = explosionProjectileInfo
     }
     public update(): void {
         this.draw({ sourceIndex: 0 })

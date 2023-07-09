@@ -13,9 +13,9 @@ export default class Sprite {
     public width: number
     public height: number
     private imageSources: HTMLImageElement[]
-    private frame: T_frame
+    public frame: T_frame
     private countFrameTime: number
-    private cropPosition: T_position
+    public cropPosition: T_position
     public offset: T_position
     constructor({ position, offset, width, height, imageSources, frame }: props) {
         this.position = position
@@ -27,7 +27,7 @@ export default class Sprite {
         this.cropPosition = { x: 0, y: 0 }
         this.countFrameTime = 0
     }
-    protected draw({ sourceIndex }: { sourceIndex: number }): void {
+    public draw({ sourceIndex }: { sourceIndex: number }): void {
         if (context2D) {
             context2D.drawImage(
                 this.imageSources[sourceIndex],

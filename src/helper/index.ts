@@ -9,13 +9,13 @@ function calculateDistanceTwoPoint(pointA: T_position, pointB: T_position): numb
     const distance: number = Math.sqrt(dx * dx + dy * dy)
     return distance
 }
-function calFullHealthWidth(HP: number): number {
-    const width = (HP * 15) / BASE_HEALTH
+function calFullHealthWidth(health: number): number {
+    const width = (health * 15) / BASE_HEALTH
     return width > 120 ? 120 : width
 }
 function calculateHoldTime({ maxX, maxY, moveSpeed }: { maxX: number; maxY: number; moveSpeed: number }): number {
-    const holdTime = (maxX * maxY) / 2 / moveSpeed
-    return parseInt(holdTime.toString())
+    const holdTime = parseInt(((maxX * maxY) / 2 / moveSpeed).toString())
+    return holdTime <= 0 ? 1 : holdTime
 }
 function calAngleFromPointAToPointB(pointA: T_position, pointB: T_position): number {
     const dx: number = pointB.x - pointA.x
@@ -73,6 +73,9 @@ function deepClone(data: any) {
     }
     return clone
 }
+function randomNumberInRange(min: number, max: number): number {
+    return Math.random() * (max - min) + min
+}
 export {
     calAngleFromPointAToPointB,
     calFullHealthWidth,
@@ -83,4 +86,5 @@ export {
     deepClone,
     getGameMapData,
     getVectorNomalized,
+    randomNumberInRange,
 }

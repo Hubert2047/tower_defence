@@ -1,4 +1,4 @@
-import { E_towerType } from '../../enum/index.js'
+import { E_tower } from '../../enum/index.js'
 import { createImageSources, deepClone } from '../../helper/index.js'
 import { T_frame, T_position, T_towersDefaultPropety } from '../../types/index'
 import defaultProperty from '../towers/towers.default.propety.js'
@@ -15,7 +15,7 @@ export default class BloodMoon extends Tower {
     }) {
         const sources = ['../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png']
         const imageSources: HTMLImageElement[] = createImageSources(sources)
-        const property: T_towersDefaultPropety = deepClone(defaultProperty.get(E_towerType.BLOOD_MOON))
+        const property: T_towersDefaultPropety = deepClone(defaultProperty.get(E_tower.BLOOD_MOON))
         const { offset, maxX, maxY, attackSpeed, damage, projectileType, holdTime, attackArea } = property
         const frame: T_frame = { maxX, maxY, holdTime }
         super({

@@ -1,13 +1,14 @@
 import { getVectorNomalized } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Projectile extends Sprite {
-    constructor({ position, offset, width, height, imageSources, frame, moveSpeed, damage, enemy }) {
+    constructor({ position, offset, width, height, imageSources, explosionProjectileInfo, frame, moveSpeed, damage, enemy, }) {
         super({ position, offset, width, height, imageSources, frame });
         this.moveSpeed = moveSpeed;
         this.velocityX = 0;
         this.velocityY = 0;
         this.damage = damage;
         this.targetEnemy = enemy;
+        this.explosionProjectileInfo = explosionProjectileInfo;
     }
     update() {
         this.draw({ sourceIndex: 0 });

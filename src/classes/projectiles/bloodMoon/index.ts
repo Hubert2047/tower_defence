@@ -1,7 +1,7 @@
-import { createImageSources } from '../../helper/index.js'
-import { T_frame, T_position } from '../../types/index'
-import Enemy from '../enemies/index'
-import Projectile from './index.js'
+import { createImageSources } from '../../../helper/index.js'
+import { T_explosionProjectileInfo, T_frame, T_position } from '../../../types/index'
+import Enemy from '../../enemies/index'
+import Projectile from '../index.js'
 interface props {
     position: T_position
     offset?: T_position
@@ -13,8 +13,15 @@ interface props {
 }
 export default class BloodMoonProjectile extends Projectile {
     constructor({ position = { x: 0, y: 0 }, damage = 50, moveSpeed = 5, enemy }: props) {
-        const sources = ['../../public/src/assets/images/projectiles/fire_ball_3.png']
+        const sources = ['../../public/src/assets/images/projectiles/fireBall/fire_ball.png']
         const imageSources: HTMLImageElement[] = createImageSources(sources)
+        const explosionSources = ['../../public/src/assets/images/projectiles/fireBall/fire_end.png']
+        const explosionImageSources: HTMLImageElement[] = createImageSources(explosionSources)
+        const explosionProjectileInfo: T_explosionProjectileInfo = {
+            imageSources: explosionImageSources,
+            offset: { x: 0, y: 0 },
+            frame: { maxX: 8, maxY: 1, holdTime: 3 },
+        }
         const offset = { x: -60, y: 30 }
         const width = 80
         const height = 80
@@ -25,6 +32,7 @@ export default class BloodMoonProjectile extends Projectile {
             width,
             height,
             imageSources,
+            explosionProjectileInfo,
             frame,
             moveSpeed,
             damage,

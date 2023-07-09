@@ -7,13 +7,13 @@ function calculateDistanceTwoPoint(pointA, pointB) {
     const distance = Math.sqrt(dx * dx + dy * dy);
     return distance;
 }
-function calFullHealthWidth(HP) {
-    const width = (HP * 15) / BASE_HEALTH;
+function calFullHealthWidth(health) {
+    const width = (health * 15) / BASE_HEALTH;
     return width > 120 ? 120 : width;
 }
 function calculateHoldTime({ maxX, maxY, moveSpeed }) {
-    const holdTime = (maxX * maxY) / 2 / moveSpeed;
-    return parseInt(holdTime.toString());
+    const holdTime = parseInt(((maxX * maxY) / 2 / moveSpeed).toString());
+    return holdTime <= 0 ? 1 : holdTime;
 }
 function calAngleFromPointAToPointB(pointA, pointB) {
     const dx = pointB.x - pointA.x;
@@ -72,4 +72,7 @@ function deepClone(data) {
     }
     return clone;
 }
-export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createBackground, createImageSources, deepClone, getGameMapData, getVectorNomalized, };
+function randomNumberInRange(min, max) {
+    return Math.random() * (max - min) + min;
+}
+export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createBackground, createImageSources, deepClone, getGameMapData, getVectorNomalized, randomNumberInRange, };

@@ -1,3 +1,4 @@
+import { E_enemy } from 'src/enum/index.js'
 import context2D from '../../context2D/index.js'
 import { calAngleFromPointAToPointB, calFullHealthWidth, getVectorNomalized } from '../../helper/index.js'
 import { T_frame, T_position } from '../../types/index.js'
@@ -16,6 +17,7 @@ interface healthBar {
     strokeStyle: string
 }
 interface props {
+    enemyType: E_enemy
     position: T_position
     offset: T_position
     width: number
@@ -24,17 +26,18 @@ interface props {
     frame: T_frame
     coins: number
     moveSpeed: number
-    HP: number
+    health: number
 }
 export default class Enemy extends Sprite {
+    public enemyType: E_enemy
     private moveSpeed: number
     private velocityX: number
     private velocityY: number
     public coins: number
     private currentWayPointIndex: number
-    private HP: number
-    private _remainHP: number
-    constructor({ position, offset, width, height, imageSources, frame, coins, moveSpeed, HP }: props) {
+    private health: number
+    private _remainHealth: number
+    constructor({ position, offset, width, height, imageSources, frame, coins, moveSpeed, health, enemyType }: props) {
         super({
             position,
             offset,
@@ -48,18 +51,19 @@ export default class Enemy extends Sprite {
         this.velocityY = 0
         this.currentWayPointIndex = 0
         this.coins = coins
-        this._remainHP = HP
-        this.HP = HP
+        this._remainHealth = health
+        this.health = health
+        this.enemyType = enemyType
     }
-    set remainHP(remainHP: number) {
-        if (remainHP <= 0) {
-            this._remainHP = 0
+    set remainHealth(remainHealth: number) {
+        if (remainHealth <= 0) {
+            this._remainHealth = 0
         } else {
-            this._remainHP = remainHP
+            this._remainHealth = remainHealth
         }
     }
-    get remainHP() {
-        return this._remainHP
+    get remainHealth() {
+        return this._remainHealth
     }
     public update(waypoints: T_position[]): void {
         this.draw({ sourceIndex: this.getCurrentImageSourceIndex(waypoints) })
@@ -183,9 +187,9 @@ export default class Enemy extends Sprite {
         if (context2D) {
             context2D.font = '16px Arial'
             context2D.fillStyle = 'white'
-            const remainHpString = this.remainHP.toString()
-            const textWidth = context2D.measureText(remainHpString).width
-            context2D.fillText(remainHpString, x + fullHealthWidth / 2 - textWidth / 2, y - 8)
+            const remainHealthString = this.remainHealth.toString()
+            const textWidth = context2D.measureText(remainHealthString).width
+            context2D.fillText(remainHealthString, x + fullHealthWidth / 2 - textWidth / 2, y - 8)
         }
     }
     private updateHealthBars() {
@@ -195,8 +199,8 @@ export default class Enemy extends Sprite {
             borderRadius: 4,
             strokeStyle: 'white',
         }
-        const fullHealthWidth = calFullHealthWidth(this.HP)
-        const remainHealthWidth = (this.remainHP * fullHealthWidth) / this.HP
+        const fullHealthWidth = calFullHealthWidth(this.health)
+        const remainHealthWidth = (this.remainHealth * fullHealthWidth) / this.health
         this.drawHealthBarFull({ drawOption, fullHealthWidth, fillStyle: 'red' })
         if (fullHealthWidth === remainHealthWidth) {
             this.drawHealthBarFull({ drawOption, fullHealthWidth, fillStyle: 'green' })
@@ -249,6 +253,6 @@ export default class Enemy extends Sprite {
         return 1
     }
     public attacked(projectile: Projectile): void {
-        this.remainHP -= projectile.damage
+        this.remainHealth -= projectile.damage
     }
 }

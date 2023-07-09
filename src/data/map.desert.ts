@@ -1,4 +1,4 @@
-import { E_enemyType } from '../enum/index.js'
+import { E_enemy } from '../enum/index.js'
 import { T_gameMapData, T_position, T_round } from '../types/index.js'
 const placementTilesData: number[] = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -56,100 +56,54 @@ const rounds: T_round[] = [
         roundName: 'round 1',
         enemies: [
             {
-                enemyType: E_enemyType.DRAGON,
-                position: { x: -110, y: 484 },
+                enemyType: E_enemy.DRAGON,
+                basePosition: { x: -110, y: 484 },
+                amount: 8,
+                spaceMin: 100,
+                spaceMax: 1000,
+                moveSpeed: 1,
+                health: 17000,
+                coins: 5,
             },
             {
-                enemyType: E_enemyType.BROOD_MOTHER,
-                position: { x: -150, y: 484 },
+                enemyType: E_enemy.FOX,
+                basePosition: { x: -75, y: 484 },
+                amount: 12,
+                moveSpeed: 2,
+                health: 6000,
+                spaceMin: 100,
+                spaceMax: 1000,
+                coins: 2,
             },
             {
-                enemyType: E_enemyType.FOX,
-                position: { x: -250, y: 484 },
+                enemyType: E_enemy.BROOD_MOTHER,
+                basePosition: { x: -50, y: 484 },
+                amount: 20,
+                spaceMin: 100,
+                spaceMax: 1000,
+                moveSpeed: 2,
+                health: 2000,
+                coins: 1,
             },
             {
-                enemyType: E_enemyType.SIREN,
-                position: { x: -50, y: 484 },
+                enemyType: E_enemy.SIREN,
+                basePosition: { x: -150, y: 484 },
+                amount: 18,
+                spaceMin: 100,
+                spaceMax: 1000,
+                moveSpeed: 1.5,
+                health: 8000,
+                coins: 2,
             },
             {
-                enemyType: E_enemyType.SIREN,
-                position: { x: -650, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.SIREN,
-                position: { x: -250, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.SIREN,
-                position: { x: -550, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.DRAGON,
-                position: { x: -20, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.BROOD_MOTHER,
-                position: { x: -150, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.BEAR,
-                position: { x: -850, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.BEAR,
-                position: { x: -950, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.BEAR,
-                position: { x: -1500, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.DRAGON,
-                position: { x: -1200, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.BROOD_MOTHER,
-                position: { x: -290, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.FOX,
-                position: { x: -120, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.SIREN,
-                position: { x: -190, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.SIREN,
-                position: { x: -320, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.SIREN,
-                position: { x: -150, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.SIREN,
-                position: { x: -650, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.DRAGON,
-                position: { x: -900, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.BROOD_MOTHER,
-                position: { x: -120, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.BEAR,
-                position: { x: -950, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.BEAR,
-                position: { x: -850, y: 484 },
-            },
-            {
-                enemyType: E_enemyType.BEAR,
-                position: { x: -1400, y: 484 },
+                enemyType: E_enemy.BEAR,
+                basePosition: { x: -250, y: 484 },
+                amount: 12,
+                spaceMin: 100,
+                spaceMax: 1000,
+                moveSpeed: 1.3,
+                health: 15000,
+                coins: 3,
             },
         ],
     },
@@ -157,8 +111,14 @@ const rounds: T_round[] = [
         roundName: 'round 2',
         enemies: [
             {
-                enemyType: E_enemyType.FOX,
-                position: { x: -10, y: 484 },
+                enemyType: E_enemy.BEAR,
+                basePosition: { x: -150, y: 484 },
+                amount: 10,
+                spaceMin: 100,
+                spaceMax: 1000,
+                moveSpeed: 1,
+                health: 10000,
+                coins: 2,
             },
         ],
     },

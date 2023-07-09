@@ -1,10 +1,11 @@
-import { E_enemyType, E_projectileType } from '../enum/index.js'
+import { E_enemy, E_projectile } from '../enum/index.js'
 type T_position = {
     x: number
     y: number
 }
 type T_enemiesDefaultProperty = {
-    HP: number
+    enemyType: E_enemy
+    health: number
     coins: number
     moveSpeed: number
     maxX: number
@@ -19,7 +20,7 @@ type T_towersDefaultPropety = {
     holdTime: number
     damage: number
     attackSpeed: number
-    projectileType: E_projectileType.BLOOD_MOON
+    projectileType: E_projectile.BLOOD_MOON
     offset: T_position
     attackArea: number
 }
@@ -29,8 +30,14 @@ type T_frame = {
     holdTime: number
 }
 type T_enemyInfo = {
-    enemyType: E_enemyType
-    position: T_position
+    enemyType: E_enemy
+    basePosition: T_position
+    amount: number
+    spaceMin: number
+    spaceMax: number
+    health: number
+    moveSpeed: number
+    coins: number
 }
 type T_round = {
     roundName: string
@@ -44,4 +51,29 @@ type T_gameMapData = {
     waypoints: T_position[]
     limitAttacks: number
 }
-export { T_enemiesDefaultProperty, T_enemyInfo, T_frame, T_gameMapData, T_position, T_round, T_towersDefaultPropety }
+type T_explosionProjectileInfo = {
+    offset: T_position
+    imageSources: HTMLImageElement[]
+    frame: T_frame
+}
+type T_enemy = {
+    enemyType: E_enemy
+    position: T_position
+    offset?: T_position
+    width?: number
+    height?: number
+    moveSpeed?: number
+    health?: number
+    coins?: number
+}
+export {
+    T_enemiesDefaultProperty,
+    T_enemy,
+    T_enemyInfo,
+    T_explosionProjectileInfo,
+    T_frame,
+    T_gameMapData,
+    T_position,
+    T_round,
+    T_towersDefaultPropety,
+}

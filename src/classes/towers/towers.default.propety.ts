@@ -1,15 +1,15 @@
-import { E_projectileType, E_towerType } from '../../enum/index.js'
+import { E_projectile, E_tower } from '../../enum/index.js'
 const towersDefaultProperty = new Map([
     [
-        E_towerType.BLOOD_MOON,
+        E_tower.BLOOD_MOON,
         {
             maxX: 11,
             maxY: 1,
             holdTime: 10,
-            damage: 2000,
+            damage: 500,
             attackSpeed: 10,
             attackArea: 300,
-            projectileType: E_projectileType.BLOOD_MOON,
+            projectileType: E_projectile.BLOOD_MOON,
             offset: { x: 20, y: 70 },
         },
     ],

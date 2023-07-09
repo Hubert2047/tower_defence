@@ -9,7 +9,7 @@ var DragonSourceIndex;
     DragonSourceIndex[DragonSourceIndex["BottomSource"] = 3] = "BottomSource";
 })(DragonSourceIndex || (DragonSourceIndex = {}));
 export default class Enemy extends Sprite {
-    constructor({ position, offset, width, height, imageSources, frame, coins, moveSpeed, HP }) {
+    constructor({ position, offset, width, height, imageSources, frame, coins, moveSpeed, health, enemyType }) {
         super({
             position,
             offset,
@@ -23,19 +23,20 @@ export default class Enemy extends Sprite {
         this.velocityY = 0;
         this.currentWayPointIndex = 0;
         this.coins = coins;
-        this._remainHP = HP;
-        this.HP = HP;
+        this._remainHealth = health;
+        this.health = health;
+        this.enemyType = enemyType;
     }
-    set remainHP(remainHP) {
-        if (remainHP <= 0) {
-            this._remainHP = 0;
+    set remainHealth(remainHealth) {
+        if (remainHealth <= 0) {
+            this._remainHealth = 0;
         }
         else {
-            this._remainHP = remainHP;
+            this._remainHealth = remainHealth;
         }
     }
-    get remainHP() {
-        return this._remainHP;
+    get remainHealth() {
+        return this._remainHealth;
     }
     update(waypoints) {
         this.draw({ sourceIndex: this.getCurrentImageSourceIndex(waypoints) });
@@ -105,9 +106,9 @@ export default class Enemy extends Sprite {
         if (context2D) {
             context2D.font = '16px Arial';
             context2D.fillStyle = 'white';
-            const remainHpString = this.remainHP.toString();
-            const textWidth = context2D.measureText(remainHpString).width;
-            context2D.fillText(remainHpString, x + fullHealthWidth / 2 - textWidth / 2, y - 8);
+            const remainHealthString = this.remainHealth.toString();
+            const textWidth = context2D.measureText(remainHealthString).width;
+            context2D.fillText(remainHealthString, x + fullHealthWidth / 2 - textWidth / 2, y - 8);
         }
     }
     updateHealthBars() {
@@ -117,8 +118,8 @@ export default class Enemy extends Sprite {
             borderRadius: 4,
             strokeStyle: 'white',
         };
-        const fullHealthWidth = calFullHealthWidth(this.HP);
-        const remainHealthWidth = (this.remainHP * fullHealthWidth) / this.HP;
+        const fullHealthWidth = calFullHealthWidth(this.health);
+        const remainHealthWidth = (this.remainHealth * fullHealthWidth) / this.health;
         this.drawHealthBarFull({ drawOption, fullHealthWidth, fillStyle: 'red' });
         if (fullHealthWidth === remainHealthWidth) {
             this.drawHealthBarFull({ drawOption, fullHealthWidth, fillStyle: 'green' });
@@ -170,6 +171,6 @@ export default class Enemy extends Sprite {
         return 1;
     }
     attacked(projectile) {
-        this.remainHP -= projectile.damage;
+        this.remainHealth -= projectile.damage;
     }
 }
