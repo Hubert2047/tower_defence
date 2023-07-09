@@ -41,8 +41,8 @@ export default class Enemy extends Sprite {
     }
     updatePosition(waypoints) {
         this.updateVelocity(waypoints);
-        this.position.x += parseInt(this.velocityX.toString());
-        this.position.y += parseInt(this.velocityY.toString());
+        this.position.x += this.velocityX;
+        this.position.y += this.velocityY;
         if (this.position.x >= waypoints[this.currentWayPointIndex].x && this.velocityX > 0) {
             this.position.x = waypoints[this.currentWayPointIndex].x;
         }

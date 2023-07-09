@@ -26,7 +26,7 @@ export default class Projectile extends Sprite {
         height = 50,
         imageSources,
         frame,
-        moveSpeed = 10,
+        moveSpeed = 0.000001,
         damage = 300,
         enemy,
     }: props) {
@@ -43,19 +43,19 @@ export default class Projectile extends Sprite {
     }
     private updatePosition(): void {
         this.updateVelocity()
-        this.position.x += parseInt(this.velocityX.toString())
-        this.position.y += parseInt(this.velocityY.toString())
-        // if (this.position.x >= this.targetEnemy.position.x && this.velocityX > 0) {
-        //     this.position.x = this.targetEnemy.position.x - this.targetEnemy.width / 2 - this.offset.x
-        // }
-        // if (this.position.y >= this.targetEnemy.position.y && this.velocityY > 0) {
-        //     this.position.y = this.targetEnemy.position.y - this.targetEnemy.height / 2
-        // }
+        this.position.x += this.velocityX
+        this.position.y += this.velocityY
+        if (this.position.x >= this.targetEnemy.position.x - this.targetEnemy.width / 4 && this.velocityX > 0) {
+            this.position.x = this.targetEnemy.position.x - this.targetEnemy.width / 4
+        }
+        if (this.position.y >= this.targetEnemy.position.y - this.targetEnemy.height / 5 && this.velocityY > 0) {
+            this.position.y = this.targetEnemy.position.y - this.targetEnemy.height / 5
+        }
     }
     private updateVelocity(): void {
         const v_normalized: T_position = getVectorNomalized(this.position, {
-            x: this.targetEnemy.position.x - this.targetEnemy.width / 2 - this.offset.x,
-            y: this.targetEnemy.position.y - this.targetEnemy.height / 2,
+            x: this.targetEnemy.position.x - this.targetEnemy.width / 4,
+            y: this.targetEnemy.position.y - this.targetEnemy.height / 5,
         })
         this.velocityX = this.moveSpeed * v_normalized.x
         this.velocityY = this.moveSpeed * v_normalized.y

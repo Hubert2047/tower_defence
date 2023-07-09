@@ -1,5 +1,5 @@
 import context2D from '../../context2D/index.js';
-import { E_ProjectileType } from '../../enum/index.js';
+import { E_projectileType } from '../../enum/index.js';
 import { calculateDistanceTwoPoint } from '../../helper/index.js';
 import BloodMoonProjectile from '../projectiles/BloodMoon.projectile.js';
 import Sprite from '../sprite/index.js';
@@ -12,10 +12,11 @@ export default class Tower extends Sprite {
         this.projectileType = projectileType;
         this.projectiles = [];
         this.countAttackTime = 0;
-        this.holdAttack = parseInt((50 / attackSpeed).toString());
+        this.holdAttack = parseInt((200 / attackSpeed).toString());
     }
     draw({ sourceIndex }) {
         super.draw({ sourceIndex });
+        this.drawAttackRangeCicle();
     }
     drawAttackRangeCicle() {
         if (context2D) {
@@ -55,7 +56,7 @@ export default class Tower extends Sprite {
             moveSpeed: 20,
         };
         switch (this.projectileType) {
-            case E_ProjectileType.BLOOD_MOON:
+            case E_projectileType.BLOOD_MOON:
                 return new BloodMoonProjectile(projectileSetting);
             default:
                 throw new Error('we dont have this projectile');
@@ -76,10 +77,10 @@ export default class Tower extends Sprite {
     updateProjectile() {
         for (var i = this.projectiles.length - 1; i >= 0; i--) {
             const currentProjectile = this.projectiles[i];
-            const realX = currentProjectile.targetEnemy.position.x - currentProjectile.targetEnemy.width / 2;
-            const realY = currentProjectile.targetEnemy.position.y - currentProjectile.targetEnemy.height / 2;
+            const realX = currentProjectile.targetEnemy.position.x - currentProjectile.targetEnemy.width / 4;
+            const realY = currentProjectile.targetEnemy.position.y - currentProjectile.targetEnemy.height / 5;
             const distance = calculateDistanceTwoPoint(currentProjectile.position, { x: realX, y: realY });
-            if (distance < 70) {
+            if (distance < 5) {
                 currentProjectile.targetEnemy.attacked(currentProjectile);
                 this.projectiles.splice(i, 1);
             }

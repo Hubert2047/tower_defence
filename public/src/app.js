@@ -1,14 +1,14 @@
 import GameMap from './classes/gameMaps/index.js';
 import BloodMoon from './classes/towers/BloodMoon.tower.js';
 import { resetCanvas } from './context2D/index.js';
-import { E_GameMap, E_TowerType } from './enum/index.js';
+import { E_gameMap, E_towerType } from './enum/index.js';
 import { getGameMapData } from './helper/index.js';
 main();
 function main() {
     newGame();
 }
 function newGame() {
-    const gameMapType = E_GameMap.DESERT;
+    const gameMapType = E_gameMap.DESERT;
     const currentMapData = getGameMapData(gameMapType);
     const mouse = { x: 0, y: 0 };
     if (currentMapData) {
@@ -49,7 +49,7 @@ function handleAddEventGame({ gameMap, mouse }) {
             return;
         if (gameMap.activeTile && !gameMap.activeTile.isOccupied) {
             gameMap.activeTile.isOccupied = true;
-            gameMap.addTower({ towerType: E_TowerType.BLOOD_MOON });
+            gameMap.addTower({ towerType: E_towerType.BLOOD_MOON });
         }
     }
     function handleEventMousemove(event) {

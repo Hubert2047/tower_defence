@@ -1,5 +1,5 @@
 import context2D from '../../context2D/index.js'
-import { E_ProjectileType } from '../../enum/index.js'
+import { E_projectileType } from '../../enum/index.js'
 import { calculateDistanceTwoPoint } from '../../helper/index.js'
 import { T_frame, T_position } from '../../types/index.js'
 import Enemy from '../enemies/index.js'
@@ -16,7 +16,7 @@ interface props {
     attackSpeed?: number
     attackArea?: number
     damage?: number
-    projectileType: E_ProjectileType
+    projectileType: E_projectileType
 }
 export default class Tower extends Sprite {
     public attackSpeed: number
@@ -24,7 +24,7 @@ export default class Tower extends Sprite {
     public damage: number
     public countAttackTime: number
     public holdAttack: number
-    public projectileType: E_ProjectileType
+    public projectileType: E_projectileType
     public projectiles: Projectile[]
     constructor({
         position = { x: 0, y: 0 },
@@ -45,10 +45,11 @@ export default class Tower extends Sprite {
         this.projectileType = projectileType
         this.projectiles = []
         this.countAttackTime = 0
-        this.holdAttack = parseInt((50 / attackSpeed).toString())
+        this.holdAttack = parseInt((200 / attackSpeed).toString())
     }
     public draw({ sourceIndex }: { sourceIndex: number }): void {
         super.draw({ sourceIndex })
+        this.drawAttackRangeCicle()
     }
     public drawAttackRangeCicle() {
         if (context2D) {
@@ -93,7 +94,7 @@ export default class Tower extends Sprite {
             moveSpeed: 20,
         }
         switch (this.projectileType) {
-            case E_ProjectileType.BLOOD_MOON:
+            case E_projectileType.BLOOD_MOON:
                 return new BloodMoonProjectile(projectileSetting)
             default:
                 throw new Error('we dont have this projectile')
@@ -114,10 +115,10 @@ export default class Tower extends Sprite {
     private updateProjectile() {
         for (var i = this.projectiles.length - 1; i >= 0; i--) {
             const currentProjectile: Projectile = this.projectiles[i]
-            const realX = currentProjectile.targetEnemy.position.x - currentProjectile.targetEnemy.width / 2
-            const realY = currentProjectile.targetEnemy.position.y - currentProjectile.targetEnemy.height / 2
+            const realX = currentProjectile.targetEnemy.position.x - currentProjectile.targetEnemy.width / 4
+            const realY = currentProjectile.targetEnemy.position.y - currentProjectile.targetEnemy.height / 5
             const distance: number = calculateDistanceTwoPoint(currentProjectile.position, { x: realX, y: realY })
-            if (distance < 70) {
+            if (distance < 5) {
                 currentProjectile.targetEnemy.attacked(currentProjectile)
                 this.projectiles.splice(i, 1)
             } else {

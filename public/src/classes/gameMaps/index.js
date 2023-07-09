@@ -1,5 +1,5 @@
 import { POSITION_GOAL, TILE_SIZE } from '../../constants/index.js';
-import { E_EnemyType, E_TowerType } from '../../enum/index.js';
+import { E_enemyType, E_towerType } from '../../enum/index.js';
 import PlacementTile from '../PlacementTile.js';
 import Bear from '../enemies/Bear.js';
 import BroodMother from '../enemies/BroodMother.js';
@@ -93,7 +93,7 @@ export default class GameMap {
         if (!this.activeTile)
             return;
         switch (towerType) {
-            case E_TowerType.BLOOD_MOON:
+            case E_towerType.BLOOD_MOON:
                 if (this.coins < BloodMoon.prices)
                     return;
                 this.towers.push(new BloodMoon({ position: (_a = this.activeTile) === null || _a === void 0 ? void 0 : _a.position }));
@@ -115,15 +115,15 @@ export default class GameMap {
     }
     createEnemy(enemyInfo) {
         switch (enemyInfo.enemyType) {
-            case E_EnemyType.DRAGON:
+            case E_enemyType.DRAGON:
                 return new Dragon({ position: enemyInfo.position });
-            case E_EnemyType.BEAR:
+            case E_enemyType.BEAR:
                 return new Bear({ position: enemyInfo.position });
-            case E_EnemyType.BROOD_MOTHER:
+            case E_enemyType.BROOD_MOTHER:
                 return new BroodMother({ position: enemyInfo.position });
-            case E_EnemyType.FOX:
+            case E_enemyType.FOX:
                 return new Fox({ position: enemyInfo.position });
-            case E_EnemyType.SIREN:
+            case E_enemyType.SIREN:
                 return new Siren({ position: enemyInfo.position });
             default:
                 throw new Error('we dont have this enemy');

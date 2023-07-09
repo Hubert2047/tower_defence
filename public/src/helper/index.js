@@ -67,4 +67,4 @@ function deepClone(data) {
     }
     return clone;
 }
-export { calAngleFromPointAToPointB, calculateDistanceTwoPoint, calculateHoldTime, createBackground, createImageSources, getGameMapData, getVectorNomalized, };
+export { calAngleFromPointAToPointB, calculateDistanceTwoPoint, calculateHoldTime, createBackground, createImageSources, getGameMapData, getVectorNomalized, deepClone, };

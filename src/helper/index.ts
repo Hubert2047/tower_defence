@@ -1,6 +1,6 @@
 import context2D from '../context2D/index.js'
 import gameData from '../data/index.js'
-import { E_GameMap } from '../enum/index.js'
+import { E_gameMap } from '../enum/index.js'
 import { T_gameMapData, T_position } from '../types/index.js'
 function calculateDistanceTwoPoint(pointA: T_position, pointB: T_position): number {
     const dx: number = pointA.x - pointB.x
@@ -42,7 +42,7 @@ function createImageSources(sources: string[]): HTMLImageElement[] {
 function createBackground({ backgroundImage }: { backgroundImage: HTMLImageElement }): void {
     if (context2D) context2D.drawImage(backgroundImage, 0, 0)
 }
-function getGameMapData(gameMapType: E_GameMap): T_gameMapData | undefined {
+function getGameMapData(gameMapType: E_gameMap): T_gameMapData | undefined {
     const data: T_gameMapData | undefined = gameData.get(gameMapType)
     if (data) {
         return {
@@ -76,4 +76,5 @@ export {
     createImageSources,
     getGameMapData,
     getVectorNomalized,
+    deepClone,
 }
