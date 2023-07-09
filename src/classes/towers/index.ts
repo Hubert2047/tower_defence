@@ -49,7 +49,7 @@ export default class Tower extends Sprite {
     }
     public draw({ sourceIndex }: { sourceIndex: number }): void {
         super.draw({ sourceIndex })
-        this.drawAttackRangeCicle()
+        // this.drawAttackRangeCicle()
     }
     public drawAttackRangeCicle() {
         if (context2D) {

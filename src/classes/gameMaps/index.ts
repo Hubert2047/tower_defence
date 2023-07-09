@@ -98,7 +98,7 @@ export default class GameMap {
                 }
                 continue
             }
-            if (currentEnemy.HP <= 0) {
+            if (currentEnemy.remainHP <= 0) {
                 this._currentEnemiesData.splice(i, 1)
                 this.coins += currentEnemy.coins
                 continue

@@ -1,3 +1,4 @@
+import { BASE_HEALTH } from '../constants/index.js'
 import context2D from '../context2D/index.js'
 import gameData from '../data/index.js'
 import { E_gameMap } from '../enum/index.js'
@@ -7,6 +8,10 @@ function calculateDistanceTwoPoint(pointA: T_position, pointB: T_position): numb
     const dy: number = pointA.y - pointB.y
     const distance: number = Math.sqrt(dx * dx + dy * dy)
     return distance
+}
+function calFullHealthWidth(HP: number): number {
+    const width = (HP * 10) / BASE_HEALTH
+    return width > 120 ? 120 : width
 }
 function calculateHoldTime({ maxX, maxY, moveSpeed }: { maxX: number; maxY: number; moveSpeed: number }): number {
     const holdTime = (maxX * maxY) / 2 / moveSpeed
@@ -70,11 +75,12 @@ function deepClone(data: any) {
 }
 export {
     calAngleFromPointAToPointB,
+    calFullHealthWidth,
     calculateDistanceTwoPoint,
     calculateHoldTime,
     createBackground,
     createImageSources,
+    deepClone,
     getGameMapData,
     getVectorNomalized,
-    deepClone,
 }

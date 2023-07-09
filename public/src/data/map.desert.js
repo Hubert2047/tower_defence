@@ -54,102 +54,102 @@ const rounds = [
     {
         roundName: 'round 1',
         enemies: [
-            // {
-            //     enemyType: E_enemyType.DRAGON,
-            //     position: { x: -10, y: 484 },
-            // },
+            {
+                enemyType: E_enemyType.DRAGON,
+                position: { x: -110, y: 484 },
+            },
             {
                 enemyType: E_enemyType.BROOD_MOTHER,
                 position: { x: -150, y: 484 },
             },
-            // {
-            //     enemyType: E_enemyType.FOX,
-            //     position: { x: -250, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.SIREN,
-            //     position: { x: -850, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.SIREN,
-            //     position: { x: -650, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.SIREN,
-            //     position: { x: -250, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.SIREN,
-            //     position: { x: -550, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.DRAGON,
-            //     position: { x: -10, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.BROOD_MOTHER,
-            //     position: { x: -150, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.BEAR,
-            //     position: { x: -850, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.BEAR,
-            //     position: { x: -950, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.BEAR,
-            //     position: { x: -1500, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.DRAGON,
-            //     position: { x: -1000, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.BROOD_MOTHER,
-            //     position: { x: -290, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.FOX,
-            //     position: { x: -120, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.SIREN,
-            //     position: { x: -190, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.SIREN,
-            //     position: { x: -320, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.SIREN,
-            //     position: { x: -150, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.SIREN,
-            //     position: { x: -650, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.DRAGON,
-            //     position: { x: -100, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.BROOD_MOTHER,
-            //     position: { x: -120, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.BEAR,
-            //     position: { x: -950, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.BEAR,
-            //     position: { x: -850, y: 484 },
-            // },
-            // {
-            //     enemyType: E_enemyType.BEAR,
-            //     position: { x: -1400, y: 484 },
-            // },
+            {
+                enemyType: E_enemyType.FOX,
+                position: { x: -250, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.SIREN,
+                position: { x: -50, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.SIREN,
+                position: { x: -650, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.SIREN,
+                position: { x: -250, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.SIREN,
+                position: { x: -550, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.DRAGON,
+                position: { x: -20, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.BROOD_MOTHER,
+                position: { x: -150, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.BEAR,
+                position: { x: -850, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.BEAR,
+                position: { x: -950, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.BEAR,
+                position: { x: -1500, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.DRAGON,
+                position: { x: -1200, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.BROOD_MOTHER,
+                position: { x: -290, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.FOX,
+                position: { x: -120, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.SIREN,
+                position: { x: -190, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.SIREN,
+                position: { x: -320, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.SIREN,
+                position: { x: -150, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.SIREN,
+                position: { x: -650, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.DRAGON,
+                position: { x: -900, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.BROOD_MOTHER,
+                position: { x: -120, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.BEAR,
+                position: { x: -950, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.BEAR,
+                position: { x: -850, y: 484 },
+            },
+            {
+                enemyType: E_enemyType.BEAR,
+                position: { x: -1400, y: 484 },
+            },
         ],
     },
     {
@@ -164,7 +164,7 @@ const rounds = [
 ];
 const backgoundImage = new Image();
 const limitAttacks = 10000;
-const startCoins = 20000;
+const startCoins = 20;
 backgoundImage.src = '../../public/src/assets/images/gameMap.png';
 const desertMapData = { rounds, backgoundImage, placementTiles2D, waypoints, limitAttacks, startCoins };
 export default desertMapData;

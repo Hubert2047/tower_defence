@@ -16,7 +16,7 @@ export default class Tower extends Sprite {
     }
     draw({ sourceIndex }) {
         super.draw({ sourceIndex });
-        this.drawAttackRangeCicle();
+        // this.drawAttackRangeCicle()
     }
     drawAttackRangeCicle() {
         if (context2D) {

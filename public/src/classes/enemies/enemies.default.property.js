@@ -14,9 +14,9 @@ const enemiesDefaultProperty = new Map([
     [
         E_enemyType.FOX,
         {
-            HP: 2500000000,
+            HP: 25000,
             coins: 4,
-            moveSpeed: 0.1,
+            moveSpeed: 1,
             maxX: 4,
             maxY: 4,
             offset: { x: 65, y: 65 },
@@ -25,9 +25,9 @@ const enemiesDefaultProperty = new Map([
     [
         E_enemyType.DRAGON,
         {
-            HP: 350000000,
+            HP: 35000,
             coins: 5,
-            moveSpeed: 0.2,
+            moveSpeed: 0.5,
             maxX: 4,
             maxY: 4,
             offset: { x: 65, y: 65 },
@@ -36,9 +36,9 @@ const enemiesDefaultProperty = new Map([
     [
         E_enemyType.BROOD_MOTHER,
         {
-            HP: 50000000,
+            HP: 1000,
             coins: 1,
-            moveSpeed: 0.2,
+            moveSpeed: 2,
             maxX: 4,
             maxY: 4,
             offset: { x: 65, y: 65 },
@@ -49,10 +49,10 @@ const enemiesDefaultProperty = new Map([
         {
             HP: 5000,
             coins: 1,
-            moveSpeed: 2,
+            moveSpeed: 1,
             maxX: 5,
             maxY: 4,
-            offset: { x: 65, y: 65 },
+            offset: { x: 65, y: 55 },
         },
     ],
 ]);
