@@ -10,7 +10,7 @@ function calculateDistanceTwoPoint(pointA: T_position, pointB: T_position): numb
     return distance
 }
 function calFullHealthWidth(HP: number): number {
-    const width = (HP * 10) / BASE_HEALTH
+    const width = (HP * 15) / BASE_HEALTH
     return width > 120 ? 120 : width
 }
 function calculateHoldTime({ maxX, maxY, moveSpeed }: { maxX: number; maxY: number; moveSpeed: number }): number {

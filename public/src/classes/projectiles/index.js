@@ -1,7 +1,7 @@
 import { getVectorNomalized } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Projectile extends Sprite {
-    constructor({ position = { x: 0, y: 0 }, offset = { x: 0, y: 0 }, width = 50, height = 50, imageSources, frame, moveSpeed = 0.000001, damage = 300, enemy, }) {
+    constructor({ position, offset, width, height, imageSources, frame, moveSpeed, damage, enemy }) {
         super({ position, offset, width, height, imageSources, frame });
         this.moveSpeed = moveSpeed;
         this.velocityX = 0;

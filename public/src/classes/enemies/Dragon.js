@@ -12,9 +12,9 @@ export default class Dragon extends Enemy {
         ];
         const imageSources = createImageSources(sources);
         const property = deepClone(defaultProperty.get(E_enemyType.DRAGON));
-        const { offset, maxX, maxY, moveSpeed, coins, HP } = property;
+        const { offset, maxX, maxY, moveSpeed, coins, HP, width, height } = property;
         const holdTime = calculateHoldTime({ maxX, maxY, moveSpeed });
         const frame = { maxX, maxY, holdTime };
-        super({ position, offset, imageSources, frame, moveSpeed, HP, coins });
+        super({ position, width, height, offset, imageSources, frame, moveSpeed, HP, coins });
     }
 }

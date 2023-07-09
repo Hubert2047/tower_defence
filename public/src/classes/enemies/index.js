@@ -9,7 +9,7 @@ var DragonSourceIndex;
     DragonSourceIndex[DragonSourceIndex["BottomSource"] = 3] = "BottomSource";
 })(DragonSourceIndex || (DragonSourceIndex = {}));
 export default class Enemy extends Sprite {
-    constructor({ position = { x: 0, y: 0 }, offset, width = 200, height = 200, imageSources, frame, coins = 1, moveSpeed = 2, HP = 1000, }) {
+    constructor({ position, offset, width, height, imageSources, frame, coins, moveSpeed, HP }) {
         super({
             position,
             offset,

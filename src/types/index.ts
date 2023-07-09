@@ -9,6 +9,8 @@ type T_enemiesDefaultProperty = {
     moveSpeed: number
     maxX: number
     maxY: number
+    height: number
+    width: number
     offset: T_position
 }
 type T_towersDefaultPropety = {
@@ -19,6 +21,7 @@ type T_towersDefaultPropety = {
     attackSpeed: number
     projectileType: E_projectileType.BLOOD_MOON
     offset: T_position
+    attackArea: number
 }
 type T_frame = {
     maxX: number

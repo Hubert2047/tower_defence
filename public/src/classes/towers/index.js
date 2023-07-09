@@ -4,7 +4,7 @@ import { calculateDistanceTwoPoint } from '../../helper/index.js';
 import BloodMoonProjectile from '../projectiles/BloodMoon.projectile.js';
 import Sprite from '../sprite/index.js';
 export default class Tower extends Sprite {
-    constructor({ position = { x: 0, y: 0 }, offset, width = 100, height = 200, frame, imageSources, projectileType, damage = 300, attackSpeed = 1, attackArea = 300, }) {
+    constructor({ position, offset, width, height, frame, imageSources, projectileType, damage, attackSpeed, attackArea, }) {
         super({ position, offset, width, height, imageSources, frame });
         this.damage = damage;
         this.attackSpeed = attackSpeed;
@@ -53,7 +53,7 @@ export default class Tower extends Sprite {
             },
             damage: this.damage,
             enemy,
-            moveSpeed: 20,
+            moveSpeed: 5,
         };
         switch (this.projectileType) {
             case E_projectileType.BLOOD_MOON:

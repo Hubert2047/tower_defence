@@ -13,10 +13,10 @@ export default class Bear extends Enemy {
         ]
         const imageSources: HTMLImageElement[] = createImageSources(sources)
         const property: T_enemiesDefaultProperty = deepClone(defaultProperty.get(E_enemyType.BEAR))
-        const { offset, maxX, maxY, moveSpeed, coins, HP } = property
+        const { offset, maxX, maxY, moveSpeed, coins, HP, width, height } = property
         const holdTime = calculateHoldTime({ maxX, maxY, moveSpeed })
         const frame: T_frame = { maxX, maxY, holdTime }
 
-        super({ position, offset, imageSources, frame, moveSpeed, HP, coins })
+        super({ position, width, height, offset, imageSources, frame, moveSpeed, HP, coins })
     }
 }

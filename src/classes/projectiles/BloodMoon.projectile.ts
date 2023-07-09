@@ -12,13 +12,13 @@ interface props {
     enemy: Enemy
 }
 export default class BloodMoonProjectile extends Projectile {
-    constructor({ position = { x: 0, y: 0 }, damage = 50, moveSpeed = 2, enemy }: props) {
+    constructor({ position = { x: 0, y: 0 }, damage = 50, moveSpeed = 5, enemy }: props) {
         const sources = ['../../public/src/assets/images/projectiles/fire_ball_3.png']
         const imageSources: HTMLImageElement[] = createImageSources(sources)
         const offset = { x: -60, y: 30 }
         const width = 80
         const height = 80
-        const frame: T_frame = { maxX: 6, maxY: 5, holdTime: 3 }
+        const frame: T_frame = { maxX: 6, maxY: 5, holdTime: 10 }
         super({
             position,
             offset,

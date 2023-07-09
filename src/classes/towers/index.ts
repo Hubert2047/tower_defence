@@ -8,14 +8,14 @@ import Projectile from '../projectiles/index.js'
 import Sprite from '../sprite/index.js'
 interface props {
     position: T_position
-    offset?: T_position
-    width?: number
-    height?: number
+    offset: T_position
+    width: number
+    height: number
     frame: T_frame
     imageSources: HTMLImageElement[]
-    attackSpeed?: number
-    attackArea?: number
-    damage?: number
+    attackSpeed: number
+    attackArea: number
+    damage: number
     projectileType: E_projectileType
 }
 export default class Tower extends Sprite {
@@ -27,16 +27,16 @@ export default class Tower extends Sprite {
     public projectileType: E_projectileType
     public projectiles: Projectile[]
     constructor({
-        position = { x: 0, y: 0 },
+        position,
         offset,
-        width = 100,
-        height = 200,
+        width,
+        height,
         frame,
         imageSources,
         projectileType,
-        damage = 300,
-        attackSpeed = 1,
-        attackArea = 300,
+        damage,
+        attackSpeed,
+        attackArea,
     }: props) {
         super({ position, offset, width, height, imageSources, frame })
         this.damage = damage
@@ -91,7 +91,7 @@ export default class Tower extends Sprite {
             },
             damage: this.damage,
             enemy,
-            moveSpeed: 20,
+            moveSpeed: 5,
         }
         switch (this.projectileType) {
             case E_projectileType.BLOOD_MOON:

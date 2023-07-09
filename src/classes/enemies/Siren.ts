@@ -14,9 +14,9 @@ export default class Siren extends Enemy {
         ]
         const imageSources: HTMLImageElement[] = createImageSources(sources)
         const property: T_enemiesDefaultProperty = deepClone(defaultProperty.get(E_enemyType.SIREN))
-        const { offset, maxX, maxY, moveSpeed, coins, HP } = property
+        const { offset, maxX, maxY, moveSpeed, coins, HP, height, width } = property
         const holdTime = calculateHoldTime({ maxX, maxY, moveSpeed })
         const frame: T_frame = { maxX, maxY, holdTime }
-        super({ position, offset, imageSources, frame, moveSpeed, HP, coins })
+        super({ position, width, height, offset, imageSources, frame, moveSpeed, HP, coins })
     }
 }

@@ -17,14 +17,14 @@ interface healthBar {
 }
 interface props {
     position: T_position
-    offset?: T_position
-    width?: number
-    height?: number
+    offset: T_position
+    width: number
+    height: number
     imageSources: HTMLImageElement[]
-    frame?: T_frame
-    coins?: number
-    moveSpeed?: number
-    HP?: number
+    frame: T_frame
+    coins: number
+    moveSpeed: number
+    HP: number
 }
 export default class Enemy extends Sprite {
     private moveSpeed: number
@@ -34,17 +34,7 @@ export default class Enemy extends Sprite {
     private currentWayPointIndex: number
     private HP: number
     private _remainHP: number
-    constructor({
-        position = { x: 0, y: 0 },
-        offset,
-        width = 200,
-        height = 200,
-        imageSources,
-        frame,
-        coins = 1,
-        moveSpeed = 2,
-        HP = 1000,
-    }: props) {
+    constructor({ position, offset, width, height, imageSources, frame, coins, moveSpeed, HP }: props) {
         super({
             position,
             offset,

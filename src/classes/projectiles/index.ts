@@ -4,12 +4,12 @@ import Enemy from '../enemies/index.js'
 import Sprite from '../sprite/index.js'
 interface props {
     position: T_position
-    offset?: T_position
-    width?: number
-    height?: number
+    offset: T_position
+    width: number
+    height: number
     imageSources: HTMLImageElement[]
-    frame?: T_frame
-    moveSpeed?: number
+    frame: T_frame
+    moveSpeed: number
     damage: number
     enemy: Enemy
 }
@@ -19,17 +19,7 @@ export default class Projectile extends Sprite {
     private velocityY: number
     public targetEnemy: Enemy
     public damage: number
-    constructor({
-        position = { x: 0, y: 0 },
-        offset = { x: 0, y: 0 },
-        width = 50,
-        height = 50,
-        imageSources,
-        frame,
-        moveSpeed = 0.000001,
-        damage = 300,
-        enemy,
-    }: props) {
+    constructor({ position, offset, width, height, imageSources, frame, moveSpeed, damage, enemy }: props) {
         super({ position, offset, width, height, imageSources, frame })
         this.moveSpeed = moveSpeed
         this.velocityX = 0

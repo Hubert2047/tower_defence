@@ -1,6 +1,6 @@
 import context2D from '../../context2D/index.js';
 export default class Sprite {
-    constructor({ position = { x: 0, y: 0 }, offset = { x: 0, y: 0 }, width = 200, height = 200, imageSources, frame = { maxX: 1, maxY: 1, holdTime: 4 }, }) {
+    constructor({ position, offset, width, height, imageSources, frame }) {
         this.position = position;
         this.offset = offset;
         this.width = width;

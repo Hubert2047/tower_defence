@@ -8,6 +8,7 @@ const towersDefaultProperty = new Map([
             holdTime: 10,
             damage: 2000,
             attackSpeed: 10,
+            attackArea: 300,
             projectileType: E_projectileType.BLOOD_MOON,
             offset: { x: 20, y: 70 },
         },
