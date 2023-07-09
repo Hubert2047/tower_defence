@@ -19,7 +19,7 @@ function newGame() {
     resetHTML();
 }
 function startGame({ gameMap, mouse }) {
-    resetCanvas({ backgroundImage: gameMap.backgoundImage });
+    resetCanvas();
     const [isGameOver, isVictory] = gameMap.updateMap(mouse);
     if (isGameOver) {
         handleFinishedGame({ text: 'Game Over' });

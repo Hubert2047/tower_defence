@@ -59,44 +59,6 @@ body {
  z-index: 1;
 }
 
-.status-dashboard {
- position: absolute;
- display: flex;
- gap: 1rem;
- top: 10px;
- right: 15%;
- padding: 0.5rem 1rem;
- -webkit-border-radius: 5px;
- -moz-border-radius: 5px;
- -ms-border-radius: 5px;
- -o-border-radius: 5px;
- border-radius: 5px;
- background-color: rgba(255, 255, 255, 0.65);
-}
-.text-dashboard {
- color: white;
- font-size: 20px;
-}
-.coins,
-.hearts {
- display: flex;
- align-items: center;
- justify-content: center;
-}
-.coins {
- gap: 0.5rem;
- color: orange;
-}
-.hearts {
- gap: 2px;
- color: red;
-}
-.hearts .icons {
- width: 40px;
-}
-.coins .icons {
- width: 32px;
-}
 span {
  font-size: 72px;
  z-index: 2;

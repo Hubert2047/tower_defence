@@ -1,4 +1,5 @@
 import { POSITION_GOAL, TILE_SIZE } from '../../constants/index.js';
+import context2D from '../../context2D/index.js';
 import { E_enemy, E_tower } from '../../enum/index.js';
 import { createImageSources, randomNumberInRange } from '../../helper/index.js';
 import PlacementTile from '../PlacementTile.js';
@@ -10,12 +11,12 @@ import Siren from '../enemies/Siren.js';
 import Sprite from '../sprite/index.js';
 import BloodMoon from '../towers/BloodMoon.tower.js';
 export default class GameMap {
-    constructor({ rounds, placementTiles2D, waypoints, backgoundImage, limitAttacks, startCoins }) {
+    constructor({ rounds, placementTiles2D, waypoints, backgroundImage, limitAttacks, startCoins }) {
         this._currentEnemiesData = [];
         this.rounds = rounds;
         this.waypoints = waypoints;
         this.limitAttacks = limitAttacks;
-        this.backgoundImage = backgoundImage;
+        this.backgroundImage = backgroundImage;
         this.currentRoundIndex = 0;
         this.placementTiles = this.getPlacementTiles(placementTiles2D);
         this.shootingAudio = document.getElementById('shooting');
@@ -28,17 +29,26 @@ export default class GameMap {
         this.createCurrentRoundEnemies();
     }
     updateMap(mouse) {
+        this.updateScreenGame();
         this.updateEnemies();
         this.updatePlacementTiles(mouse);
         this.updateTowers(this.shootingAudio);
-        this.updateCoins();
-        this.updateMapHP();
+        // this.updateCoins()
+        // this.updateMapHP()
         this.updateDashboardEnemies();
         return [this.isGameOver, this.isVictory];
     }
     get activeTile() {
         return this._activeTile;
     }
+    updateScreenGame() {
+        this.createBackground();
+    }
+    createBackground() {
+        if (context2D)
+            context2D.drawImage(this.backgroundImage, 0, 0);
+    }
+    drawCoinsAndGameHealth() { }
     updateDashboardEnemies() {
         const sourcString = ['../../public/src/assets/images/borders/1.png'];
         const imageSources = createImageSources(sourcString);

@@ -46,7 +46,7 @@ type T_round = {
 type T_gameMapData = {
     rounds: T_round[]
     placementTiles2D: number[][]
-    backgoundImage: HTMLImageElement
+    backgroundImage: HTMLImageElement
     startCoins: number
     waypoints: T_position[]
     limitAttacks: number

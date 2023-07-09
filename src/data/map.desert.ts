@@ -123,9 +123,9 @@ const rounds: T_round[] = [
         ],
     },
 ]
-const backgoundImage: HTMLImageElement = new Image()
+const backgroundImage: HTMLImageElement = new Image()
 const limitAttacks = 10000
 const startCoins = 20
-backgoundImage.src = '../../public/src/assets/images/gameMap.png'
-const desertMapData: T_gameMapData = { rounds, backgoundImage, placementTiles2D, waypoints, limitAttacks, startCoins }
+backgroundImage.src = '../../public/src/assets/images/gameMap.png'
+const desertMapData: T_gameMapData = { rounds, backgroundImage, placementTiles2D, waypoints, limitAttacks, startCoins }
 export default desertMapData

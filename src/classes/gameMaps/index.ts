@@ -1,4 +1,5 @@
 import { POSITION_GOAL, TILE_SIZE } from '../../constants/index.js'
+import context2D from '../../context2D/index.js'
 import { E_enemy, E_tower } from '../../enum/index.js'
 import { createImageSources, randomNumberInRange } from '../../helper/index.js'
 import { T_enemy, T_gameMapData, T_position, T_round } from '../../types/index.js'
@@ -27,7 +28,7 @@ export default class GameMap {
     private rounds: T_round[]
     private currentRoundIndex: number
     private placementTiles: PlacementTile[]
-    public backgoundImage: HTMLImageElement
+    public backgroundImage: HTMLImageElement
     private towers: Tower[]
     private waypoints: T_position[]
     private limitAttacks: number
@@ -37,12 +38,12 @@ export default class GameMap {
     public shootingAudio: HTMLElement | HTMLAudioElement | null
     private _activeTile: PlacementTile | null
     private currentDashboardEnemiesInfo: enemiesStatusInfo[]
-    constructor({ rounds, placementTiles2D, waypoints, backgoundImage, limitAttacks, startCoins }: T_gameMapData) {
+    constructor({ rounds, placementTiles2D, waypoints, backgroundImage, limitAttacks, startCoins }: T_gameMapData) {
         this._currentEnemiesData = []
         this.rounds = rounds
         this.waypoints = waypoints
         this.limitAttacks = limitAttacks
-        this.backgoundImage = backgoundImage
+        this.backgroundImage = backgroundImage
         this.currentRoundIndex = 0
         this.placementTiles = this.getPlacementTiles(placementTiles2D)
         this.shootingAudio = document.getElementById('shooting')
@@ -55,11 +56,12 @@ export default class GameMap {
         this.createCurrentRoundEnemies()
     }
     public updateMap(mouse: T_position) {
+        this.updateScreenGame()
         this.updateEnemies()
         this.updatePlacementTiles(mouse)
         this.updateTowers(this.shootingAudio)
-        this.updateCoins()
-        this.updateMapHP()
+        // this.updateCoins()
+        // this.updateMapHP()
         this.updateDashboardEnemies()
 
         return [this.isGameOver, this.isVictory]
@@ -67,6 +69,13 @@ export default class GameMap {
     public get activeTile(): PlacementTile | null {
         return this._activeTile
     }
+    private updateScreenGame() {
+        this.createBackground()
+    }
+    private createBackground() {
+        if (context2D) context2D.drawImage(this.backgroundImage, 0, 0)
+    }
+    private drawCoinsAndGameHealth() {}
     private updateDashboardEnemies() {
         const sourcString = ['../../public/src/assets/images/borders/1.png']
         const imageSources = createImageSources(sourcString)

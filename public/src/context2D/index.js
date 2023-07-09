@@ -1,4 +1,3 @@
-import { createBackground } from '../helper/index.js';
 const canvas = document.querySelector('canvas');
 let context = null;
 if (canvas) {
@@ -8,10 +7,9 @@ if (canvas) {
     if (context)
         context.fillRect(0, 0, canvas.width, canvas.height);
 }
-function resetCanvas({ backgroundImage }) {
+function resetCanvas() {
     if (context && canvas) {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        createBackground({ backgroundImage });
     }
 }
 export { resetCanvas };

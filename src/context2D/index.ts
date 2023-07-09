@@ -1,5 +1,3 @@
-import { createBackground } from '../helper/index.js'
-
 const canvas: HTMLCanvasElement | null = document.querySelector('canvas')
 let context: CanvasRenderingContext2D | null = null
 if (canvas) {
@@ -9,10 +7,9 @@ if (canvas) {
     if (context) context.fillRect(0, 0, canvas.width, canvas.height)
 }
 
-function resetCanvas({ backgroundImage }: { backgroundImage: HTMLImageElement }) {
+function resetCanvas() {
     if (context && canvas) {
         context.clearRect(0, 0, canvas.width, canvas.height)
-        createBackground({ backgroundImage })
     }
 }
 export { resetCanvas }
