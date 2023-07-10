@@ -6,7 +6,7 @@ import ExplosionProjectile from '../explosionProjectile/index.js';
 import Projectile from '../projectiles/index.js';
 import Sprite from '../sprite/index.js';
 export default class Tower extends Sprite {
-    constructor({ name, towerType, position, offset = { x: 0, y: 0 }, width = 124, height = 124, frame, imageSourceString, projectileType = E_projectile.BLOOD_MOON, damage = 100, attackSpeed = 1, attackArea = 300, }) {
+    constructor({ name, towerType, position, offset = { x: 0, y: 0 }, width = 124, height = 124, frame, imageSourceString, projectileType = E_projectile.FIRE, damage = 100, attackSpeed = 1, attackArea = 300, }) {
         const imageSources = createImageSources(imageSourceString);
         super({ position, offset, width, height, imageSources, frame });
         this.name = name;
@@ -60,7 +60,9 @@ export default class Tower extends Sprite {
                     damage: this.damage,
                     enemy: targetEnemy,
                     moveSpeed: 5,
-                    offset: { x: -60, y: 30 },
+                    width: towerBaseProperties.projectileInfo.width,
+                    height: towerBaseProperties.projectileInfo.height,
+                    offset: towerBaseProperties.projectileInfo.offset,
                     imageSourceString: towerBaseProperties.projectileInfo.imageSourceString,
                     frame: towerBaseProperties.projectileInfo.frame,
                 };

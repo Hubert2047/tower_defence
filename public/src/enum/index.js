@@ -12,7 +12,7 @@ var E_tower;
 })(E_tower || (E_tower = {}));
 var E_projectile;
 (function (E_projectile) {
-    E_projectile[E_projectile["BLOOD_MOON"] = 1] = "BLOOD_MOON";
+    E_projectile[E_projectile["FIRE"] = 1] = "FIRE";
 })(E_projectile || (E_projectile = {}));
 var E_gameMap;
 (function (E_gameMap) {

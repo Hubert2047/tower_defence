@@ -1,9 +1,10 @@
+import Sprite from '../../classes/sprite/index.js'
 import { POSITION_GOAL, TILE_SIZE } from '../../constants/index.js'
 import context2D from '../../context2D/index.js'
 import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js'
 import getBaseTowerProperties from '../../data/baseProperties/towers/index.js'
 import { E_enemy, E_tower } from '../../enum/index.js'
-import { calculateHoldTime, randomNumberInRange } from '../../helper/index.js'
+import { calculateHoldTime, createImageSources, randomNumberInRange } from '../../helper/index.js'
 import {
     T_baseEnemyProperties,
     T_baseTowerProperties,
@@ -13,17 +14,24 @@ import {
     T_gameMapData,
     T_position,
     T_round,
+    T_Sprite,
     T_tower,
 } from '../../types/index.js'
-import PlacementTile from '../PlacementTile.js'
 import Border from '../dashboardEnemyBorder/index.js'
 import Enemy from '../enemies/index.js'
+import PlacementTile from '../PlacementTile.js'
 import Tower from '../towers/index.js'
 interface T_dashboardEnemiesInfo {
     enemyType: E_enemy
     dashboardEnemy: Enemy
     dashboardEnemyBorder: Border
     remainEnemiesTotal: number
+}
+type T_text = {
+    text: string
+    position: T_position
+    fontSize?: number
+    color?: string
 }
 export default class GameMap {
     private _currentEnemiesData: Enemy[]
@@ -39,6 +47,10 @@ export default class GameMap {
     private isVictory: boolean
     public shootingAudio: HTMLElement | HTMLAudioElement | null
     private _activeTile: PlacementTile | null
+    private menu: Sprite
+    private coinsIcon: Sprite
+    private heartIcon: Sprite
+    private goldBorder: Sprite
     private currentDashboardEnemiesInfo: T_dashboardEnemiesInfo[]
     constructor({ rounds, placementTiles2D, waypoints, backgroundImage, limitAttacks, startCoins }: T_gameMapData) {
         this._currentEnemiesData = []
@@ -52,9 +64,14 @@ export default class GameMap {
         this.towers = []
         this.coins = startCoins
         this.currentDashboardEnemiesInfo = []
+        this.menu = this.createMenu()
+        this.coinsIcon = this.createCoinsIcon()
+        this.heartIcon = this.createHeartIcon()
+        this.goldBorder = this.createBorder()
         this._activeTile = null
         this.isGameOver = false
         this.isVictory = false
+
         this.spawingCurrentRoundEnemies()
     }
     public updateMap(mouse: T_position): [boolean, boolean] {
@@ -62,10 +79,63 @@ export default class GameMap {
         this.updateEnemies()
         this.updatePlacementTiles(mouse)
         this.updateTowers()
-        this.drawCoinsAndGameHealth()
         this.updateDashboardEnemies()
+        this.drawCoinsAndGameHearts()
+        // this.goldBorder.draw({ sourceIndex: 0 })
 
         return [this.isGameOver, this.isVictory]
+    }
+    private createMenu() {
+        const sourceString = ['../../public/src/assets/images/screen/layout_target.png']
+        const imageSources = createImageSources(sourceString)
+        const options: T_Sprite = {
+            imageSources,
+            position: { x: 64 * 17, y: 64 * 1 },
+            offset: { x: 10, y: 26 },
+            frame: { maxX: 1, maxY: 1, holdTime: 4 },
+            height: 120,
+            width: 230,
+        }
+        return new Sprite(options)
+    }
+    private createCoinsIcon() {
+        const sourceString = ['../../public/src/assets/images/screen/coins.png']
+        const imageSources = createImageSources(sourceString)
+        const options: T_Sprite = {
+            imageSources,
+            position: { x: 64 * 17, y: 64 * 1 },
+            offset: { x: 4, y: -12 },
+            frame: { maxX: 1, maxY: 1, holdTime: 4 },
+            height: 40,
+            width: 40,
+        }
+        return new Sprite(options)
+    }
+    private createHeartIcon() {
+        const sourceString = ['../../public/src/assets/images/screen/heart.png']
+        const imageSources = createImageSources(sourceString)
+        const options: T_Sprite = {
+            imageSources,
+            position: { x: 64 * 19, y: 64 * 1 },
+            offset: { x: 40, y: -14 },
+            frame: { maxX: 1, maxY: 1, holdTime: 4 },
+            height: 34,
+            width: 34,
+        }
+        return new Sprite(options)
+    }
+    private createBorder() {
+        const sourceString = ['../../public/src/assets/images/borders/selected.jpg']
+        const imageSources = createImageSources(sourceString)
+        const options: T_Sprite = {
+            imageSources,
+            position: { x: 64 * 12, y: 64 * 1 },
+            offset: { x: 40, y: -14 },
+            frame: { maxX: 2, maxY: 2, holdTime: 20 },
+            height: 60,
+            width: 60,
+        }
+        return new Sprite(options)
     }
     public get activeTile(): PlacementTile | null {
         return this._activeTile
@@ -76,33 +146,55 @@ export default class GameMap {
     private createBackground(): void {
         if (context2D) context2D.drawImage(this.backgroundImage, 0, 0)
     }
-    private drawCoinsAndGameHealth(): void {}
+    private drawCoinsAndGameHearts(): void {
+        this.menu.draw({ sourceIndex: 0 })
+        this.drawCoins()
+        this.drawHearts()
+    }
+    private drawCoins() {
+        this.coinsIcon.draw({ sourceIndex: 0 })
+        const textOptions: T_text = {
+            text: this.coins.toString(),
+            position: { x: this.coinsIcon.position.x + 46, y: this.coinsIcon.position.y - 26 },
+            color: 'white',
+            fontSize: 20,
+        }
+        this.drawText(textOptions)
+    }
+    private drawHearts() {
+        this.heartIcon.draw({ sourceIndex: 0 })
+        const textOptions: T_text = {
+            text: this.limitAttacks.toString(),
+            position: { x: this.heartIcon.position.x, y: this.heartIcon.position.y - 26 },
+            color: 'white',
+            fontSize: 20,
+        }
+        this.drawText(textOptions)
+    }
+    private drawText({ text, position, color = 'black', fontSize = 16 }: T_text) {
+        if (context2D) {
+            context2D.font = `${fontSize}px Changa One`
+            context2D.fillStyle = color
+            context2D.fillText(text, position.x, position.y)
+        }
+    }
     private updateDashboardEnemies(): void {
         this.currentDashboardEnemiesInfo.forEach((dashboardEnemyInfor, index) => {
             dashboardEnemyInfor.dashboardEnemyBorder.update()
             dashboardEnemyInfor.dashboardEnemy.draw({ sourceIndex: 2 })
-            this.drawDashboardEnemyRemainAmount({
-                amountText: dashboardEnemyInfor.remainEnemiesTotal.toString(),
+            const textOptions: T_text = {
+                text: dashboardEnemyInfor.remainEnemiesTotal.toString(),
                 position: {
                     x: dashboardEnemyInfor.dashboardEnemyBorder.position.x + 25,
                     y: dashboardEnemyInfor.dashboardEnemyBorder.position.y - 5,
                 },
-            })
+                color: '#8B4513',
+                fontSize: 20,
+            }
+            this.drawText(textOptions)
         })
     }
-    private drawDashboardEnemyRemainAmount({
-        amountText,
-        position,
-    }: {
-        amountText: string
-        position: T_position
-    }): void {
-        if (context2D) {
-            context2D.font = '20px Changa One'
-            context2D.fillStyle = '#8B4513'
-            context2D.fillText(amountText, position.x, position.y)
-        }
-    }
+
     public get currentEnemiesData() {
         return this._currentEnemiesData
     }
@@ -175,6 +267,7 @@ export default class GameMap {
             }
             const tower: Tower = new Tower(towerOptions)
             this.towers.push(tower)
+            this.activeTile.isOccupied = true
         }
     }
     private spawingCurrentRoundEnemies(): void {
@@ -214,7 +307,8 @@ export default class GameMap {
     }
     private createBattleEnemy(enemyInfo: T_enemyInfo, baseEnemyProperty: T_baseEnemyProperties, index: number): Enemy {
         const space: number = randomNumberInRange(enemyInfo.spaceMin, enemyInfo.spaceMax)
-        const position: T_position = { x: enemyInfo.basePosition.x - space * index, y: enemyInfo.basePosition.y }
+        const randomNum: number = index === 0 ? 0 : randomNumberInRange(6, 10)
+        const position: T_position = { x: enemyInfo.basePosition.x - space * randomNum, y: enemyInfo.basePosition.y }
         const battleEnemyOptions: T_enemy = {
             name: baseEnemyProperty.name,
             enemyType: enemyInfo.enemyType,

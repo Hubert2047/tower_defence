@@ -60,7 +60,7 @@ const rounds = [
                 amount: 8,
                 spaceMin: 100,
                 spaceMax: 1000,
-                moveSpeed: 1,
+                moveSpeed: 1.2,
                 health: 17000,
                 coins: 5,
             },
@@ -100,7 +100,7 @@ const rounds = [
                 amount: 12,
                 spaceMin: 100,
                 spaceMax: 1000,
-                moveSpeed: 1.3,
+                moveSpeed: 1.5,
                 health: 15000,
                 coins: 3,
             },
@@ -114,7 +114,7 @@ const rounds = [
                 basePosition: { x: -150, y: 484 },
                 amount: 10,
                 spaceMin: 100,
-                spaceMax: 1000,
+                spaceMax: 500,
                 moveSpeed: 1,
                 health: 10000,
                 coins: 2,
@@ -123,7 +123,7 @@ const rounds = [
     },
 ];
 const backgroundImage = new Image();
-const limitAttacks = 100;
+const limitAttacks = 1000;
 const startCoins = 20;
 backgroundImage.src = '../../public/src/assets/images/gameMap.png';
 const desertMapData = { rounds, backgroundImage, placementTiles2D, waypoints, limitAttacks, startCoins };

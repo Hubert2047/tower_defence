@@ -9,7 +9,7 @@ enum E_tower {
     BLOOD_MOON = 1,
 }
 enum E_projectile {
-    BLOOD_MOON = 1,
+    FIRE = 1,
 }
 enum E_gameMap {
     DESERT = 1,

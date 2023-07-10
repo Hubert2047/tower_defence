@@ -129,7 +129,14 @@ type T_baseTowerProperties = {
     damage: number
     projectileInfo: T_projectileInfo
 }
-
+type T_Sprite = {
+    position: T_position
+    offset?: T_position
+    width?: number
+    height?: number
+    imageSources: HTMLImageElement[]
+    frame: T_frame
+}
 export {
     T_baseEnemyProperties,
     T_baseTowerProperties,
@@ -144,4 +151,5 @@ export {
     T_projectileInfo,
     T_round,
     T_tower,
+    T_Sprite,
 }

@@ -43,16 +43,16 @@ function handleAddEventGame({ gameMap, mouse }: { gameMap: GameMap; mouse: T_pos
     if (startGameBtn) {
         startGameBtn.addEventListener('click', newGame)
     }
-    function handleEventClick() {
-        if (gameMap.activeTile && !gameMap.activeTile.isOccupied) {
-            gameMap.activeTile.isOccupied = true
-            gameMap.addTower({ towerType: E_tower.BLOOD_MOON })
-        }
-    }
+
     function handleEventMousemove(event: MouseEvent) {
         mouse.x = event.offsetX
         mouse.y = event.offsetY
         gameMap.checkActiveTile({ mouse })
+    }
+    function handleEventClick() {
+        if (gameMap.activeTile && !gameMap.activeTile.isOccupied) {
+            gameMap.addTower({ towerType: E_tower.BLOOD_MOON })
+        }
     }
 }
 
