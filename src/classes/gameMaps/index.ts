@@ -50,7 +50,8 @@ export default class GameMap {
     private menu: Sprite
     private coinsIcon: Sprite
     private heartIcon: Sprite
-    private goldBorder: Sprite
+    private eggs: Sprite
+    private effect: Sprite
     private currentDashboardEnemiesInfo: T_dashboardEnemiesInfo[]
     constructor({ rounds, placementTiles2D, waypoints, backgroundImage, limitAttacks, startCoins }: T_gameMapData) {
         this._currentEnemiesData = []
@@ -67,7 +68,8 @@ export default class GameMap {
         this.menu = this.createMenu()
         this.coinsIcon = this.createCoinsIcon()
         this.heartIcon = this.createHeartIcon()
-        this.goldBorder = this.createBorder()
+        this.eggs = this.createEgg()
+        this.effect = this.createEffec()
         this._activeTile = null
         this.isGameOver = false
         this.isVictory = false
@@ -81,7 +83,8 @@ export default class GameMap {
         this.updateTowers()
         this.updateDashboardEnemies()
         this.drawCoinsAndGameHearts()
-        // this.goldBorder.draw({ sourceIndex: 0 })
+        this.eggs.draw({ sourceIndex: 0 })
+        this.effect.draw({ sourceIndex: 0 })
 
         return [this.isGameOver, this.isVictory]
     }
@@ -124,16 +127,29 @@ export default class GameMap {
         }
         return new Sprite(options)
     }
-    private createBorder() {
-        const sourceString = ['../../public/src/assets/images/borders/selected.jpg']
+    private createEffec() {
+        const sourceString = ['../../public/src/assets/images/effect/7_firespin_spritesheet.png']
         const imageSources = createImageSources(sourceString)
         const options: T_Sprite = {
             imageSources,
-            position: { x: 64 * 12, y: 64 * 1 },
-            offset: { x: 40, y: -14 },
-            frame: { maxX: 2, maxY: 2, holdTime: 20 },
-            height: 60,
-            width: 60,
+            position: { x: 64 * 16, y: 64 * 6 },
+            offset: { x: -20, y: -30 },
+            frame: { maxX: 8, maxY: 8, holdTime: 3 },
+            height: 400,
+            width: 400,
+        }
+        return new Sprite(options)
+    }
+    private createEgg() {
+        const sourceString = ['../../public/src/assets/images/Eggs/eggs_9.png']
+        const imageSources = createImageSources(sourceString)
+        const options: T_Sprite = {
+            imageSources,
+            position: { x: 64 * 18, y: 64 * 5 },
+            offset: { x: 3, y: 0 },
+            frame: { maxX: 1, maxY: 1, holdTime: 20 },
+            height: 200,
+            width: 200,
         }
         return new Sprite(options)
     }
