@@ -20,7 +20,7 @@ const BroodMother = {
         name: 'Border 1',
         position: { x: 0, y: 0 },
         offset: { x: 0, y: 0 },
-        imageSourceString: ['../../../public/src/assets/images/borders/1.png'],
+        imageSourceString: ['../../../public/src/assets/images/borders/6.png'],
         frame: { maxX: 1, maxY: 1, holdTime: 4 },
         width: 64,
         height: 64,

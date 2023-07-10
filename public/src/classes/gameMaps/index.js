@@ -46,10 +46,24 @@ export default class GameMap {
     }
     drawCoinsAndGameHealth() { }
     updateDashboardEnemies() {
-        this.currentDashboardEnemiesInfo.forEach((dashboardEnemyInfor) => {
-            dashboardEnemyInfor.dashboardEnemy.draw({ sourceIndex: 3 });
+        this.currentDashboardEnemiesInfo.forEach((dashboardEnemyInfor, index) => {
             dashboardEnemyInfor.dashboardEnemyBorder.update();
+            dashboardEnemyInfor.dashboardEnemy.draw({ sourceIndex: 2 });
+            this.drawDashboardEnemyRemainAmount({
+                amountText: dashboardEnemyInfor.remainEnemiesTotal.toString(),
+                position: {
+                    x: dashboardEnemyInfor.dashboardEnemyBorder.position.x + 25,
+                    y: dashboardEnemyInfor.dashboardEnemyBorder.position.y - 5,
+                },
+            });
         });
+    }
+    drawDashboardEnemyRemainAmount({ amountText, position, }) {
+        if (context2D) {
+            context2D.font = '20px Changa One';
+            context2D.fillStyle = '#8B4513';
+            context2D.fillText(amountText, position.x, position.y);
+        }
     }
     get currentEnemiesData() {
         return this._currentEnemiesData;
@@ -195,7 +209,7 @@ export default class GameMap {
             name: baseEnemyProperty.name,
             enemyType: enemyInfo.enemyType,
             position: { x: 64 * index, y: 64 },
-            offset: { x: 18, y: 20 },
+            offset: { x: 14, y: 16 },
             frame: {
                 maxX: baseEnemyProperty.maxX,
                 maxY: baseEnemyProperty.maxY,
@@ -206,8 +220,8 @@ export default class GameMap {
                 }),
             },
             imageSourceString: baseEnemyProperty.imageSourceString,
-            width: 100,
-            height: 100,
+            width: 90,
+            height: 90,
             moveSpeed: enemyInfo.moveSpeed,
         };
         return new Enemy(enemyOptions);

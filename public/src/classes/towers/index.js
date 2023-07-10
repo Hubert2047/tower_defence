@@ -59,7 +59,8 @@ export default class Tower extends Sprite {
                     },
                     damage: this.damage,
                     enemy: targetEnemy,
-                    moveSpeed: 2,
+                    moveSpeed: 5,
+                    offset: { x: -60, y: 30 },
                     imageSourceString: towerBaseProperties.projectileInfo.imageSourceString,
                     frame: towerBaseProperties.projectileInfo.frame,
                 };
