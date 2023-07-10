@@ -1,5 +1,4 @@
 import GameMap from './classes/gameMaps/index.js';
-import BloodMoon from './classes/towers/BloodMoon.tower.js';
 import { resetCanvas } from './context2D/index.js';
 import { E_gameMap, E_tower } from './enum/index.js';
 import { getGameMapData } from './helper/index.js';
@@ -44,9 +43,6 @@ function handleAddEventGame({ gameMap, mouse }) {
         startGameBtn.addEventListener('click', newGame);
     }
     function handleEventClick() {
-        const isCoinsEnough = gameMap.coins >= BloodMoon.prices;
-        if (!isCoinsEnough)
-            return;
         if (gameMap.activeTile && !gameMap.activeTile.isOccupied) {
             gameMap.activeTile.isOccupied = true;
             gameMap.addTower({ towerType: E_tower.BLOOD_MOON });

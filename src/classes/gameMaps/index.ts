@@ -1,26 +1,28 @@
 import { POSITION_GOAL, TILE_SIZE } from '../../constants/index.js'
 import context2D from '../../context2D/index.js'
+import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js'
+import getBaseTowerProperties from '../../data/baseProperties/towers/index.js'
 import { E_enemy, E_tower } from '../../enum/index.js'
-import { createImageSources, randomNumberInRange } from '../../helper/index.js'
-import { T_enemy, T_gameMapData, T_position, T_round } from '../../types/index.js'
+import { calculateHoldTime, randomNumberInRange } from '../../helper/index.js'
+import {
+    T_baseEnemyProperties,
+    T_baseTowerProperties,
+    T_dashboardEnemyBorder,
+    T_enemy,
+    T_enemyInfo,
+    T_gameMapData,
+    T_position,
+    T_round,
+    T_tower,
+} from '../../types/index.js'
 import PlacementTile from '../PlacementTile.js'
-import Bear from '../enemies/Bear.js'
-import BroodMother from '../enemies/BroodMother.js'
-import Dragon from '../enemies/Dragon.js'
-import Fox from '../enemies/Fox.js'
-import Siren from '../enemies/Siren.js'
+import Border from '../dashboardEnemyBorder/index.js'
 import Enemy from '../enemies/index.js'
-import Sprite from '../sprite/index.js'
-import BloodMoon from '../towers/BloodMoon.tower.js'
 import Tower from '../towers/index.js'
-interface gameStatus {
-    isGameOver: boolean
-    isVictory: boolean
-}
-
-interface enemiesStatusInfo {
+interface T_dashboardEnemiesInfo {
     enemyType: E_enemy
-    enemy: Enemy
+    dashboardEnemy: Enemy
+    dashboardEnemyBorder: Border
     remainEnemiesTotal: number
 }
 export default class GameMap {
@@ -37,7 +39,7 @@ export default class GameMap {
     private isVictory: boolean
     public shootingAudio: HTMLElement | HTMLAudioElement | null
     private _activeTile: PlacementTile | null
-    private currentDashboardEnemiesInfo: enemiesStatusInfo[]
+    private currentDashboardEnemiesInfo: T_dashboardEnemiesInfo[]
     constructor({ rounds, placementTiles2D, waypoints, backgroundImage, limitAttacks, startCoins }: T_gameMapData) {
         this._currentEnemiesData = []
         this.rounds = rounds
@@ -53,15 +55,14 @@ export default class GameMap {
         this._activeTile = null
         this.isGameOver = false
         this.isVictory = false
-        this.createCurrentRoundEnemies()
+        this.spawingCurrentRoundEnemies()
     }
-    public updateMap(mouse: T_position) {
+    public updateMap(mouse: T_position): [boolean, boolean] {
         this.updateScreenGame()
         this.updateEnemies()
         this.updatePlacementTiles(mouse)
-        this.updateTowers(this.shootingAudio)
-        // this.updateCoins()
-        // this.updateMapHP()
+        this.updateTowers()
+        this.drawCoinsAndGameHealth()
         this.updateDashboardEnemies()
 
         return [this.isGameOver, this.isVictory]
@@ -69,70 +70,37 @@ export default class GameMap {
     public get activeTile(): PlacementTile | null {
         return this._activeTile
     }
-    private updateScreenGame() {
+    private updateScreenGame(): void {
         this.createBackground()
     }
-    private createBackground() {
+    private createBackground(): void {
         if (context2D) context2D.drawImage(this.backgroundImage, 0, 0)
     }
-    private drawCoinsAndGameHealth() {}
-    private updateDashboardEnemies() {
-        const sourcString = ['../../public/src/assets/images/borders/1.png']
-        const imageSources = createImageSources(sourcString)
-        const sourcString1 = ['../../public/src/assets/images/borders/4.png']
-        const imageSources1 = createImageSources(sourcString1)
-        const a = new Sprite({
-            position: { x: 0, y: 64 },
-            offset: { x: 0, y: 0 },
-            imageSources,
-            width: 64,
-            height: 64,
-            frame: { maxX: 1, maxY: 1, holdTime: 4 },
+    private drawCoinsAndGameHealth(): void {}
+    private updateDashboardEnemies(): void {
+        this.currentDashboardEnemiesInfo.forEach((dashboardEnemyInfor) => {
+            dashboardEnemyInfor.dashboardEnemy.draw({ sourceIndex: 3 })
+            dashboardEnemyInfor.dashboardEnemyBorder.update()
         })
-        const b = new Sprite({
-            position: { x: 64 * 1, y: 64 },
-            offset: { x: 0, y: 0 },
-            imageSources: imageSources1,
-            width: 64,
-            height: 64,
-            frame: { maxX: 1, maxY: 1, holdTime: 4 },
-        })
-        a.draw({ sourceIndex: 0 })
-        b.draw({ sourceIndex: 0 })
-        this.currentDashboardEnemiesInfo[0].enemy.draw({ sourceIndex: 3 })
-        this.currentDashboardEnemiesInfo[1].enemy.draw({ sourceIndex: 3 })
-        // dragon.draw({ sourceIndex: 2 })
-    }
-    public updateMapHP() {
-        const coinsHtml: Element | null = document.querySelector('#hearts')
-        if (coinsHtml) {
-            coinsHtml.textContent = this.limitAttacks.toString()
-        }
-    }
-    private updateCoins(): void {
-        const coinsHtml: Element | null = document.querySelector('#coins')
-        if (coinsHtml) {
-            coinsHtml.textContent = this.coins.toString()
-        }
     }
     public get currentEnemiesData() {
         return this._currentEnemiesData
     }
-    public updatePlacementTiles(mouse: T_position) {
+    public updatePlacementTiles(mouse: T_position): void {
         this.placementTiles.forEach((placementTile) => {
             placementTile.update(mouse)
         })
     }
-    public updateTowers(shootingAudio: HTMLElement | HTMLAudioElement | null) {
+    public updateTowers(): void {
         this.towers.forEach((tower: Tower) => {
-            tower.update({ enemies: this._currentEnemiesData, shootingAudio })
+            tower.update({ enemies: this._currentEnemiesData, shootingAudio: this.shootingAudio })
         })
     }
     public updateEnemies(): void {
         if (this._currentEnemiesData.length <= 0) {
             if (this.currentRoundIndex < this.rounds.length - 1) {
                 this.currentRoundIndex++
-                this.createCurrentRoundEnemies()
+                this.spawingCurrentRoundEnemies()
             } else {
                 this.isVictory = true
             }
@@ -167,65 +135,114 @@ export default class GameMap {
     }
     public addTower({ towerType }: { towerType: E_tower }): void {
         if (!this.activeTile) return
-        switch (towerType) {
-            case E_tower.BLOOD_MOON:
-                if (this.coins < BloodMoon.prices) return
-                this.towers.push(new BloodMoon({ position: this.activeTile?.position }))
-                this.coins -= BloodMoon.prices
-                break
-            default:
-                throw new Error('we dont have this tower')
+        const towerBaseProperties: T_baseTowerProperties | undefined = getBaseTowerProperties(towerType)
+        if (towerBaseProperties) {
+            if (this.coins < towerBaseProperties.prices) return
+            this.coins -= towerBaseProperties.prices
+            const towerOptions: T_tower = {
+                name: towerBaseProperties.name,
+                projectileType: towerBaseProperties.projectileInfo.projectileType,
+                towerType: towerBaseProperties.towerType,
+                position: this.activeTile?.position,
+                offset: towerBaseProperties.offset,
+                width: towerBaseProperties.width,
+                height: towerBaseProperties.height,
+                frame: towerBaseProperties.frame,
+                imageSourceString: towerBaseProperties.imageSourceString,
+                attackSpeed: towerBaseProperties.attackSpeed,
+                attackArea: towerBaseProperties.attackArea,
+                damage: towerBaseProperties.damage,
+            }
+            const tower: Tower = new Tower(towerOptions)
+            this.towers.push(tower)
         }
     }
-    private createCurrentRoundEnemies(): void {
+    private spawingCurrentRoundEnemies(): void {
         if (this.rounds.length <= 0) {
             this._currentEnemiesData = []
         }
         this.currentDashboardEnemiesInfo = []
         const currentRound: T_round = this.rounds[this.currentRoundIndex]
-        currentRound.enemies.forEach((enemyInfo, index) => {
-            const enemy = {
-                enemyType: enemyInfo.enemyType,
-                position: { x: 64 * index, y: 64 },
-                offset: { x: 18, y: 20 },
-                width: 100,
-                height: 100,
-            }
-            const dashboardEnemy = this.createEnemy(enemy)
-            this.currentDashboardEnemiesInfo.push({
-                enemyType: enemyInfo.enemyType,
-                enemy: dashboardEnemy,
-                remainEnemiesTotal: enemyInfo.amount,
-            })
-            for (let i = 0; i < enemyInfo.amount; i++) {
-                const space = randomNumberInRange(enemyInfo.spaceMin, enemyInfo.spaceMax)
-                const position = { x: enemyInfo.basePosition.x - space * i, y: enemyInfo.basePosition.y }
-                const enemy = this.createEnemy({
-                    position,
+        currentRound.enemies.forEach((enemyInfo: T_enemyInfo, index: number) => {
+            const baseEnemyProperty: T_baseEnemyProperties | undefined = getBaseEnemyProperties(enemyInfo.enemyType)
+            if (baseEnemyProperty) {
+                //create dashboard enemies and its border
+                const dashboardEnemy: Enemy = this.createDashboardEnemy(enemyInfo, baseEnemyProperty, index)
+                const dashboardEnemyBorderOptions: T_dashboardEnemyBorder = {
+                    name: baseEnemyProperty.dashboardBorderInfo.name,
+                    position: { x: 64 * index, y: 64 },
+                    frame: baseEnemyProperty.dashboardBorderInfo.frame,
+                    offset: baseEnemyProperty.dashboardBorderInfo.offset,
+                    width: baseEnemyProperty.dashboardBorderInfo.width,
+                    height: baseEnemyProperty.dashboardBorderInfo.height,
+                    imageSourceString: baseEnemyProperty.dashboardBorderInfo.imageSourceString,
+                }
+                const dashboardEnemyBorder = new Border(dashboardEnemyBorderOptions)
+                this.currentDashboardEnemiesInfo.push({
                     enemyType: enemyInfo.enemyType,
-                    moveSpeed: enemyInfo.moveSpeed,
-                    health: enemyInfo.health,
-                    coins: enemyInfo.coins,
+                    dashboardEnemy,
+                    dashboardEnemyBorder,
+                    remainEnemiesTotal: enemyInfo.amount,
                 })
-                this._currentEnemiesData.push(enemy)
+                //create battle enemies
+                for (let i = 0; i < enemyInfo.amount; i++) {
+                    const battleEnemy = this.createBattleEnemy(enemyInfo, baseEnemyProperty, i)
+                    this._currentEnemiesData.push(battleEnemy)
+                }
             }
         })
     }
-    private createEnemy(enemy: T_enemy): Enemy {
-        switch (enemy.enemyType) {
-            case E_enemy.DRAGON:
-                return new Dragon(enemy)
-            case E_enemy.BEAR:
-                return new Bear(enemy)
-            case E_enemy.BROOD_MOTHER:
-                return new BroodMother(enemy)
-            case E_enemy.FOX:
-                return new Fox(enemy)
-            case E_enemy.SIREN:
-                return new Siren(enemy)
-            default:
-                throw new Error('we dont have this enemy')
+    private createBattleEnemy(enemyInfo: T_enemyInfo, baseEnemyProperty: T_baseEnemyProperties, index: number): Enemy {
+        const space: number = randomNumberInRange(enemyInfo.spaceMin, enemyInfo.spaceMax)
+        const position: T_position = { x: enemyInfo.basePosition.x - space * index, y: enemyInfo.basePosition.y }
+        const battleEnemyOptions: T_enemy = {
+            name: baseEnemyProperty.name,
+            enemyType: enemyInfo.enemyType,
+            position,
+            offset: baseEnemyProperty.offset,
+            frame: {
+                maxX: baseEnemyProperty.maxX,
+                maxY: baseEnemyProperty.maxY,
+                holdTime: calculateHoldTime({
+                    maxX: baseEnemyProperty.maxX,
+                    maxY: baseEnemyProperty.maxY,
+                    moveSpeed: enemyInfo.moveSpeed,
+                }),
+            },
+            imageSourceString: baseEnemyProperty.imageSourceString,
+            width: baseEnemyProperty.width,
+            height: baseEnemyProperty.height,
+            moveSpeed: enemyInfo.moveSpeed,
+            coins: enemyInfo.coins,
+            health: enemyInfo.health,
         }
+        return new Enemy(battleEnemyOptions)
+    }
+    private createDashboardEnemy(
+        enemyInfo: T_enemyInfo,
+        baseEnemyProperty: T_baseEnemyProperties,
+        index: number
+    ): Enemy {
+        const enemyOptions: T_enemy = {
+            name: baseEnemyProperty.name,
+            enemyType: enemyInfo.enemyType,
+            position: { x: 64 * index, y: 64 },
+            offset: { x: 18, y: 20 },
+            frame: {
+                maxX: baseEnemyProperty.maxX,
+                maxY: baseEnemyProperty.maxY,
+                holdTime: calculateHoldTime({
+                    maxX: baseEnemyProperty.maxX,
+                    maxY: baseEnemyProperty.maxY,
+                    moveSpeed: enemyInfo.moveSpeed,
+                }),
+            },
+            imageSourceString: baseEnemyProperty.imageSourceString,
+            width: 100,
+            height: 100,
+            moveSpeed: enemyInfo.moveSpeed,
+        }
+        return new Enemy(enemyOptions)
     }
     public checkActiveTile({ mouse }: { mouse: T_position }): void {
         this._activeTile = this.placementTiles.find((tile) => tile.hasCollisionWithMouse(mouse)) ?? null

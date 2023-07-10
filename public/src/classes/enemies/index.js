@@ -1,5 +1,5 @@
 import context2D from '../../context2D/index.js';
-import { calAngleFromPointAToPointB, calFullHealthWidth, getVectorNomalized } from '../../helper/index.js';
+import { calAngleFromPointAToPointB, calFullHealthWidth, createImageSources, getVectorNomalized, } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 var DragonSourceIndex;
 (function (DragonSourceIndex) {
@@ -9,7 +9,8 @@ var DragonSourceIndex;
     DragonSourceIndex[DragonSourceIndex["BottomSource"] = 3] = "BottomSource";
 })(DragonSourceIndex || (DragonSourceIndex = {}));
 export default class Enemy extends Sprite {
-    constructor({ position, offset, width, height, imageSources, frame, coins, moveSpeed, health, enemyType }) {
+    constructor({ name, position, offset = { x: 0, y: 0 }, width = 124, height = 124, imageSourceString, frame, coins = 1, moveSpeed = 1, health = 1000, enemyType, }) {
+        const imageSources = createImageSources(imageSourceString);
         super({
             position,
             offset,
@@ -18,6 +19,7 @@ export default class Enemy extends Sprite {
             imageSources,
             frame,
         });
+        this.name = name;
         this.moveSpeed = moveSpeed;
         this.velocityX = 0;
         this.velocityY = 0;

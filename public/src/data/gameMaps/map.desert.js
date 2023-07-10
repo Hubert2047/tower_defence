@@ -1,6 +1,5 @@
-import { E_enemy } from '../enum/index.js'
-import { T_gameMapData, T_position, T_round } from '../types/index.js'
-const placementTilesData: number[] = [
+import { E_enemy } from '../../enum/index.js';
+const placementTilesData = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0,
     0, 0, 0, 0, 14, 0, 0, 0, 0, 14, 0, 14, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0,
@@ -8,12 +7,12 @@ const placementTilesData: number[] = [
     0, 0, 0, 14, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 14, 0, 14, 0, 14, 0,
     14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 14, 0, 14, 0, 14, 0, 14, 0, 14, 0, 0,
-]
-const placementTiles2D: number[][] = []
+];
+const placementTiles2D = [];
 for (let i = 0; i < placementTilesData.length; i += 20) {
-    placementTiles2D.push(placementTilesData.slice(i, i + 20))
+    placementTiles2D.push(placementTilesData.slice(i, i + 20));
 }
-const waypoints: T_position[] = [
+const waypoints = [
     {
         x: 256,
         y: 478,
@@ -50,8 +49,8 @@ const waypoints: T_position[] = [
         x: 1330,
         y: 282,
     },
-]
-const rounds: T_round[] = [
+];
+const rounds = [
     {
         roundName: 'round 1',
         enemies: [
@@ -122,10 +121,10 @@ const rounds: T_round[] = [
             },
         ],
     },
-]
-const backgroundImage: HTMLImageElement = new Image()
-const limitAttacks = 10000
-const startCoins = 20
-backgroundImage.src = '../../public/src/assets/images/gameMap.png'
-const desertMapData: T_gameMapData = { rounds, backgroundImage, placementTiles2D, waypoints, limitAttacks, startCoins }
-export default desertMapData
+];
+const backgroundImage = new Image();
+const limitAttacks = 100;
+const startCoins = 20;
+backgroundImage.src = '../../public/src/assets/images/gameMap.png';
+const desertMapData = { rounds, backgroundImage, placementTiles2D, waypoints, limitAttacks, startCoins };
+export default desertMapData;

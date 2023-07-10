@@ -1,25 +1,16 @@
 import context2D from '../../context2D/index.js'
-import { E_projectile } from '../../enum/index.js'
-import { calculateDistanceTwoPoint } from '../../helper/index.js'
-import { T_frame, T_position } from '../../types/index.js'
+import getBaseTowerProperties from '../../data/baseProperties/towers/index.js'
+import { E_projectile, E_tower } from '../../enum/index.js'
+import { calculateDistanceTwoPoint, createImageSources } from '../../helper/index.js'
+import { T_baseTowerProperties, T_explosion, T_position, T_projectile, T_tower } from '../../types/index.js'
 import Enemy from '../enemies/index.js'
 import ExplosionProjectile from '../explosionProjectile/index.js'
-import BloodMoonProjectile from '../projectiles/bloodMoon/index.js'
 import Projectile from '../projectiles/index.js'
 import Sprite from '../sprite/index.js'
-interface props {
-    position: T_position
-    offset: T_position
-    width: number
-    height: number
-    frame: T_frame
-    imageSources: HTMLImageElement[]
-    attackSpeed: number
-    attackArea: number
-    damage: number
-    projectileType: E_projectile
-}
+
 export default class Tower extends Sprite {
+    public name: string
+    public towerType: E_tower
     public attackSpeed: number
     public attackArea: number
     public damage: number
@@ -29,18 +20,24 @@ export default class Tower extends Sprite {
     public projectiles: Projectile[]
     public explosions: ExplosionProjectile[]
     constructor({
+        name,
+        towerType,
         position,
-        offset,
-        width,
-        height,
+        offset = { x: 0, y: 0 },
+        width = 124,
+        height = 124,
         frame,
-        imageSources,
-        projectileType,
-        damage,
-        attackSpeed,
-        attackArea,
-    }: props) {
+        imageSourceString,
+        projectileType = E_projectile.BLOOD_MOON,
+        damage = 100,
+        attackSpeed = 1,
+        attackArea = 300,
+    }: T_tower) {
+        const imageSources: HTMLImageElement[] = createImageSources(imageSourceString)
+
         super({ position, offset, width, height, imageSources, frame })
+        this.name = name
+        this.towerType = towerType
         this.damage = damage
         this.attackSpeed = attackSpeed
         this.attackArea = attackArea
@@ -54,7 +51,7 @@ export default class Tower extends Sprite {
         super.draw({ sourceIndex })
         // this.drawAttackRangeCicle()
     }
-    public drawAttackRangeCicle() {
+    public drawAttackRangeCicle(): void {
         if (context2D) {
             context2D.beginPath()
             context2D.arc(this.position.x + this.offset.x, this.position.y, this.attackArea, 0, 2 * Math.PI)
@@ -67,7 +64,7 @@ export default class Tower extends Sprite {
         shootingAudio,
     }: {
         enemies: Enemy[]
-        shootingAudio: HTMLElement | HTMLAudioElement | null
+        shootingAudio: HTMLAudioElement | HTMLElement | null
     }): void {
         this.draw({ sourceIndex: 0 })
         this.attackEnemies(enemies)
@@ -83,8 +80,24 @@ export default class Tower extends Sprite {
         const enemiesInRange: Enemy[] = this.getEnemiesInAttackRange(enemies)
         if (enemiesInRange.length > 0) {
             const targetEnemy: Enemy = this.findTargetEnemy(enemiesInRange)
-            const newProjectile: Projectile = this.createProjectile(targetEnemy)
-            this.projectiles.push(newProjectile)
+            const towerBaseProperties: T_baseTowerProperties | undefined = getBaseTowerProperties(this.towerType)
+            if (towerBaseProperties) {
+                const projectileOptions: T_projectile = {
+                    name: towerBaseProperties.projectileInfo.name,
+                    ProjectileType: towerBaseProperties.projectileInfo.projectileType,
+                    position: {
+                        x: this.position.x - this.width + 1.5 * this.offset.x,
+                        y: this.position.y - this.height + 1.8 * this.offset.y,
+                    },
+                    damage: this.damage,
+                    enemy: targetEnemy,
+                    moveSpeed: 2,
+                    imageSourceString: towerBaseProperties.projectileInfo.imageSourceString,
+                    frame: towerBaseProperties.projectileInfo.frame,
+                }
+                const newProjectile: Projectile = new Projectile(projectileOptions)
+                this.projectiles.push(newProjectile)
+            }
         }
     }
     //Find the closest enemy to the objective
@@ -96,27 +109,10 @@ export default class Tower extends Sprite {
         })
         return enemyTarget
     }
-    private createProjectile(enemy: Enemy) {
-        const projectileSetting = {
-            position: {
-                x: this.position.x - this.width + 1.5 * this.offset.x,
-                y: this.position.y - this.height + 1.8 * this.offset.y,
-            },
-            damage: this.damage,
-            enemy,
-            moveSpeed: 5,
-        }
-        switch (this.projectileType) {
-            case E_projectile.BLOOD_MOON:
-                return new BloodMoonProjectile(projectileSetting)
-            default:
-                throw new Error('we dont have this projectile')
-        }
-    }
     private getEnemiesInAttackRange(currentEnemies: Enemy[]): Enemy[] {
         const enemiesInRange: Enemy[] = []
         currentEnemies.forEach((enemy: Enemy) => {
-            const realPostion = { x: this.position.x + this.offset.x, y: this.position.y }
+            const realPostion: T_position = { x: this.position.x + this.offset.x, y: this.position.y }
             const distance: number = calculateDistanceTwoPoint(enemy.position, realPostion)
             if (distance <= this.attackArea) {
                 enemiesInRange.push(enemy)
@@ -124,41 +120,51 @@ export default class Tower extends Sprite {
         })
         return enemiesInRange
     }
-    private updateProjectile(shootingAudio: HTMLElement | HTMLAudioElement | null) {
+    private updateProjectile(shootingAudio: HTMLAudioElement | HTMLElement | null) {
         for (var i = this.projectiles.length - 1; i >= 0; i--) {
             const currentProjectile: Projectile = this.projectiles[i]
-            const realEnemyPostion = {
+            const realEnemyPostion: T_position = {
                 x: currentProjectile.targetEnemy.position.x - currentProjectile.targetEnemy.width / 4,
                 y: currentProjectile.targetEnemy.position.y - currentProjectile.targetEnemy.height / 5,
             }
             const distance: number = calculateDistanceTwoPoint(currentProjectile.position, realEnemyPostion)
             if (distance < 5) {
                 currentProjectile.targetEnemy.attacked(currentProjectile)
-                const position = {
-                    x: currentProjectile.position.x - currentProjectile.offset.x,
-                    y: currentProjectile.position.y - currentProjectile.offset.y + currentProjectile.width / 2,
+                const towerBaseProperties: T_baseTowerProperties | undefined = getBaseTowerProperties(this.towerType)
+                if (towerBaseProperties) {
+                    //create explosion
+                    const position: T_position = {
+                        x: currentProjectile.position.x - currentProjectile.offset.x,
+                        y: currentProjectile.position.y - currentProjectile.offset.y + currentProjectile.width / 2,
+                    }
+                    const explosionOptions: T_explosion = {
+                        name: towerBaseProperties.projectileInfo.explosionInfo.name,
+                        explosionType: towerBaseProperties.projectileInfo.explosionInfo.explosionType,
+                        position,
+                        offset: towerBaseProperties.projectileInfo.explosionInfo.offset,
+                        width: towerBaseProperties.projectileInfo.explosionInfo.width,
+                        height: towerBaseProperties.projectileInfo.explosionInfo.height,
+                        frame: towerBaseProperties.projectileInfo.explosionInfo.frame,
+                        imageSourceString: towerBaseProperties.projectileInfo.explosionInfo.imageSourceString,
+                    }
+                    const explosion: ExplosionProjectile = new ExplosionProjectile(explosionOptions)
+                    this.explosions.push(explosion)
                 }
-                const explosion = new ExplosionProjectile({
-                    position,
-                    offset: currentProjectile.explosionProjectileInfo.offset,
-                    imageSources: currentProjectile.explosionProjectileInfo.imageSources,
-                    frame: currentProjectile.explosionProjectileInfo.frame,
-                })
-                this.explosions.push(explosion)
                 this.projectiles.splice(i, 1)
             } else {
                 currentProjectile.update()
             }
         }
+        //update or delete explosions - when explosion finieshed one time animation then delete it,otherwise update it
         for (var i = this.explosions.length - 1; i >= 0; i--) {
-            const currentExplosion = this.explosions[i]
-            const isFinishFrame =
+            const currentExplosion: ExplosionProjectile = this.explosions[i]
+            const isFinishedOneTimeAnimation: boolean =
                 currentExplosion.cropPosition.x === currentExplosion.frame.maxX - 1 &&
                 currentExplosion.cropPosition.y === currentExplosion.frame.maxY - 1
-            if (shootingAudio && shootingAudio instanceof HTMLAudioElement && shootingAudio.paused) {
-                shootingAudio.play()
-            }
-            if (isFinishFrame) {
+            if (isFinishedOneTimeAnimation) {
+                if (shootingAudio && shootingAudio instanceof HTMLAudioElement && shootingAudio.paused) {
+                    shootingAudio.play()
+                }
                 this.explosions.splice(i, 1)
             } else {
                 this.explosions[i].update()

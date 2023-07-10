@@ -1,17 +1,25 @@
-import { T_frame, T_position } from '../../types/index.js'
+import { E_explosion } from '../../enum/index.js'
+import { createImageSources } from '../../helper/index.js'
+import { T_explosion } from '../../types/index.js'
 import Sprite from '../sprite/index.js'
 
-interface props {
-    position: T_position
-    offset: T_position
-    width?: number
-    height?: number
-    imageSources: HTMLImageElement[]
-    frame: T_frame
-}
 export default class ExplosionProjectile extends Sprite {
-    constructor({ position, offset, imageSources, frame, width = 50, height = 50 }: props) {
+    public name: string
+    public explosionType: E_explosion
+    constructor({
+        name,
+        explosionType,
+        position,
+        offset = { x: 0, y: 0 },
+        imageSourceString,
+        frame,
+        width = 50,
+        height = 50,
+    }: T_explosion) {
+        const imageSources: HTMLImageElement[] = createImageSources(imageSourceString)
         super({ position, offset, width, height, frame, imageSources })
+        this.name = name
+        this.explosionType = explosionType
     }
     public update(): void {
         this.draw({ sourceIndex: 0 })

@@ -18,4 +18,8 @@ var E_gameMap;
 (function (E_gameMap) {
     E_gameMap[E_gameMap["DESERT"] = 1] = "DESERT";
 })(E_gameMap || (E_gameMap = {}));
-export { E_enemy, E_gameMap, E_projectile, E_tower };
+var E_explosion;
+(function (E_explosion) {
+    E_explosion[E_explosion["FIRE_BALL"] = 0] = "FIRE_BALL";
+})(E_explosion || (E_explosion = {}));
+export { E_enemy, E_gameMap, E_projectile, E_tower, E_explosion };

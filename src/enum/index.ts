@@ -14,4 +14,7 @@ enum E_projectile {
 enum E_gameMap {
     DESERT = 1,
 }
-export { E_enemy, E_gameMap, E_projectile, E_tower }
+enum E_explosion {
+    FIRE_BALL,
+}
+export { E_enemy, E_gameMap, E_projectile, E_tower, E_explosion }

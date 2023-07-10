@@ -2,7 +2,7 @@ import context2D from '../../context2D/index.js'
 import { T_frame, T_position } from '../../types/index.js'
 interface props {
     position: T_position
-    offset: T_position
+    offset?: T_position
     width: number
     height: number
     imageSources: HTMLImageElement[]
@@ -17,7 +17,7 @@ export default class Sprite {
     private countFrameTime: number
     public cropPosition: T_position
     public offset: T_position
-    constructor({ position, offset, width, height, imageSources, frame }: props) {
+    constructor({ position, offset = { x: 0, y: 0 }, width, height, imageSources, frame }: props) {
         this.position = position
         this.offset = offset
         this.width = width

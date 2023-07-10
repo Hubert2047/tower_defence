@@ -1,15 +1,12 @@
 import { POSITION_GOAL, TILE_SIZE } from '../../constants/index.js';
 import context2D from '../../context2D/index.js';
-import { E_enemy, E_tower } from '../../enum/index.js';
-import { createImageSources, randomNumberInRange } from '../../helper/index.js';
+import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js';
+import getBaseTowerProperties from '../../data/baseProperties/towers/index.js';
+import { calculateHoldTime, randomNumberInRange } from '../../helper/index.js';
 import PlacementTile from '../PlacementTile.js';
-import Bear from '../enemies/Bear.js';
-import BroodMother from '../enemies/BroodMother.js';
-import Dragon from '../enemies/Dragon.js';
-import Fox from '../enemies/Fox.js';
-import Siren from '../enemies/Siren.js';
-import Sprite from '../sprite/index.js';
-import BloodMoon from '../towers/BloodMoon.tower.js';
+import Border from '../dashboardEnemyBorder/index.js';
+import Enemy from '../enemies/index.js';
+import Tower from '../towers/index.js';
 export default class GameMap {
     constructor({ rounds, placementTiles2D, waypoints, backgroundImage, limitAttacks, startCoins }) {
         this._currentEnemiesData = [];
@@ -26,15 +23,14 @@ export default class GameMap {
         this._activeTile = null;
         this.isGameOver = false;
         this.isVictory = false;
-        this.createCurrentRoundEnemies();
+        this.spawingCurrentRoundEnemies();
     }
     updateMap(mouse) {
         this.updateScreenGame();
         this.updateEnemies();
         this.updatePlacementTiles(mouse);
-        this.updateTowers(this.shootingAudio);
-        // this.updateCoins()
-        // this.updateMapHP()
+        this.updateTowers();
+        this.drawCoinsAndGameHealth();
         this.updateDashboardEnemies();
         return [this.isGameOver, this.isVictory];
     }
@@ -50,43 +46,10 @@ export default class GameMap {
     }
     drawCoinsAndGameHealth() { }
     updateDashboardEnemies() {
-        const sourcString = ['../../public/src/assets/images/borders/1.png'];
-        const imageSources = createImageSources(sourcString);
-        const sourcString1 = ['../../public/src/assets/images/borders/4.png'];
-        const imageSources1 = createImageSources(sourcString1);
-        const a = new Sprite({
-            position: { x: 0, y: 64 },
-            offset: { x: 0, y: 0 },
-            imageSources,
-            width: 64,
-            height: 64,
-            frame: { maxX: 1, maxY: 1, holdTime: 4 },
+        this.currentDashboardEnemiesInfo.forEach((dashboardEnemyInfor) => {
+            dashboardEnemyInfor.dashboardEnemy.draw({ sourceIndex: 3 });
+            dashboardEnemyInfor.dashboardEnemyBorder.update();
         });
-        const b = new Sprite({
-            position: { x: 64 * 1, y: 64 },
-            offset: { x: 0, y: 0 },
-            imageSources: imageSources1,
-            width: 64,
-            height: 64,
-            frame: { maxX: 1, maxY: 1, holdTime: 4 },
-        });
-        a.draw({ sourceIndex: 0 });
-        b.draw({ sourceIndex: 0 });
-        this.currentDashboardEnemiesInfo[0].enemy.draw({ sourceIndex: 3 });
-        this.currentDashboardEnemiesInfo[1].enemy.draw({ sourceIndex: 3 });
-        // dragon.draw({ sourceIndex: 2 })
-    }
-    updateMapHP() {
-        const coinsHtml = document.querySelector('#hearts');
-        if (coinsHtml) {
-            coinsHtml.textContent = this.limitAttacks.toString();
-        }
-    }
-    updateCoins() {
-        const coinsHtml = document.querySelector('#coins');
-        if (coinsHtml) {
-            coinsHtml.textContent = this.coins.toString();
-        }
     }
     get currentEnemiesData() {
         return this._currentEnemiesData;
@@ -96,16 +59,16 @@ export default class GameMap {
             placementTile.update(mouse);
         });
     }
-    updateTowers(shootingAudio) {
+    updateTowers() {
         this.towers.forEach((tower) => {
-            tower.update({ enemies: this._currentEnemiesData, shootingAudio });
+            tower.update({ enemies: this._currentEnemiesData, shootingAudio: this.shootingAudio });
         });
     }
     updateEnemies() {
         if (this._currentEnemiesData.length <= 0) {
             if (this.currentRoundIndex < this.rounds.length - 1) {
                 this.currentRoundIndex++;
-                this.createCurrentRoundEnemies();
+                this.spawingCurrentRoundEnemies();
             }
             else {
                 this.isVictory = true;
@@ -143,66 +106,111 @@ export default class GameMap {
         var _a;
         if (!this.activeTile)
             return;
-        switch (towerType) {
-            case E_tower.BLOOD_MOON:
-                if (this.coins < BloodMoon.prices)
-                    return;
-                this.towers.push(new BloodMoon({ position: (_a = this.activeTile) === null || _a === void 0 ? void 0 : _a.position }));
-                this.coins -= BloodMoon.prices;
-                break;
-            default:
-                throw new Error('we dont have this tower');
+        const towerBaseProperties = getBaseTowerProperties(towerType);
+        if (towerBaseProperties) {
+            if (this.coins < towerBaseProperties.prices)
+                return;
+            this.coins -= towerBaseProperties.prices;
+            const towerOptions = {
+                name: towerBaseProperties.name,
+                projectileType: towerBaseProperties.projectileInfo.projectileType,
+                towerType: towerBaseProperties.towerType,
+                position: (_a = this.activeTile) === null || _a === void 0 ? void 0 : _a.position,
+                offset: towerBaseProperties.offset,
+                width: towerBaseProperties.width,
+                height: towerBaseProperties.height,
+                frame: towerBaseProperties.frame,
+                imageSourceString: towerBaseProperties.imageSourceString,
+                attackSpeed: towerBaseProperties.attackSpeed,
+                attackArea: towerBaseProperties.attackArea,
+                damage: towerBaseProperties.damage,
+            };
+            const tower = new Tower(towerOptions);
+            this.towers.push(tower);
         }
     }
-    createCurrentRoundEnemies() {
+    spawingCurrentRoundEnemies() {
         if (this.rounds.length <= 0) {
             this._currentEnemiesData = [];
         }
         this.currentDashboardEnemiesInfo = [];
         const currentRound = this.rounds[this.currentRoundIndex];
         currentRound.enemies.forEach((enemyInfo, index) => {
-            const enemy = {
-                enemyType: enemyInfo.enemyType,
-                position: { x: 64 * index, y: 64 },
-                offset: { x: 18, y: 20 },
-                width: 100,
-                height: 100,
-            };
-            const dashboardEnemy = this.createEnemy(enemy);
-            this.currentDashboardEnemiesInfo.push({
-                enemyType: enemyInfo.enemyType,
-                enemy: dashboardEnemy,
-                remainEnemiesTotal: enemyInfo.amount,
-            });
-            for (let i = 0; i < enemyInfo.amount; i++) {
-                const space = randomNumberInRange(enemyInfo.spaceMin, enemyInfo.spaceMax);
-                const position = { x: enemyInfo.basePosition.x - space * i, y: enemyInfo.basePosition.y };
-                const enemy = this.createEnemy({
-                    position,
+            const baseEnemyProperty = getBaseEnemyProperties(enemyInfo.enemyType);
+            if (baseEnemyProperty) {
+                //create dashboard enemies and its border
+                const dashboardEnemy = this.createDashboardEnemy(enemyInfo, baseEnemyProperty, index);
+                const dashboardEnemyBorderOptions = {
+                    name: baseEnemyProperty.dashboardBorderInfo.name,
+                    position: { x: 64 * index, y: 64 },
+                    frame: baseEnemyProperty.dashboardBorderInfo.frame,
+                    offset: baseEnemyProperty.dashboardBorderInfo.offset,
+                    width: baseEnemyProperty.dashboardBorderInfo.width,
+                    height: baseEnemyProperty.dashboardBorderInfo.height,
+                    imageSourceString: baseEnemyProperty.dashboardBorderInfo.imageSourceString,
+                };
+                const dashboardEnemyBorder = new Border(dashboardEnemyBorderOptions);
+                this.currentDashboardEnemiesInfo.push({
                     enemyType: enemyInfo.enemyType,
-                    moveSpeed: enemyInfo.moveSpeed,
-                    health: enemyInfo.health,
-                    coins: enemyInfo.coins,
+                    dashboardEnemy,
+                    dashboardEnemyBorder,
+                    remainEnemiesTotal: enemyInfo.amount,
                 });
-                this._currentEnemiesData.push(enemy);
+                //create battle enemies
+                for (let i = 0; i < enemyInfo.amount; i++) {
+                    const battleEnemy = this.createBattleEnemy(enemyInfo, baseEnemyProperty, i);
+                    this._currentEnemiesData.push(battleEnemy);
+                }
             }
         });
     }
-    createEnemy(enemy) {
-        switch (enemy.enemyType) {
-            case E_enemy.DRAGON:
-                return new Dragon(enemy);
-            case E_enemy.BEAR:
-                return new Bear(enemy);
-            case E_enemy.BROOD_MOTHER:
-                return new BroodMother(enemy);
-            case E_enemy.FOX:
-                return new Fox(enemy);
-            case E_enemy.SIREN:
-                return new Siren(enemy);
-            default:
-                throw new Error('we dont have this enemy');
-        }
+    createBattleEnemy(enemyInfo, baseEnemyProperty, index) {
+        const space = randomNumberInRange(enemyInfo.spaceMin, enemyInfo.spaceMax);
+        const position = { x: enemyInfo.basePosition.x - space * index, y: enemyInfo.basePosition.y };
+        const battleEnemyOptions = {
+            name: baseEnemyProperty.name,
+            enemyType: enemyInfo.enemyType,
+            position,
+            offset: baseEnemyProperty.offset,
+            frame: {
+                maxX: baseEnemyProperty.maxX,
+                maxY: baseEnemyProperty.maxY,
+                holdTime: calculateHoldTime({
+                    maxX: baseEnemyProperty.maxX,
+                    maxY: baseEnemyProperty.maxY,
+                    moveSpeed: enemyInfo.moveSpeed,
+                }),
+            },
+            imageSourceString: baseEnemyProperty.imageSourceString,
+            width: baseEnemyProperty.width,
+            height: baseEnemyProperty.height,
+            moveSpeed: enemyInfo.moveSpeed,
+            coins: enemyInfo.coins,
+            health: enemyInfo.health,
+        };
+        return new Enemy(battleEnemyOptions);
+    }
+    createDashboardEnemy(enemyInfo, baseEnemyProperty, index) {
+        const enemyOptions = {
+            name: baseEnemyProperty.name,
+            enemyType: enemyInfo.enemyType,
+            position: { x: 64 * index, y: 64 },
+            offset: { x: 18, y: 20 },
+            frame: {
+                maxX: baseEnemyProperty.maxX,
+                maxY: baseEnemyProperty.maxY,
+                holdTime: calculateHoldTime({
+                    maxX: baseEnemyProperty.maxX,
+                    maxY: baseEnemyProperty.maxY,
+                    moveSpeed: enemyInfo.moveSpeed,
+                }),
+            },
+            imageSourceString: baseEnemyProperty.imageSourceString,
+            width: 100,
+            height: 100,
+            moveSpeed: enemyInfo.moveSpeed,
+        };
+        return new Enemy(enemyOptions);
     }
     checkActiveTile({ mouse }) {
         var _a;

@@ -1,7 +1,12 @@
 import { E_enemy } from 'src/enum/index.js'
 import context2D from '../../context2D/index.js'
-import { calAngleFromPointAToPointB, calFullHealthWidth, getVectorNomalized } from '../../helper/index.js'
-import { T_frame, T_position } from '../../types/index.js'
+import {
+    calAngleFromPointAToPointB,
+    calFullHealthWidth,
+    createImageSources,
+    getVectorNomalized,
+} from '../../helper/index.js'
+import { T_enemy, T_position } from '../../types/index.js'
 import Projectile from '../projectiles/index.js'
 import Sprite from '../sprite/index.js'
 enum DragonSourceIndex {
@@ -16,19 +21,8 @@ interface healthBar {
     borderRadius: number
     strokeStyle: string
 }
-interface props {
-    enemyType: E_enemy
-    position: T_position
-    offset: T_position
-    width: number
-    height: number
-    imageSources: HTMLImageElement[]
-    frame: T_frame
-    coins: number
-    moveSpeed: number
-    health: number
-}
 export default class Enemy extends Sprite {
+    public name: string
     public enemyType: E_enemy
     private moveSpeed: number
     private velocityX: number
@@ -37,7 +31,20 @@ export default class Enemy extends Sprite {
     private currentWayPointIndex: number
     private health: number
     private _remainHealth: number
-    constructor({ position, offset, width, height, imageSources, frame, coins, moveSpeed, health, enemyType }: props) {
+    constructor({
+        name,
+        position,
+        offset = { x: 0, y: 0 },
+        width = 124,
+        height = 124,
+        imageSourceString,
+        frame,
+        coins = 1,
+        moveSpeed = 1,
+        health = 1000,
+        enemyType,
+    }: T_enemy) {
+        const imageSources: HTMLImageElement[] = createImageSources(imageSourceString)
         super({
             position,
             offset,
@@ -46,6 +53,7 @@ export default class Enemy extends Sprite {
             imageSources,
             frame,
         })
+        this.name = name
         this.moveSpeed = moveSpeed
         this.velocityX = 0
         this.velocityY = 0

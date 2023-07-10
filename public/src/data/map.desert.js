@@ -123,7 +123,7 @@ const rounds = [
     },
 ];
 const backgroundImage = new Image();
-const limitAttacks = 10000;
+const limitAttacks = 100;
 const startCoins = 20;
 backgroundImage.src = '../../public/src/assets/images/gameMap.png';
 const desertMapData = { rounds, backgroundImage, placementTiles2D, waypoints, limitAttacks, startCoins };

@@ -1,5 +1,5 @@
 import { BASE_HEALTH } from '../constants/index.js'
-import gameData from '../data/index.js'
+import gameData from '../data/gameMaps/index.js'
 import { E_gameMap } from '../enum/index.js'
 import { T_gameMapData, T_position } from '../types/index.js'
 function calculateDistanceTwoPoint(pointA: T_position, pointB: T_position): number {
@@ -57,7 +57,7 @@ function getGameMapData(gameMapType: E_gameMap): T_gameMapData | undefined {
     }
     return undefined
 }
-function deepClone(data: any) {
+function deepClone(data: any): any {
     if (typeof data !== 'object' || data === null) {
         return data
     }

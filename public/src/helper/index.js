@@ -1,5 +1,5 @@
 import { BASE_HEALTH } from '../constants/index.js';
-import gameData from '../data/index.js';
+import gameData from '../data/gameMaps/index.js';
 function calculateDistanceTwoPoint(pointA, pointB) {
     const dx = pointA.x - pointB.x;
     const dy = pointA.y - pointB.y;
