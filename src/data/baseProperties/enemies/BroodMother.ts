@@ -13,26 +13,78 @@ const BroodMother: T_baseEnemyProperties = {
     initFrames: {
         [E_behaviors.RUN]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/run/top_0.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/left_290.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/run/left_290.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/run/right_90.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/run/bottom_180.png',
                 maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+        },
+        [E_behaviors.DEATH]: {
+            [E_angels.ANGEL_0]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/death/top_0.png',
+                maxX: 6,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_290]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/death/left_290.png',
+                maxX: 6,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_90]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/death/right_90.png',
+                maxX: 6,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_180]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/death/bottom_180.png',
+                maxX: 6,
+                maxY: 4,
+                holdTime: 4,
+            },
+        },
+        [E_behaviors.ATTACK]: {
+            [E_angels.ANGEL_0]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/attack/top_0.png',
+                maxX: 5,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_290]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/attack/left_290.png',
+                maxX: 5,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_90]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/attack/right_90.png',
+                maxX: 5,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_180]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Broodmother/attack/bottom_180.png',
+                maxX: 5,
                 maxY: 4,
                 holdTime: 4,
             },

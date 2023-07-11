@@ -53,6 +53,9 @@ type T_enemy = {
     moveSpeed?: number
     health?: number
     coins?: number
+    damage?: number
+    attackRange?: number
+    attackSpeed?: number
 }
 type T_dashboardEnemyBorder = {
     name: string
@@ -116,6 +119,8 @@ type T_projectile = {
     height?: number
     moveSpeed?: number
     damage?: number
+    behaviorKey?: E_behaviors
+    angelKey?: E_angels
 }
 type T_baseTowerProperties = {
     name: string
@@ -136,6 +141,7 @@ type T_baseGateProperties = {
     offset: T_position
     width: number
     height: number
+    health?: number
     initFrames: T_initFramesDictionary
     attackSpeed: number
     attackRange: number
@@ -161,7 +167,8 @@ type T_gate = {
     health?: number
     attackSpeed?: number
     attackRange?: number
-    baseGateProperties: T_baseGateProperties
+    behaviorKey?: E_behaviors
+    angelKey?: E_angels
 }
 export {
     T_baseEnemyProperties,

@@ -4,6 +4,8 @@ enum E_enemy {
     FOX = 3,
     SIREN = 4,
     BROOD_MOTHER = 5,
+    Blue_Brood_Mother = 6,
+    TIDE_HUNTER,
 }
 enum E_tower {
     BLOOD_MOON = 1,
@@ -18,11 +20,12 @@ enum E_explosion {
     FIRE_BALL,
 }
 enum E_gate {
-    Egg,
+    GIRL_HERO,
 }
 enum E_behaviors {
     RUN = 'run',
     ATTACK = 'attack',
+    ATTACK_BOW = 'attackBow',
     DEATH = 'death',
     IDLE = 'idle',
 }
@@ -31,5 +34,7 @@ enum E_angels {
     ANGEL_90 = '90degree',
     ANGEL_180 = '180degree',
     ANGEL_290 = '290degree',
+    ANGEL_35 = '35degree',
+    ANGEL_145 = '145degree',
 }
 export { E_angels, E_behaviors, E_enemy, E_explosion, E_gameMap, E_gate, E_projectile, E_tower }

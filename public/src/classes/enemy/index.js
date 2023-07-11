@@ -1,9 +1,8 @@
-import { E_angels, E_behaviors } from 'src/enum/index.js';
-import context2D from '../../context2D/index.js';
-import { calAngleFromPointAToPointB, calFullHealthWidth, createFrames, getVectorNomalized } from '../../helper/index.js';
+import { E_angels, E_behaviors } from '../../enum/index.js';
+import { calAngleFromPointAToPointB, createFrames, getVectorNomalized, updateHealthBars } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Enemy extends Sprite {
-    constructor({ name, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, coins = 1, moveSpeed = 1, health = 1000, enemyType, angelKey = E_angels.ANGEL_90, behaviorKey = E_behaviors.RUN, }) {
+    constructor({ name, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, coins = 1, moveSpeed = 1, health = 1000, damage = 100, attackRange = 200, attackSpeed = 5, enemyType, angelKey = E_angels.ANGEL_90, behaviorKey = E_behaviors.RUN, }) {
         const frames = createFrames({ initFrames, moveSpeed });
         super({
             position,
@@ -21,9 +20,14 @@ export default class Enemy extends Sprite {
         this.coins = coins;
         this._remainHealth = health;
         this.health = health;
+        this.damage = damage;
+        this.attackRange = attackRange;
+        this.attackSpeed = attackSpeed;
         this.enemyType = enemyType;
         this.behaviorKey = behaviorKey;
         this.angelKey = angelKey;
+        this.countAttackTime = 0;
+        this.holdAttack = parseInt((200 / attackSpeed).toString());
     }
     set remainHealth(remainHealth) {
         if (remainHealth <= 0) {
@@ -40,103 +44,27 @@ export default class Enemy extends Sprite {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
         this.updateFrameKeys(waypoints);
         this.updatePosition(waypoints);
-        this.updateHealthBars();
+        updateHealthBars({ sprite: this, health: this.health, remainHealth: this.remainHealth });
+    }
+    attackGate(gate) {
+        if (this.countAttackTime < this.holdAttack) {
+            this.countAttackTime++;
+            return;
+        }
+        this.countAttackTime = 0;
+        gate.getHit(this.damage);
     }
     updateDeathEffect() {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
     }
+    updateEnemyAttackGate({ gate }) {
+        this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
+        updateHealthBars({ sprite: this, health: this.health, remainHealth: this.remainHealth });
+        if (gate)
+            this.attackGate(gate);
+    }
     updateFrameKeys(waypoints) {
         this.updateAngelKey(waypoints);
-    }
-    drawRemainHealthBar({ drawOption, remainHealthWidth, fullHealthWidth, fillStyle, }) {
-        if (context2D) {
-            const center = (this.width - 2 * this.offset.x - fullHealthWidth) / 2;
-            const x = this.position.x + center;
-            const y = this.position.y - this.height + 2 * this.offset.y;
-            // start draw
-            context2D.beginPath();
-            // draw top
-            context2D.moveTo(x + drawOption.borderRadius, y);
-            context2D.lineTo(x + remainHealthWidth, y);
-            context2D.arcTo(x + remainHealthWidth, y, x + remainHealthWidth, y + drawOption.borderRadius, drawOption.borderRadius);
-            // draw right
-            context2D.lineTo(x + remainHealthWidth, y + drawOption.height);
-            // draw bottom
-            context2D.arcTo(x + remainHealthWidth, y + drawOption.height, x + remainHealthWidth - drawOption.borderRadius, y + drawOption.height, drawOption.borderRadius);
-            context2D.lineTo(x + drawOption.borderRadius, y + drawOption.height);
-            // draw left border radius
-            context2D.arcTo(x, y + drawOption.height, x, y + drawOption.borderRadius, drawOption.borderRadius);
-            context2D.lineTo(x, y + drawOption.borderRadius);
-            // draw left border radius
-            context2D.arcTo(x, y, x + drawOption.borderRadius, y, drawOption.borderRadius);
-            context2D.closePath();
-            context2D.strokeStyle = drawOption.strokeStyle;
-            context2D.fillStyle = fillStyle;
-            context2D.lineWidth = drawOption.lineWidth;
-            context2D.stroke();
-            context2D.fill();
-        }
-    }
-    drawHealthBarFull({ drawOption, fullHealthWidth, fillStyle, }) {
-        if (context2D) {
-            const center = (this.width - 2 * this.offset.x - fullHealthWidth) / 2;
-            const x = this.position.x + center;
-            const y = this.position.y - this.height + 2 * this.offset.y;
-            context2D.beginPath();
-            // draw top rectangle
-            context2D.moveTo(x + drawOption.borderRadius, y);
-            context2D.lineTo(x + fullHealthWidth - drawOption.borderRadius, y);
-            context2D.arcTo(x + fullHealthWidth, y, x + fullHealthWidth, y + drawOption.borderRadius, drawOption.borderRadius);
-            // draw right rectangle
-            context2D.lineTo(x + fullHealthWidth, y + drawOption.height - drawOption.borderRadius);
-            context2D.arcTo(x + fullHealthWidth, y + drawOption.height, x + fullHealthWidth - drawOption.borderRadius, y + drawOption.height, drawOption.borderRadius);
-            // draw bottom rectangle
-            context2D.lineTo(x + drawOption.borderRadius, y + drawOption.height);
-            context2D.arcTo(x, y + drawOption.height, x, y + drawOption.height - drawOption.borderRadius, drawOption.borderRadius);
-            // draw left rectangle
-            context2D.lineTo(x, y + drawOption.borderRadius);
-            context2D.arcTo(x, y, x + drawOption.borderRadius, y, drawOption.borderRadius);
-            // end draw
-            context2D.closePath();
-            // draw stroke and color
-            context2D.strokeStyle = drawOption.strokeStyle;
-            context2D.fillStyle = fillStyle;
-            context2D.lineWidth = drawOption.lineWidth;
-            context2D.stroke();
-            context2D.fill();
-            this.drawHealthText(x, y, fullHealthWidth);
-        }
-    }
-    drawHealthText(x, y, fullHealthWidth) {
-        if (context2D) {
-            context2D.font = '16px Arial';
-            context2D.fillStyle = 'white';
-            const remainHealthString = this.remainHealth.toString();
-            const textWidth = context2D.measureText(remainHealthString).width;
-            context2D.fillText(remainHealthString, x + fullHealthWidth / 2 - textWidth / 2, y - 8);
-        }
-    }
-    updateHealthBars() {
-        const drawOption = {
-            lineWidth: 2,
-            height: 8,
-            borderRadius: 4,
-            strokeStyle: 'white',
-        };
-        const fullHealthWidth = calFullHealthWidth(this.health);
-        const remainHealthWidth = (this.remainHealth * fullHealthWidth) / this.health;
-        this.drawHealthBarFull({ drawOption, fullHealthWidth, fillStyle: 'red' });
-        if (fullHealthWidth === remainHealthWidth) {
-            this.drawHealthBarFull({ drawOption, fullHealthWidth, fillStyle: 'green' });
-        }
-        else {
-            this.drawRemainHealthBar({
-                drawOption,
-                fullHealthWidth,
-                remainHealthWidth,
-                fillStyle: 'green',
-            });
-        }
     }
     updatePosition(waypoints) {
         this.updateVelocity(waypoints);
@@ -172,11 +100,11 @@ export default class Enemy extends Sprite {
             angelKey = E_angels.ANGEL_180;
         }
         if (angel <= 180 && angel > 135) {
-            angelKey = E_angels.ANGEL_90;
+            angelKey = E_angels.ANGEL_290;
         }
         this.angelKey = angelKey;
     }
-    attacked(projectile) {
+    getHit(projectile) {
         this.remainHealth -= projectile.damage;
     }
 }

@@ -29,7 +29,7 @@ export default class Tower extends Sprite {
         if (context2D) {
             context2D.beginPath();
             context2D.arc(this.position.x + this.offset.x, this.position.y, this.attackRange, 0, 2 * Math.PI);
-            context2D.fillStyle = 'rgba(225,225,225,0,1)';
+            context2D.fillStyle = 'rgba(225,225,225,0.1)';
             context2D.fill();
         }
     }
@@ -101,7 +101,7 @@ export default class Tower extends Sprite {
             };
             const distance = calculateDistanceTwoPoint(currentProjectile.position, realEnemyPostion);
             if (distance < 5) {
-                currentProjectile.targetEnemy.attacked(currentProjectile);
+                currentProjectile.targetEnemy.getHit(currentProjectile);
                 if (this.baseTowerProperties) {
                     //create explosion
                     const position = {
@@ -128,12 +128,13 @@ export default class Tower extends Sprite {
         }
         //update or delete explosions - when explosion finieshed one time animation then delete it,otherwise update it
         for (var i = this.explosions.length - 1; i >= 0; i--) {
+            const currentExplosion = this.explosions[i];
+            this.explosions[i].update();
             const currentExplosionFrame = this.explosions[i].currentFrame;
             if (!currentExplosionFrame) {
                 this.explosions.splice(i, 1);
                 continue;
             }
-            const currentExplosion = this.explosions[i];
             const isFinishedOneTimeAnimation = currentExplosion.cropPosition.x === currentExplosionFrame.maxX - 1 &&
                 currentExplosion.cropPosition.y === currentExplosionFrame.maxY - 1;
             if (isFinishedOneTimeAnimation) {
@@ -141,9 +142,6 @@ export default class Tower extends Sprite {
                     shootingAudio.play();
                 }
                 this.explosions.splice(i, 1);
-            }
-            else {
-                this.explosions[i].update();
             }
         }
     }

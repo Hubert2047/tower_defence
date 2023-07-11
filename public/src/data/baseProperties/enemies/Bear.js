@@ -11,27 +11,79 @@ const Bear = {
     initFrames: {
         [E_behaviors.RUN]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Bear/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Bear/run/top_0.png',
                 maxX: 4,
                 maxY: 5,
                 holdTime: 4,
             },
             [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Bear/left_290.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Bear/run/left_290.png',
                 maxX: 4,
                 maxY: 5,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Bear/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Bear/run/right_90.png',
                 maxX: 4,
                 maxY: 5,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Bear/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Bear/run/bottom_180.png',
                 maxX: 4,
                 maxY: 5,
+                holdTime: 4,
+            },
+        },
+        [E_behaviors.DEATH]: {
+            [E_angels.ANGEL_0]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Bear/death/top_0.png',
+                maxX: 6,
+                maxY: 5,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_290]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Bear/death/left_290.png',
+                maxX: 6,
+                maxY: 5,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_90]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Bear/death/right_90.png',
+                maxX: 6,
+                maxY: 5,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_180]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Bear/death/bottom_180.png',
+                maxX: 6,
+                maxY: 5,
+                holdTime: 4,
+            },
+        },
+        [E_behaviors.ATTACK]: {
+            [E_angels.ANGEL_0]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Bear/attack/top_0.png',
+                maxX: 6,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_290]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Bear/attack/left_290.png',
+                maxX: 6,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_90]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Bear/attack/right_90.png',
+                maxX: 6,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_180]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Bear/attack/bottom_180.png',
+                maxX: 6,
+                maxY: 4,
                 holdTime: 4,
             },
         },

@@ -11,25 +11,77 @@ const NagaSiren = {
     initFrames: {
         [E_behaviors.RUN]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Siren/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Siren/run/top_0.png',
                 maxX: 5,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Siren/left_290.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Siren/run/left_290.png',
                 maxX: 5,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Siren/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Siren/run/right_90.png',
                 maxX: 5,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Siren/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Siren/run/bottom_180.png',
+                maxX: 5,
+                maxY: 4,
+                holdTime: 4,
+            },
+        },
+        [E_behaviors.DEATH]: {
+            [E_angels.ANGEL_0]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Siren/death/top_0.png',
+                maxX: 6,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_290]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Siren/death/left_290.png',
+                maxX: 6,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_90]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Siren/death/right_90.png',
+                maxX: 6,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_180]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Siren/death/bottom_180.png',
+                maxX: 6,
+                maxY: 4,
+                holdTime: 4,
+            },
+        },
+        [E_behaviors.ATTACK]: {
+            [E_angels.ANGEL_0]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Siren/attack/top_0.png',
+                maxX: 5,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_290]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Siren/attack/left_290.png',
+                maxX: 5,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_90]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Siren/attack/right_90.png',
+                maxX: 5,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_180]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Siren/attack/bottom_180.png',
                 maxX: 5,
                 maxY: 4,
                 holdTime: 4,

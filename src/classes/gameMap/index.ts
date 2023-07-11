@@ -1,8 +1,9 @@
 import { POSITION_GOAL, TILE_SIZE } from '../../constants/index.js'
 import context2D from '../../context2D/index.js'
 import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js'
+import gatesBaseProperties from '../../data/baseProperties/gates/index.js'
 import getBaseTowerProperties from '../../data/baseProperties/towers/index.js'
-import { E_angels, E_behaviors, E_enemy, E_tower } from '../../enum/index.js'
+import { E_angels, E_behaviors, E_enemy, E_gate, E_tower } from '../../enum/index.js'
 import { createFrames, randomNumberInRange } from '../../helper/index.js'
 import {
     T_baseEnemyProperties,
@@ -11,6 +12,7 @@ import {
     T_enemy,
     T_enemyInfo,
     T_gameMapData,
+    T_gate,
     T_initFramesDictionary,
     T_position,
     T_round,
@@ -19,6 +21,7 @@ import {
 } from '../../types/index.js'
 import Border from '../dashboardEnemyBorder/index.js'
 import Enemy from '../enemy/index.js'
+import Gate from '../gate/index.js'
 import PlacementTile from '../placementTile/index.js'
 import Sprite from '../sprite/index.js'
 import Tower from '../tower/index.js'
@@ -44,16 +47,15 @@ export default class GameMap {
     private waypoints: T_position[]
     private limitAttacks: number
     public coins: number
-    private isGameOver: boolean
     private isVictory: boolean
     public shootingAudio: HTMLElement | HTMLAudioElement | null
     private _activeTile: PlacementTile | null
     private menu: Sprite
     private coinsIcon: Sprite
     private heartIcon: Sprite
-    private eggs: Sprite
     private effect: Sprite
     private deathEffectEnemies: Enemy[]
+    private gate: Gate
     private currentDashboardEnemiesInfo: T_dashboardEnemiesInfo[]
     constructor({ rounds, placementTiles2D, waypoints, backgroundImage, limitAttacks, startCoins }: T_gameMapData) {
         this._currentEnemiesData = []
@@ -70,14 +72,29 @@ export default class GameMap {
         this.menu = this.createMenu()
         this.coinsIcon = this.createCoinsIcon()
         this.heartIcon = this.createHeartIcon()
-        this.eggs = this.createEgg()
         this.effect = this.createEffec()
         this._activeTile = null
         this.deathEffectEnemies = []
-        this.isGameOver = false
         this.isVictory = false
-
         this.spawingCurrentRoundEnemies()
+        this.gate = this.createGate()
+    }
+    private createGate(): Gate {
+        const gateBaseProperties = gatesBaseProperties(E_gate.GIRL_HERO)
+        const gateOptions: T_gate = {
+            initFrames: gateBaseProperties.initFrames,
+            name: gateBaseProperties.name,
+            width: gateBaseProperties.width,
+            height: gateBaseProperties.height,
+            gateType: gateBaseProperties.gateType,
+            position: { x: 64 * 18, y: 64 * 5 },
+            offset: gateBaseProperties.offset,
+            attackSpeed: gateBaseProperties.attackSpeed,
+            attackRange: gateBaseProperties.attackRange,
+            damage: gateBaseProperties.damage,
+            health: gateBaseProperties.health,
+        }
+        return new Gate(gateOptions)
     }
     public updateMap(mouse: T_position): [boolean, boolean] {
         this.updateScreenGame()
@@ -86,10 +103,18 @@ export default class GameMap {
         this.updateTowers()
         this.updateDashboardEnemies()
         this.drawCoinsAndGameHearts()
-        this.eggs.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
-        this.effect.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
-
-        return [this.isGameOver, this.isVictory]
+        this.updateGate()
+        return this.getGameStatus()
+    }
+    private getGameStatus(): [boolean, boolean] {
+        const isGameOver = this.gate.remainHealth === 0
+        const isVictory = this._currentEnemiesData.length <= 0 && this.currentRoundIndex >= this.rounds.length - 1
+        return [isGameOver, isVictory]
+    }
+    private updateGate() {
+        if (this.gate) {
+            this.gate.update({ enemies: this._currentEnemiesData })
+        }
     }
     private createMenu() {
         const initFrames: T_initFramesDictionary = {
@@ -248,45 +273,6 @@ export default class GameMap {
         }
         return new Sprite(options)
     }
-    private createEgg() {
-        const initFrames: T_initFramesDictionary = {
-            [E_behaviors.IDLE]: {
-                [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../public/src/assets/images/Eggs/eggs_9.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-                [E_angels.ANGEL_290]: {
-                    imageSourceString: '../../public/src/assets/images/Eggs/eggs_9.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-                [E_angels.ANGEL_90]: {
-                    imageSourceString: '../../public/src/assets/images/Eggs/eggs_9.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-                [E_angels.ANGEL_180]: {
-                    imageSourceString: '../../public/src/assets/images/Eggs/eggs_9.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-            },
-        }
-        const frames = createFrames({ initFrames })
-        const options: T_sprite = {
-            frames,
-            position: { x: 64 * 18, y: 64 * 5 },
-            offset: { x: 3, y: 0 },
-            height: 200,
-            width: 200,
-        }
-        return new Sprite(options)
-    }
     public get activeTile(): PlacementTile | null {
         return this._activeTile
     }
@@ -344,7 +330,6 @@ export default class GameMap {
             this.drawText(textOptions)
         })
     }
-
     public get currentEnemiesData() {
         return this._currentEnemiesData
     }
@@ -363,23 +348,10 @@ export default class GameMap {
             if (this.currentRoundIndex < this.rounds.length - 1) {
                 this.currentRoundIndex++
                 this.spawingCurrentRoundEnemies()
-            } else {
-                this.isVictory = true
             }
         }
         for (let i = this._currentEnemiesData.length - 1; i >= 0; i--) {
             const currentEnemy: Enemy = this._currentEnemiesData[i]
-            //enemy reached target gold
-            if (currentEnemy.position.x > POSITION_GOAL) {
-                this.limitAttacks -= 1
-                this._currentEnemiesData.splice(i, 1)
-                this.subtractDashboardEnemies(currentEnemy)
-                if (this.limitAttacks === 0) {
-                    this.isGameOver = true
-                    break
-                }
-                continue
-            }
             if (currentEnemy.remainHealth <= 0) {
                 //enemy dead
                 const deathEnemyOptions: T_enemy = {
@@ -400,25 +372,31 @@ export default class GameMap {
                 this.coins += currentEnemy.coins
                 continue
             }
+            //enemy reached target gold
+            if (currentEnemy.position.x > POSITION_GOAL) {
+                currentEnemy.behaviorKey = E_behaviors.ATTACK
+                currentEnemy.updateEnemyAttackGate({ gate: this.gate })
+                continue
+            }
             currentEnemy.update(this.waypoints)
         }
         this.updateDeathEffectEnemies()
     }
     private updateDeathEffectEnemies() {
         for (let i = this.deathEffectEnemies.length - 1; i >= 0; i--) {
+            const currentDeathEffectEnemy: Enemy = this.deathEffectEnemies[i]
+            currentDeathEffectEnemy.updateDeathEffect()
             const currentDeathEffectEnemyFrame = this.deathEffectEnemies[i].currentFrame
+            // console.log('run in', currentDeathEffectEnemyFrame)
             if (!currentDeathEffectEnemyFrame) {
                 this.deathEffectEnemies.splice(i, 1)
                 continue
             }
-            const currentDeathEffectEnemy: Enemy = this.deathEffectEnemies[i]
             const isFinishedOneTimeAnimation: boolean =
                 currentDeathEffectEnemy.cropPosition.x === currentDeathEffectEnemyFrame.maxX - 1 &&
                 currentDeathEffectEnemy.cropPosition.y === currentDeathEffectEnemyFrame.maxY - 1
             if (isFinishedOneTimeAnimation) {
                 this.deathEffectEnemies.splice(i, 1)
-            } else {
-                currentDeathEffectEnemy.updateDeathEffect()
             }
         }
     }
@@ -467,7 +445,7 @@ export default class GameMap {
                 const dashboardEnemyBorderOptions: T_dashboardEnemyBorder = {
                     name: baseEnemyProperty.dashboardBorderInfo.name,
                     position: { x: 64 * index, y: 64 },
-                    initFrames: baseEnemyProperty.initFrames,
+                    initFrames: baseEnemyProperty.dashboardBorderInfo.initFrames,
                     offset: baseEnemyProperty.dashboardBorderInfo.offset,
                     width: baseEnemyProperty.dashboardBorderInfo.width,
                     height: baseEnemyProperty.dashboardBorderInfo.height,

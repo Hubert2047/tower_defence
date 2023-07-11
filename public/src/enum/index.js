@@ -5,6 +5,8 @@ var E_enemy;
     E_enemy[E_enemy["FOX"] = 3] = "FOX";
     E_enemy[E_enemy["SIREN"] = 4] = "SIREN";
     E_enemy[E_enemy["BROOD_MOTHER"] = 5] = "BROOD_MOTHER";
+    E_enemy[E_enemy["Blue_Brood_Mother"] = 6] = "Blue_Brood_Mother";
+    E_enemy[E_enemy["TIDE_HUNTER"] = 7] = "TIDE_HUNTER";
 })(E_enemy || (E_enemy = {}));
 var E_tower;
 (function (E_tower) {
@@ -24,12 +26,13 @@ var E_explosion;
 })(E_explosion || (E_explosion = {}));
 var E_gate;
 (function (E_gate) {
-    E_gate[E_gate["Egg"] = 0] = "Egg";
+    E_gate[E_gate["GIRL_HERO"] = 0] = "GIRL_HERO";
 })(E_gate || (E_gate = {}));
 var E_behaviors;
 (function (E_behaviors) {
     E_behaviors["RUN"] = "run";
     E_behaviors["ATTACK"] = "attack";
+    E_behaviors["ATTACK_BOW"] = "attackBow";
     E_behaviors["DEATH"] = "death";
     E_behaviors["IDLE"] = "idle";
 })(E_behaviors || (E_behaviors = {}));
@@ -39,5 +42,7 @@ var E_angels;
     E_angels["ANGEL_90"] = "90degree";
     E_angels["ANGEL_180"] = "180degree";
     E_angels["ANGEL_290"] = "290degree";
+    E_angels["ANGEL_35"] = "35degree";
+    E_angels["ANGEL_145"] = "145degree";
 })(E_angels || (E_angels = {}));
 export { E_angels, E_behaviors, E_enemy, E_explosion, E_gameMap, E_gate, E_projectile, E_tower };

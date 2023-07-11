@@ -13,25 +13,77 @@ const Fox: T_baseEnemyProperties = {
     initFrames: {
         [E_behaviors.RUN]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/top_0.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/left_290.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/left_290.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/right_90.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/bottom_180.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+        },
+        [E_behaviors.DEATH]: {
+            [E_angels.ANGEL_0]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/top_0.png',
+                maxX: 4,
+                maxY: 5,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_290]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/left_290.png',
+                maxX: 4,
+                maxY: 5,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_90]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/right_90.png',
+                maxX: 4,
+                maxY: 5,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_180]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/bottom_180.png',
+                maxX: 4,
+                maxY: 5,
+                holdTime: 4,
+            },
+        },
+        [E_behaviors.ATTACK]: {
+            [E_angels.ANGEL_0]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/top_0.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_290]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/left_290.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_90]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/right_90.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_180]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/bottom_180.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,

@@ -1,7 +1,10 @@
+import Sprite from '../classes/sprite/index.js'
 import { BASE_HEALTH } from '../constants/index.js'
+import context2D from '../context2D/index.js'
 import gameData from '../data/gameMaps/index.js'
 import { E_gameMap } from '../enum/index.js'
 import { T_frame, T_gameMapData, T_initFrame, T_initFramesDictionary, T_position } from '../types/index.js'
+
 function calculateDistanceTwoPoint(pointA: T_position, pointB: T_position): number {
     const dx: number = pointA.x - pointB.x
     const dy: number = pointA.y - pointB.y
@@ -15,6 +18,156 @@ function calFullHealthWidth(health: number): number {
 function calculateHoldTime({ maxX, maxY, moveSpeed }: { maxX: number; maxY: number; moveSpeed: number }): number {
     const holdTime = parseInt(((maxX * maxY) / 2 / moveSpeed).toString())
     return holdTime <= 0 ? 1 : holdTime
+}
+function updateHealthBars({ sprite, health, remainHealth }: { sprite: Sprite; health: number; remainHealth: number }) {
+    const drawOption = {
+        lineWidth: 2,
+        height: 8,
+        borderRadius: 4,
+        strokeStyle: 'white',
+    }
+    const fullHealthWidth = calFullHealthWidth(health)
+    const remainHealthWidth = (remainHealth * fullHealthWidth) / health
+    drawHealthBarFull({ sprite, drawOption, fullHealthWidth, remainHealth, fillStyle: 'red' })
+    if (fullHealthWidth === remainHealthWidth) {
+        drawHealthBarFull({ sprite, drawOption, remainHealth, fullHealthWidth, fillStyle: 'green' })
+    } else {
+        drawRemainHealthBar({ sprite, drawOption, fullHealthWidth, remainHealthWidth, fillStyle: 'green' })
+    }
+}
+interface healthBarOptions {
+    lineWidth: number
+    height: number
+    borderRadius: number
+    strokeStyle: string
+}
+function drawRemainHealthBar({
+    sprite,
+    remainHealthWidth,
+    fullHealthWidth,
+    drawOption,
+    fillStyle,
+}: {
+    sprite: Sprite
+    drawOption: healthBarOptions
+    remainHealthWidth: number
+    fullHealthWidth: number
+    fillStyle: string
+}) {
+    if (context2D) {
+        const center = (sprite.width - 2 * sprite.offset.x - fullHealthWidth) / 2
+        const x = sprite.position.x + center
+        const y = sprite.position.y - sprite.height + 2 * sprite.offset.y
+        // start draw
+        context2D.beginPath()
+        // draw top
+        context2D.moveTo(x + drawOption.borderRadius, y)
+        context2D.lineTo(x + remainHealthWidth, y)
+        context2D.arcTo(
+            x + remainHealthWidth,
+            y,
+            x + remainHealthWidth,
+            y + drawOption.borderRadius,
+            drawOption.borderRadius
+        )
+        // draw right
+        context2D.lineTo(x + remainHealthWidth, y + drawOption.height)
+        // draw bottom
+        context2D.arcTo(
+            x + remainHealthWidth,
+            y + drawOption.height,
+            x + remainHealthWidth - drawOption.borderRadius,
+            y + drawOption.height,
+            drawOption.borderRadius
+        )
+        context2D.lineTo(x + drawOption.borderRadius, y + drawOption.height)
+        // draw left border radius
+        context2D.arcTo(x, y + drawOption.height, x, y + drawOption.borderRadius, drawOption.borderRadius)
+        context2D.lineTo(x, y + drawOption.borderRadius)
+        // draw left border radius
+        context2D.arcTo(x, y, x + drawOption.borderRadius, y, drawOption.borderRadius)
+
+        context2D.closePath()
+        context2D.strokeStyle = drawOption.strokeStyle
+        context2D.fillStyle = fillStyle
+        context2D.lineWidth = drawOption.lineWidth
+        context2D.stroke()
+        context2D.fill()
+    }
+}
+function drawHealthBarFull({
+    sprite,
+    remainHealth,
+    fullHealthWidth,
+    drawOption,
+    fillStyle,
+}: {
+    sprite: Sprite
+    drawOption: healthBarOptions
+    fullHealthWidth: number
+    remainHealth: number
+    fillStyle: string
+}) {
+    if (context2D) {
+        const center = (sprite.width - 2 * sprite.offset.x - fullHealthWidth) / 2
+        const x = sprite.position.x + center
+        const y = sprite.position.y - sprite.height + 2 * sprite.offset.y
+        context2D.beginPath()
+
+        // draw top rectangle
+        context2D.moveTo(x + drawOption.borderRadius, y)
+        context2D.lineTo(x + fullHealthWidth - drawOption.borderRadius, y)
+        context2D.arcTo(
+            x + fullHealthWidth,
+            y,
+            x + fullHealthWidth,
+            y + drawOption.borderRadius,
+            drawOption.borderRadius
+        )
+
+        // draw right rectangle
+        context2D.lineTo(x + fullHealthWidth, y + drawOption.height - drawOption.borderRadius)
+        context2D.arcTo(
+            x + fullHealthWidth,
+            y + drawOption.height,
+            x + fullHealthWidth - drawOption.borderRadius,
+            y + drawOption.height,
+            drawOption.borderRadius
+        )
+
+        // draw bottom rectangle
+        context2D.lineTo(x + drawOption.borderRadius, y + drawOption.height)
+        context2D.arcTo(
+            x,
+            y + drawOption.height,
+            x,
+            y + drawOption.height - drawOption.borderRadius,
+            drawOption.borderRadius
+        )
+
+        // draw left rectangle
+        context2D.lineTo(x, y + drawOption.borderRadius)
+        context2D.arcTo(x, y, x + drawOption.borderRadius, y, drawOption.borderRadius)
+
+        // end draw
+        context2D.closePath()
+        // draw stroke and color
+        context2D.strokeStyle = drawOption.strokeStyle
+        context2D.fillStyle = fillStyle
+        context2D.lineWidth = drawOption.lineWidth
+        context2D.stroke()
+        context2D.fill()
+        drawHealthText({ x, y }, fullHealthWidth, remainHealth)
+    }
+}
+function drawHealthText(position: T_position, fullHealthWidth: number, remainHealth: number) {
+    if (context2D) {
+        context2D.font = '16px Arial'
+        context2D.fillStyle = 'white'
+        const remainHealthString = remainHealth.toString()
+        const textWidth = context2D.measureText(remainHealthString).width
+        context2D.fillText(remainHealthString, position.x + fullHealthWidth / 2 - textWidth / 2, position.y - 8)
+    }
 }
 function calAngleFromPointAToPointB(pointA: T_position, pointB: T_position): number {
     const dx: number = pointB.x - pointA.x
@@ -106,4 +259,5 @@ export {
     getGameMapData,
     getVectorNomalized,
     randomNumberInRange,
+    updateHealthBars,
 }
