@@ -1,14 +1,14 @@
 import context2D from '../../context2D/index.js';
 import getBaseTowerProperties from '../../data/baseProperties/towers/index.js';
-import { E_projectile } from '../../enum/index.js';
-import { calculateDistanceTwoPoint, createImageSources } from '../../helper/index.js';
+import { E_projectile, E_spriteStatus } from '../../enum/index.js';
+import { calculateDistanceTwoPoint, createFrames } from '../../helper/index.js';
 import ExplosionProjectile from '../explosionProjectile/index.js';
-import Projectile from '../projectiles/index.js';
+import Projectile from '../projectile/index.js';
 import Sprite from '../sprite/index.js';
 export default class Tower extends Sprite {
-    constructor({ name, towerType, position, offset = { x: 0, y: 0 }, width = 124, height = 124, frame, imageSourceString, projectileType = E_projectile.FIRE, damage = 100, attackSpeed = 1, attackArea = 300, }) {
-        const imageSources = createImageSources(imageSourceString);
-        super({ position, offset, width, height, imageSources, frame });
+    constructor({ name, towerType, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, projectileType = E_projectile.FIRE, damage = 100, attackSpeed = 1, attackArea = 300, }) {
+        const frames = createFrames({ initFrames });
+        super({ position, offset, width, height, frames });
         this.name = name;
         this.towerType = towerType;
         this.damage = damage;
@@ -20,8 +20,8 @@ export default class Tower extends Sprite {
         this.holdAttack = parseInt((200 / attackSpeed).toString());
         this.explosions = [];
     }
-    draw({ sourceIndex }) {
-        super.draw({ sourceIndex });
+    draw({ frameKey }) {
+        super.draw({ frameKey });
         // this.drawAttackRangeCicle()
     }
     drawAttackRangeCicle() {
@@ -33,7 +33,7 @@ export default class Tower extends Sprite {
         }
     }
     update({ enemies, shootingAudio, }) {
-        this.draw({ sourceIndex: 0 });
+        this.draw({ frameKey: E_spriteStatus.IDLE });
         this.attackEnemies(enemies);
         this.updateProjectile(shootingAudio);
     }
@@ -63,8 +63,7 @@ export default class Tower extends Sprite {
                     width: towerBaseProperties.projectileInfo.width,
                     height: towerBaseProperties.projectileInfo.height,
                     offset: towerBaseProperties.projectileInfo.offset,
-                    imageSourceString: towerBaseProperties.projectileInfo.imageSourceString,
-                    frame: towerBaseProperties.projectileInfo.frame,
+                    initFrames: towerBaseProperties.projectileInfo.initFrames,
                 };
                 const newProjectile = new Projectile(projectileOptions);
                 this.projectiles.push(newProjectile);
@@ -117,8 +116,7 @@ export default class Tower extends Sprite {
                         offset: towerBaseProperties.projectileInfo.explosionInfo.offset,
                         width: towerBaseProperties.projectileInfo.explosionInfo.width,
                         height: towerBaseProperties.projectileInfo.explosionInfo.height,
-                        frame: towerBaseProperties.projectileInfo.explosionInfo.frame,
-                        imageSourceString: towerBaseProperties.projectileInfo.explosionInfo.imageSourceString,
+                        initFrames: towerBaseProperties.projectileInfo.explosionInfo.initFrames,
                     };
                     const explosion = new ExplosionProjectile(explosionOptions);
                     this.explosions.push(explosion);
@@ -131,9 +129,14 @@ export default class Tower extends Sprite {
         }
         //update or delete explosions - when explosion finieshed one time animation then delete it,otherwise update it
         for (var i = this.explosions.length - 1; i >= 0; i--) {
+            const currentExplosionFrame = this.explosions[i].currentFrame;
+            if (!currentExplosionFrame) {
+                this.explosions.splice(i, 1);
+                continue;
+            }
             const currentExplosion = this.explosions[i];
-            const isFinishedOneTimeAnimation = currentExplosion.cropPosition.x === currentExplosion.frame.maxX - 1 &&
-                currentExplosion.cropPosition.y === currentExplosion.frame.maxY - 1;
+            const isFinishedOneTimeAnimation = currentExplosion.cropPosition.x === currentExplosionFrame.maxX - 1 &&
+                currentExplosion.cropPosition.y === currentExplosionFrame.maxY - 1;
             if (isFinishedOneTimeAnimation) {
                 if (shootingAudio && shootingAudio instanceof HTMLAudioElement && shootingAudio.paused) {
                     shootingAudio.play();

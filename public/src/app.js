@@ -1,4 +1,4 @@
-import GameMap from './classes/gameMaps/index.js';
+import GameMap from './classes/gameMap/index.js';
 import { resetCanvas } from './context2D/index.js';
 import { E_gameMap, E_tower } from './enum/index.js';
 import { getGameMapData } from './helper/index.js';

@@ -1,9 +1,10 @@
-import { createImageSources, getVectorNomalized } from '../../helper/index.js';
+import { E_spriteStatus } from '../../enum/index.js';
+import { createFrames, getVectorNomalized } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Projectile extends Sprite {
-    constructor({ position, offset = { x: 0, y: 0 }, width = 64, height = 64, imageSourceString, frame, moveSpeed = 1, damage = 100, enemy, }) {
-        const imageSources = createImageSources(imageSourceString);
-        super({ position, offset, width, height, imageSources, frame });
+    constructor({ position, offset = { x: 0, y: 0 }, width = 64, height = 64, initFrames, moveSpeed = 1, damage = 100, enemy, }) {
+        const frames = createFrames({ initFrames });
+        super({ position, offset, width, height, frames });
         this.moveSpeed = moveSpeed;
         this.velocityX = 0;
         this.velocityY = 0;
@@ -11,7 +12,7 @@ export default class Projectile extends Sprite {
         this.targetEnemy = enemy;
     }
     update() {
-        this.draw({ sourceIndex: 0 });
+        this.draw({ frameKey: E_spriteStatus.IDLE });
         this.updatePosition();
     }
     updatePosition() {

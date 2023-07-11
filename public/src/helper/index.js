@@ -32,14 +32,30 @@ function getVectorNomalized(startPointLocation, endPointLocation) {
     };
     return v_normalized;
 }
-function createImageSources(sources) {
-    const imageSources = [];
-    sources.forEach((src) => {
-        const image = new Image();
-        image.src = src;
-        imageSources.push(image);
-    });
-    return imageSources;
+function createImage(sourceString) {
+    const image = new Image();
+    image.src = sourceString;
+    return image;
+}
+function createFrames({ initFrames, moveSpeed, }) {
+    const frames = new Map();
+    const behaviorKeys = Object.keys(initFrames);
+    for (let behaviorKey of behaviorKeys) {
+        const angelKeys = Object.keys(initFrames[behaviorKey]);
+        const currentFrame = new Map();
+        for (let angelKey of angelKeys) {
+            const currentInitFrame = initFrames[behaviorKey][angelKey];
+            const image = createImage(currentInitFrame.imageSourceString);
+            const maxX = currentInitFrame.maxX;
+            const maxY = currentInitFrame.maxY;
+            const holdTime = moveSpeed
+                ? calculateHoldTime({ maxX, maxY, moveSpeed })
+                : currentInitFrame.holdTime;
+            currentFrame.set(angelKey, { image, maxX, maxY, holdTime });
+        }
+        frames.set(behaviorKey, currentFrame);
+    }
+    return frames;
 }
 function getGameMapData(gameMapType) {
     const data = gameData.get(gameMapType);
@@ -70,4 +86,4 @@ function deepClone(data) {
 function randomNumberInRange(min, max) {
     return Math.random() * (max - min) + min;
 }
-export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createImageSources, deepClone, getGameMapData, getVectorNomalized, randomNumberInRange, };
+export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createFrames, createImage, deepClone, getGameMapData, getVectorNomalized, randomNumberInRange, };

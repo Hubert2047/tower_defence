@@ -1,14 +1,22 @@
-import Enemy from '../classes/enemies/index.js'
-import { E_enemy, E_explosion, E_projectile, E_tower } from '../enum/index.js'
+import Enemy from '../classes/enemy/index.js'
+import { E_angels, E_behaviors, E_enemy, E_explosion, E_gate, E_projectile, E_tower } from '../enum/index.js'
 type T_position = {
     x: number
     y: number
 }
-type T_frame = {
+type T_initFrame = {
+    imageSourceString: string
     maxX: number
     maxY: number
     holdTime: number
 }
+type T_frame = {
+    image: HTMLImageElement
+    maxX: number
+    maxY: number
+    holdTime: number
+}
+type T_initFramesDictionary = Record<string, Record<string, T_initFrame>>
 type T_enemyInfo = {
     enemyType: E_enemy
     basePosition: T_position
@@ -36,9 +44,10 @@ type T_enemy = {
     name: string
     enemyType: E_enemy
     position: T_position
-    imageSourceString: string[]
-    frame: T_frame
+    initFrames: T_initFramesDictionary
     offset?: T_position
+    angelKey?: E_angels
+    behaviorKey?: E_behaviors
     width?: number
     height?: number
     moveSpeed?: number
@@ -48,8 +57,7 @@ type T_enemy = {
 type T_dashboardEnemyBorder = {
     name: string
     position: T_position
-    imageSourceString: string[]
-    frame: T_frame
+    initFrames: T_initFramesDictionary
     offset?: T_position
     width?: number
     height?: number
@@ -59,13 +67,11 @@ type T_baseEnemyProperties = {
     enemyType: E_enemy
     width: number
     height: number
-    maxX: number
-    maxY: number
     offset: T_position
     baseHealth: number
     baseMoveSpeed: number
     baseCoins: number
-    imageSourceString: string[]
+    initFrames: T_initFramesDictionary
     dashboardBorderInfo: T_dashboardEnemyBorder
 }
 type T_tower = {
@@ -75,10 +81,9 @@ type T_tower = {
     offset?: T_position
     width?: number
     height?: number
-    frame: T_frame
-    imageSourceString: string[]
+    initFrames: T_initFramesDictionary
     attackSpeed?: number
-    attackArea?: number
+    attackRange?: number
     damage?: number
     projectileType: E_projectile
 }
@@ -89,14 +94,12 @@ type T_explosion = {
     offset?: T_position
     width?: number
     height?: number
-    imageSourceString: string[]
-    frame: T_frame
+    initFrames: T_initFramesDictionary
 }
 type T_projectileInfo = {
     name: string
     projectileType: E_projectile
-    imageSourceString: string[]
-    frame: T_frame
+    initFrames: T_initFramesDictionary
     width: number
     height: number
     offset?: T_position
@@ -106,12 +109,11 @@ type T_projectile = {
     name: string
     ProjectileType: E_projectile
     position: T_position
-    imageSourceString: string[]
+    initFrames: T_initFramesDictionary
     enemy: Enemy
     offset?: T_position
     width?: number
     height?: number
-    frame: T_frame
     moveSpeed?: number
     damage?: number
 }
@@ -122,23 +124,48 @@ type T_baseTowerProperties = {
     width: number
     height: number
     prices: number
-    imageSourceString: string[]
-    frame: T_frame
+    initFrames: T_initFramesDictionary
     attackSpeed: number
-    attackArea: number
+    attackRange: number
     damage: number
     projectileInfo: T_projectileInfo
 }
-type T_Sprite = {
+type T_baseGateProperties = {
+    name: string
+    gateType: E_gate
+    offset: T_position
+    width: number
+    height: number
+    initFrames: T_initFramesDictionary
+    attackSpeed: number
+    attackRange: number
+    damage: number
+    projectileInfo: T_projectileInfo
+}
+type T_sprite = {
     position: T_position
     offset?: T_position
     width?: number
     height?: number
-    imageSources: HTMLImageElement[]
-    frame: T_frame
+    frames: Map<string, Map<string, T_frame>>
+}
+type T_gate = {
+    name: string
+    gateType: E_gate
+    position: T_position
+    offset?: T_position
+    width?: number
+    height?: number
+    initFrames: T_initFramesDictionary
+    damage?: number
+    health?: number
+    attackSpeed?: number
+    attackRange?: number
+    baseGateProperties: T_baseGateProperties
 }
 export {
     T_baseEnemyProperties,
+    T_baseGateProperties,
     T_baseTowerProperties,
     T_dashboardEnemyBorder,
     T_enemy,
@@ -146,10 +173,13 @@ export {
     T_explosion,
     T_frame,
     T_gameMapData,
+    T_gate,
+    T_initFrame,
+    T_initFramesDictionary,
     T_position,
     T_projectile,
     T_projectileInfo,
     T_round,
+    T_sprite,
     T_tower,
-    T_Sprite,
 }

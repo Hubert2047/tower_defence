@@ -3,7 +3,8 @@ import { POSITION_GOAL, TILE_SIZE } from '../../constants/index.js';
 import context2D from '../../context2D/index.js';
 import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js';
 import getBaseTowerProperties from '../../data/baseProperties/towers/index.js';
-import { calculateHoldTime, createImageSources, randomNumberInRange } from '../../helper/index.js';
+import { E_spriteStatus } from '../../enum/index.js';
+import { createFrames, randomNumberInRange } from '../../helper/index.js';
 import Border from '../dashboardEnemyBorder/index.js';
 import Enemy from '../enemies/index.js';
 import PlacementTile from '../PlacementTile.js';
@@ -27,6 +28,7 @@ export default class GameMap {
         this.eggs = this.createEgg();
         this.effect = this.createEffec();
         this._activeTile = null;
+        this.deathEffectEnemies = [];
         this.isGameOver = false;
         this.isVictory = false;
         this.spawingCurrentRoundEnemies();
@@ -38,70 +40,100 @@ export default class GameMap {
         this.updateTowers();
         this.updateDashboardEnemies();
         this.drawCoinsAndGameHearts();
-        this.eggs.draw({ sourceIndex: 0 });
-        this.effect.draw({ sourceIndex: 0 });
+        this.eggs.draw({ frameKey: E_spriteStatus.IDLE });
+        this.effect.draw({ frameKey: E_spriteStatus.IDLE });
         return [this.isGameOver, this.isVictory];
     }
     createMenu() {
-        const sourceString = ['../../public/src/assets/images/screen/layout_target.png'];
-        const imageSources = createImageSources(sourceString);
+        const initFrames = {
+            [E_spriteStatus.IDLE]: {
+                imageSourceString: '../../public/src/assets/images/screen/layout_target.png',
+                maxX: 1,
+                maxY: 1,
+                holdTime: 4,
+            },
+        };
+        const frames = createFrames({ initFrames });
         const options = {
-            imageSources,
+            frames,
             position: { x: 64 * 17, y: 64 * 1 },
             offset: { x: 10, y: 26 },
-            frame: { maxX: 1, maxY: 1, holdTime: 4 },
             height: 120,
             width: 230,
         };
         return new Sprite(options);
     }
     createCoinsIcon() {
-        const sourceString = ['../../public/src/assets/images/screen/coins.png'];
-        const imageSources = createImageSources(sourceString);
+        const initFrames = {
+            [E_spriteStatus.IDLE]: {
+                imageSourceString: '../../public/src/assets/images/screen/coins.png',
+                maxX: 1,
+                maxY: 1,
+                holdTime: 4,
+            },
+        };
+        const frames = createFrames({ initFrames });
         const options = {
-            imageSources,
+            frames,
             position: { x: 64 * 17, y: 64 * 1 },
             offset: { x: 4, y: -12 },
-            frame: { maxX: 1, maxY: 1, holdTime: 4 },
             height: 40,
             width: 40,
         };
         return new Sprite(options);
     }
     createHeartIcon() {
-        const sourceString = ['../../public/src/assets/images/screen/heart.png'];
-        const imageSources = createImageSources(sourceString);
+        const initFrames = {
+            [E_spriteStatus.IDLE]: {
+                imageSourceString: '../../public/src/assets/images/screen/heart.png',
+                maxX: 1,
+                maxY: 1,
+                holdTime: 4,
+            },
+        };
+        const frames = createFrames({ initFrames });
         const options = {
-            imageSources,
+            frames,
             position: { x: 64 * 19, y: 64 * 1 },
             offset: { x: 40, y: -14 },
-            frame: { maxX: 1, maxY: 1, holdTime: 4 },
             height: 34,
             width: 34,
         };
         return new Sprite(options);
     }
     createEffec() {
-        const sourceString = ['../../public/src/assets/images/effect/7_firespin_spritesheet.png'];
-        const imageSources = createImageSources(sourceString);
+        const initFrames = {
+            [E_spriteStatus.IDLE]: {
+                imageSourceString: '../../public/src/assets/images/effect/7_firespin_spritesheet.png',
+                maxX: 1,
+                maxY: 1,
+                holdTime: 4,
+            },
+        };
+        const frames = createFrames({ initFrames });
         const options = {
-            imageSources,
+            frames,
             position: { x: 64 * 16, y: 64 * 6 },
             offset: { x: -20, y: -30 },
-            frame: { maxX: 8, maxY: 8, holdTime: 3 },
             height: 400,
             width: 400,
         };
         return new Sprite(options);
     }
     createEgg() {
-        const sourceString = ['../../public/src/assets/images/Eggs/eggs_9.png'];
-        const imageSources = createImageSources(sourceString);
+        const initFrames = {
+            [E_spriteStatus.IDLE]: {
+                imageSourceString: '../../public/src/assets/images/Eggs/eggs_9.png',
+                maxX: 1,
+                maxY: 1,
+                holdTime: 4,
+            },
+        };
+        const frames = createFrames({ initFrames });
         const options = {
-            imageSources,
+            frames,
             position: { x: 64 * 18, y: 64 * 5 },
             offset: { x: 3, y: 0 },
-            frame: { maxX: 1, maxY: 1, holdTime: 20 },
             height: 200,
             width: 200,
         };
@@ -118,12 +150,12 @@ export default class GameMap {
             context2D.drawImage(this.backgroundImage, 0, 0);
     }
     drawCoinsAndGameHearts() {
-        this.menu.draw({ sourceIndex: 0 });
+        this.menu.draw({ frameKey: E_spriteStatus.IDLE });
         this.drawCoins();
         this.drawHearts();
     }
     drawCoins() {
-        this.coinsIcon.draw({ sourceIndex: 0 });
+        this.coinsIcon.draw({ frameKey: E_spriteStatus.IDLE });
         const textOptions = {
             text: this.coins.toString(),
             position: { x: this.coinsIcon.position.x + 46, y: this.coinsIcon.position.y - 26 },
@@ -133,7 +165,7 @@ export default class GameMap {
         this.drawText(textOptions);
     }
     drawHearts() {
-        this.heartIcon.draw({ sourceIndex: 0 });
+        this.heartIcon.draw({ frameKey: E_spriteStatus.IDLE });
         const textOptions = {
             text: this.limitAttacks.toString(),
             position: { x: this.heartIcon.position.x, y: this.heartIcon.position.y - 26 },
@@ -152,7 +184,7 @@ export default class GameMap {
     updateDashboardEnemies() {
         this.currentDashboardEnemiesInfo.forEach((dashboardEnemyInfor, index) => {
             dashboardEnemyInfor.dashboardEnemyBorder.update();
-            dashboardEnemyInfor.dashboardEnemy.draw({ sourceIndex: 2 });
+            dashboardEnemyInfor.dashboardEnemy.draw({ frameKey: E_spriteStatus.MOVE_RIGHT });
             const textOptions = {
                 text: dashboardEnemyInfor.remainEnemiesTotal.toString(),
                 position: {
@@ -190,10 +222,11 @@ export default class GameMap {
         }
         for (let i = this._currentEnemiesData.length - 1; i >= 0; i--) {
             const currentEnemy = this._currentEnemiesData[i];
+            //enemy reached target gold
             if (currentEnemy.position.x > POSITION_GOAL) {
                 this.limitAttacks -= 1;
                 this._currentEnemiesData.splice(i, 1);
-                this.subtractDisplayEnemies(currentEnemy);
+                this.subtractDashboardEnemies(currentEnemy);
                 if (this.limitAttacks === 0) {
                     this.isGameOver = true;
                     break;
@@ -201,15 +234,46 @@ export default class GameMap {
                 continue;
             }
             if (currentEnemy.remainHealth <= 0) {
+                //enemy dead
+                const deathEnemyOptions = {
+                    name: currentEnemy.name,
+                    position: currentEnemy.position,
+                    enemyType: currentEnemy.enemyType,
+                    initFrames: currentEnemy.initFrames,
+                    offset: currentEnemy.offset,
+                    width: currentEnemy.width,
+                    height: currentEnemy.height,
+                    moveSpeed: currentEnemy.moveSpeed,
+                };
+                this.deathEffectEnemies.push(new Enemy(deathEnemyOptions));
                 this._currentEnemiesData.splice(i, 1);
-                this.subtractDisplayEnemies(currentEnemy);
+                this.subtractDashboardEnemies(currentEnemy);
                 this.coins += currentEnemy.coins;
                 continue;
             }
             currentEnemy.update(this.waypoints);
         }
+        this.updateDeathEffectEnemies();
     }
-    subtractDisplayEnemies(subtractEnemy) {
+    updateDeathEffectEnemies() {
+        for (let i = this.deathEffectEnemies.length - 1; i >= 0; i--) {
+            const currentDeathEffectEnemyFrame = this.deathEffectEnemies[i].currentFrame;
+            if (!currentDeathEffectEnemyFrame) {
+                this.deathEffectEnemies.splice(i, 1);
+                continue;
+            }
+            const currentDeathEffectEnemy = this.deathEffectEnemies[i];
+            const isFinishedOneTimeAnimation = currentDeathEffectEnemy.cropPosition.x === currentDeathEffectEnemyFrame.maxX - 1 &&
+                currentDeathEffectEnemy.cropPosition.y === currentDeathEffectEnemyFrame.maxY - 1;
+            if (isFinishedOneTimeAnimation) {
+                this.deathEffectEnemies.splice(i, 1);
+            }
+            else {
+                currentDeathEffectEnemy.updateDeathEffect({ frameKey: E_spriteStatus.DEATH });
+            }
+        }
+    }
+    subtractDashboardEnemies(subtractEnemy) {
         this.currentDashboardEnemiesInfo.forEach((dashboardEnemy) => {
             if (dashboardEnemy.enemyType === subtractEnemy.enemyType) {
                 dashboardEnemy.remainEnemiesTotal--;
@@ -233,8 +297,7 @@ export default class GameMap {
                 offset: towerBaseProperties.offset,
                 width: towerBaseProperties.width,
                 height: towerBaseProperties.height,
-                frame: towerBaseProperties.frame,
-                imageSourceString: towerBaseProperties.imageSourceString,
+                initFrames: towerBaseProperties.initFrames,
                 attackSpeed: towerBaseProperties.attackSpeed,
                 attackArea: towerBaseProperties.attackArea,
                 damage: towerBaseProperties.damage,
@@ -258,11 +321,10 @@ export default class GameMap {
                 const dashboardEnemyBorderOptions = {
                     name: baseEnemyProperty.dashboardBorderInfo.name,
                     position: { x: 64 * index, y: 64 },
-                    frame: baseEnemyProperty.dashboardBorderInfo.frame,
+                    initFrames: baseEnemyProperty.initFrames,
                     offset: baseEnemyProperty.dashboardBorderInfo.offset,
                     width: baseEnemyProperty.dashboardBorderInfo.width,
                     height: baseEnemyProperty.dashboardBorderInfo.height,
-                    imageSourceString: baseEnemyProperty.dashboardBorderInfo.imageSourceString,
                 };
                 const dashboardEnemyBorder = new Border(dashboardEnemyBorderOptions);
                 this.currentDashboardEnemiesInfo.push({
@@ -288,16 +350,7 @@ export default class GameMap {
             enemyType: enemyInfo.enemyType,
             position,
             offset: baseEnemyProperty.offset,
-            frame: {
-                maxX: baseEnemyProperty.maxX,
-                maxY: baseEnemyProperty.maxY,
-                holdTime: calculateHoldTime({
-                    maxX: baseEnemyProperty.maxX,
-                    maxY: baseEnemyProperty.maxY,
-                    moveSpeed: enemyInfo.moveSpeed,
-                }),
-            },
-            imageSourceString: baseEnemyProperty.imageSourceString,
+            initFrames: baseEnemyProperty.initFrames,
             width: baseEnemyProperty.width,
             height: baseEnemyProperty.height,
             moveSpeed: enemyInfo.moveSpeed,
@@ -312,16 +365,7 @@ export default class GameMap {
             enemyType: enemyInfo.enemyType,
             position: { x: 64 * index, y: 64 },
             offset: { x: 14, y: 16 },
-            frame: {
-                maxX: baseEnemyProperty.maxX,
-                maxY: baseEnemyProperty.maxY,
-                holdTime: calculateHoldTime({
-                    maxX: baseEnemyProperty.maxX,
-                    maxY: baseEnemyProperty.maxY,
-                    moveSpeed: enemyInfo.moveSpeed,
-                }),
-            },
-            imageSourceString: baseEnemyProperty.imageSourceString,
+            initFrames: baseEnemyProperty.initFrames,
             width: 90,
             height: 90,
             moveSpeed: enemyInfo.moveSpeed,

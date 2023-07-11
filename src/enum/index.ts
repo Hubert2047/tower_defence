@@ -17,4 +17,19 @@ enum E_gameMap {
 enum E_explosion {
     FIRE_BALL,
 }
-export { E_enemy, E_gameMap, E_projectile, E_tower, E_explosion }
+enum E_gate {
+    Egg,
+}
+enum E_behaviors {
+    RUN = 'run',
+    ATTACK = 'attack',
+    DEATH = 'death',
+    IDLE = 'idle',
+}
+enum E_angels {
+    ANGEL_0 = '0degree',
+    ANGEL_90 = '90degree',
+    ANGEL_180 = '180degree',
+    ANGEL_290 = '290degree',
+}
+export { E_angels, E_behaviors, E_enemy, E_explosion, E_gameMap, E_gate, E_projectile, E_tower }

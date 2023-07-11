@@ -1,25 +1,19 @@
+import { E_spriteStatus } from 'src/enum/index.js';
 import context2D from '../../context2D/index.js';
-import { calAngleFromPointAToPointB, calFullHealthWidth, createImageSources, getVectorNomalized, } from '../../helper/index.js';
+import { calAngleFromPointAToPointB, calFullHealthWidth, createFrames, getVectorNomalized } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
-var DragonSourceIndex;
-(function (DragonSourceIndex) {
-    DragonSourceIndex[DragonSourceIndex["TopSource"] = 0] = "TopSource";
-    DragonSourceIndex[DragonSourceIndex["LeftSource"] = 1] = "LeftSource";
-    DragonSourceIndex[DragonSourceIndex["RightSource"] = 2] = "RightSource";
-    DragonSourceIndex[DragonSourceIndex["BottomSource"] = 3] = "BottomSource";
-})(DragonSourceIndex || (DragonSourceIndex = {}));
 export default class Enemy extends Sprite {
-    constructor({ name, position, offset = { x: 0, y: 0 }, width = 124, height = 124, imageSourceString, frame, coins = 1, moveSpeed = 1, health = 1000, enemyType, }) {
-        const imageSources = createImageSources(imageSourceString);
+    constructor({ name, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, coins = 1, moveSpeed = 1, health = 1000, enemyType, }) {
+        const frames = createFrames({ initFrames, moveSpeed });
         super({
             position,
             offset,
             width,
             height,
-            imageSources,
-            frame,
+            frames,
         });
         this.name = name;
+        this.initFrames = initFrames;
         this.moveSpeed = moveSpeed;
         this.velocityX = 0;
         this.velocityY = 0;
@@ -41,9 +35,12 @@ export default class Enemy extends Sprite {
         return this._remainHealth;
     }
     update(waypoints) {
-        this.draw({ sourceIndex: this.getCurrentImageSourceIndex(waypoints) });
+        this.draw({ frameKey: this.getCurrentFrameKey(waypoints) });
         this.updatePosition(waypoints);
         this.updateHealthBars();
+    }
+    updateDeathEffect({ frameKey }) {
+        this.draw({ frameKey });
     }
     drawRemainHealthBar({ drawOption, remainHealthWidth, fullHealthWidth, fillStyle, }) {
         if (context2D) {
@@ -156,21 +153,21 @@ export default class Enemy extends Sprite {
         this.velocityX = this.moveSpeed * v_normalized.x;
         this.velocityY = this.moveSpeed * v_normalized.y;
     }
-    getCurrentImageSourceIndex(waypoints) {
+    getCurrentFrameKey(waypoints) {
         const angel = calAngleFromPointAToPointB(this.position, waypoints[this.currentWayPointIndex]);
         if (angel <= 45 && angel > -45) {
-            return DragonSourceIndex.RightSource;
+            return E_spriteStatus.MOVE_RIGHT;
         }
         if (angel <= -45 && angel > -135) {
-            return DragonSourceIndex.TopSource;
+            return E_spriteStatus.MOVE_TOP;
         }
         if (angel <= 135 && angel > 45) {
-            return DragonSourceIndex.BottomSource;
+            return E_spriteStatus.MOVE_BOTTOM;
         }
         if (angel <= 180 && angel > 135) {
-            return DragonSourceIndex.LeftSource;
+            return E_spriteStatus.MOVE_RIGHT;
         }
-        return 1;
+        return E_spriteStatus.MOVE_RIGHT;
     }
     attacked(projectile) {
         this.remainHealth -= projectile.damage;

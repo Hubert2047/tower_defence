@@ -22,4 +22,22 @@ var E_explosion;
 (function (E_explosion) {
     E_explosion[E_explosion["FIRE_BALL"] = 0] = "FIRE_BALL";
 })(E_explosion || (E_explosion = {}));
-export { E_enemy, E_gameMap, E_projectile, E_tower, E_explosion };
+var E_gate;
+(function (E_gate) {
+    E_gate[E_gate["Egg"] = 0] = "Egg";
+})(E_gate || (E_gate = {}));
+var E_behaviors;
+(function (E_behaviors) {
+    E_behaviors["RUN"] = "run";
+    E_behaviors["ATTACK"] = "attack";
+    E_behaviors["DEATH"] = "death";
+    E_behaviors["IDLE"] = "idle";
+})(E_behaviors || (E_behaviors = {}));
+var E_angels;
+(function (E_angels) {
+    E_angels["ANGEL_0"] = "0degree";
+    E_angels["ANGEL_90"] = "90degree";
+    E_angels["ANGEL_180"] = "180degree";
+    E_angels["ANGEL_290"] = "290degree";
+})(E_angels || (E_angels = {}));
+export { E_angels, E_behaviors, E_enemy, E_explosion, E_gameMap, E_gate, E_projectile, E_tower };

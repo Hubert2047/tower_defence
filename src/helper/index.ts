@@ -1,7 +1,7 @@
 import { BASE_HEALTH } from '../constants/index.js'
 import gameData from '../data/gameMaps/index.js'
 import { E_gameMap } from '../enum/index.js'
-import { T_gameMapData, T_position } from '../types/index.js'
+import { T_frame, T_gameMapData, T_initFrame, T_initFramesDictionary, T_position } from '../types/index.js'
 function calculateDistanceTwoPoint(pointA: T_position, pointB: T_position): number {
     const dx: number = pointA.x - pointB.x
     const dy: number = pointA.y - pointB.y
@@ -34,14 +34,37 @@ function getVectorNomalized(startPointLocation: T_position, endPointLocation: T_
     }
     return v_normalized
 }
-function createImageSources(sources: string[]): HTMLImageElement[] {
-    const imageSources: HTMLImageElement[] = []
-    sources.forEach((src) => {
-        const image = new Image()
-        image.src = src
-        imageSources.push(image)
-    })
-    return imageSources
+function createImage(sourceString: string): HTMLImageElement {
+    const image: HTMLImageElement = new Image()
+    image.src = sourceString
+    return image
+}
+function createFrames({
+    initFrames,
+    moveSpeed,
+}: {
+    initFrames: T_initFramesDictionary
+    moveSpeed?: number
+}): Map<string, Map<string, T_frame>> {
+    const frames: Map<string, Map<string, T_frame>> = new Map()
+    const behaviorKeys: string[] = Object.keys(initFrames)
+    for (let behaviorKey of behaviorKeys) {
+        const angelKeys: string[] = Object.keys(initFrames[behaviorKey])
+        const currentFrame: Map<string, T_frame> = new Map()
+        for (let angelKey of angelKeys) {
+            const currentInitFrame: T_initFrame = initFrames[behaviorKey][angelKey]
+            const image: HTMLImageElement = createImage(currentInitFrame.imageSourceString)
+            const maxX: number = currentInitFrame.maxX
+            const maxY: number = currentInitFrame.maxY
+            const holdTime: number = moveSpeed
+                ? calculateHoldTime({ maxX, maxY, moveSpeed })
+                : currentInitFrame.holdTime
+            currentFrame.set(angelKey, { image, maxX, maxY, holdTime })
+        }
+        frames.set(behaviorKey, currentFrame)
+    }
+
+    return frames
 }
 function getGameMapData(gameMapType: E_gameMap): T_gameMapData | undefined {
     const data: T_gameMapData | undefined = gameData.get(gameMapType)
@@ -77,7 +100,8 @@ export {
     calFullHealthWidth,
     calculateDistanceTwoPoint,
     calculateHoldTime,
-    createImageSources,
+    createFrames,
+    createImage,
     deepClone,
     getGameMapData,
     getVectorNomalized,
