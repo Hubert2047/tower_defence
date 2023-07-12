@@ -14,7 +14,7 @@ function calFullHealthWidth(health) {
 }
 function calculateHoldTime({ maxX, maxY, moveSpeed }) {
     const holdTime = parseInt(((maxX * maxY) / 2 / moveSpeed).toString());
-    return holdTime <= 0 ? 1 : holdTime;
+    return holdTime <= 1 ? 1 : holdTime;
 }
 function updateHealthBars({ sprite, health, remainHealth }) {
     const drawOption = {
@@ -181,9 +181,8 @@ function getGameMapData(gameMapType) {
             placementTiles2D: deepClone(data.placementTiles2D),
             backgroundImage: data.backgroundImage,
             waypoints: deepClone(data.waypoints),
-            limitAttacks: data.limitAttacks,
             startCoins: data.startCoins,
-            initDashboardTowerInfo: deepClone(data.waypoints),
+            initDashboardTowerInfo: deepClone(data.initDashboardTowerInfo),
         };
     }
     return undefined;

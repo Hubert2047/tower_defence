@@ -38,7 +38,6 @@ type T_gameMapData = {
     startCoins: number
     waypoints: T_position[]
     initDashboardTowerInfo: T_initDashboardTowerInfo[]
-    limitAttacks: number
 }
 
 type T_enemy = {
@@ -105,11 +104,12 @@ type T_explosion = {
 type T_projectileInfo = {
     name: string
     projectileType: E_projectile
+    moveSpeed?: number
     initFrames: T_initFramesDictionary
     width: number
     height: number
     offset?: T_position
-    explosionInfo: T_explosion
+    explosionInfo?: T_explosion
 }
 type T_projectile = {
     name: string

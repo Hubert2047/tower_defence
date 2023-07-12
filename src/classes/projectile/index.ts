@@ -20,7 +20,7 @@ export default class Projectile extends Sprite {
         moveSpeed = 1,
         damage = 100,
         enemy,
-        behaviorKey = E_behaviors.IDLE,
+        behaviorKey = E_behaviors.ATTACK,
         angelKey = E_angels.ANGEL_0,
     }: T_projectile) {
         const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames })
@@ -36,7 +36,11 @@ export default class Projectile extends Sprite {
     public update(): void {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
         this.updatePosition()
-        this.angelKey = getAngleKeyByTwoPoint(this.position, this.targetEnemy.position)
+        const realPosi = {
+            x: this.targetEnemy.position.x - 2 * this.targetEnemy.offset.x,
+            y: this.targetEnemy.position.y - 2 * this.targetEnemy.offset.y,
+        }
+        this.angelKey = getAngleKeyByTwoPoint(this.position, realPosi)
     }
     private updatePosition(): void {
         this.updateVelocity()

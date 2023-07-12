@@ -11,11 +11,10 @@ import Gate from '../gate/index.js';
 import PlacementTile from '../placementTile/index.js';
 import Tower from '../tower/index.js';
 export default class GameMap {
-    constructor({ rounds, placementTiles2D, waypoints, backgroundImage, limitAttacks, startCoins, initDashboardTowerInfo, }) {
+    constructor({ rounds, placementTiles2D, waypoints, backgroundImage, startCoins, initDashboardTowerInfo, }) {
         this._currentEnemiesData = [];
         this.rounds = rounds;
         this.waypoints = waypoints;
-        this.limitAttacks = limitAttacks;
         this.backgroundImage = backgroundImage;
         this.currentRoundIndex = 0;
         this.placementTiles = this.getPlacementTiles(placementTiles2D);
@@ -55,6 +54,7 @@ export default class GameMap {
     }
     createDashboardTowers(initDashboardTowerInfo) {
         const dashboardTowers = [];
+        console.log('initDashboardTowerInfo', initDashboardTowerInfo);
         initDashboardTowerInfo.forEach((dashboardTower) => {
             const baseTowerProperties = getBaseTowerProperties(dashboardTower.towerType);
             const towerOptions = {
@@ -250,6 +250,9 @@ export default class GameMap {
     //     return new Sprite(options)
     // }
     updateDashboardTowers() {
+        this.dashboardTowers.map((dashboard) => {
+            dashboard.draw();
+        });
         //   this.currentDashboardEnemiesInfo.forEach((dashboardEnemyInfor, index) => {
         //       dashboardEnemyInfor.dashboardEnemyBorder.update()
         //       dashboardEnemyInfor.dashboardEnemy.draw({ behaviorKey: E_behaviors.RUN, angelKey: E_angels.ANGEL_90 })
@@ -498,6 +501,7 @@ export default class GameMap {
         var _a;
         this.mouseOverDashboardTower =
             (_a = this.dashboardTowers.find((dashboardTower) => dashboardTower.hasCollisionWithMouse(mouse))) !== null && _a !== void 0 ? _a : null;
+        console.log(this.mouseOverDashboardTower);
     }
     getPlacementTiles(placementTiles2D) {
         const placementTiles = [];

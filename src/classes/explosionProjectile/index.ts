@@ -21,6 +21,6 @@ export default class ExplosionProjectile extends Sprite {
         this.explosionType = explosionType
     }
     public update(): void {
-        this.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
+        this.draw({ behaviorKey: E_behaviors.ATTACK, angelKey: E_angels.ANGEL_0 })
     }
 }

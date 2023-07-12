@@ -3,7 +3,6 @@ import getBaseTowerProperties from '../../data/baseProperties/towers/index.js';
 import { E_angels, E_behaviors, E_projectile } from '../../enum/index.js';
 import { calculateDistanceTwoPoint, createFrames } from '../../helper/index.js';
 import ExplosionProjectile from '../explosionProjectile/index.js';
-import { TILE_SIZE } from '../../constants/index.js';
 import Projectile from '../projectile/index.js';
 import Sprite from '../sprite/index.js';
 export default class Tower extends Sprite {
@@ -97,10 +96,10 @@ export default class Tower extends Sprite {
         return enemiesInRange;
     }
     hasCollisionWithMouse(mouse) {
-        return (this.position.x <= mouse.x &&
-            mouse.x <= this.position.x + TILE_SIZE &&
-            this.position.y <= mouse.y &&
-            mouse.y <= this.position.y + TILE_SIZE);
+        return (this.position.x + this.offset.x <= mouse.x &&
+            mouse.x <= this.position.x + this.width - this.offset.x &&
+            this.position.y - this.height + this.offset.y <= mouse.y &&
+            mouse.y <= this.position.y + this.height - 3 * this.offset.y);
     }
     updateProjectile(shootingAudio) {
         for (var i = this.projectiles.length - 1; i >= 0; i--) {
@@ -115,21 +114,23 @@ export default class Tower extends Sprite {
                 if (this.baseTowerProperties) {
                     const explosionInfo = this.baseTowerProperties.projectileInfo[this.behaviorKey].explosionInfo;
                     //create explosion
-                    const position = {
-                        x: currentProjectile.position.x - currentProjectile.offset.x,
-                        y: currentProjectile.position.y - currentProjectile.offset.y + currentProjectile.width / 2,
-                    };
-                    const explosionOptions = {
-                        name: explosionInfo.name,
-                        explosionType: explosionInfo.explosionType,
-                        position,
-                        offset: explosionInfo.offset,
-                        width: explosionInfo.width,
-                        height: explosionInfo.height,
-                        initFrames: explosionInfo.initFrames,
-                    };
-                    const explosion = new ExplosionProjectile(explosionOptions);
-                    this.explosions.push(explosion);
+                    if (explosionInfo) {
+                        const position = {
+                            x: currentProjectile.position.x - currentProjectile.offset.x,
+                            y: currentProjectile.position.y - currentProjectile.offset.y + currentProjectile.width / 2,
+                        };
+                        const explosionOptions = {
+                            name: explosionInfo.name,
+                            explosionType: explosionInfo.explosionType,
+                            position,
+                            offset: explosionInfo.offset,
+                            width: explosionInfo.width,
+                            height: explosionInfo.height,
+                            initFrames: explosionInfo.initFrames,
+                        };
+                        const explosion = new ExplosionProjectile(explosionOptions);
+                        this.explosions.push(explosion);
+                    }
                 }
                 this.projectiles.splice(i, 1);
             }

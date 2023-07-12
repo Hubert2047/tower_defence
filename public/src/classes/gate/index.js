@@ -1,13 +1,13 @@
 import context2D from '../../context2D/index.js';
 import getGatesProperties from '../../data/baseProperties/gates/index.js';
 import { E_angels, E_behaviors } from '../../enum/index.js';
-import { calculateDistanceTwoPoint, createFrames, updateHealthBars } from '../../helper/index.js';
+import { calAngleFromPointAToPointB, calculateDistanceTwoPoint, createFrames, updateHealthBars, } from '../../helper/index.js';
 import ExplosionProjectile from '../explosionProjectile/index.js';
 import Projectile from '../projectile/index.js';
 import Sprite from '../sprite/index.js';
 export default class Gate extends Sprite {
     constructor({ name, gateType, position, initFrames, offset = { x: 0, y: 0 }, width = 128, height = 128, health = 10000, damage = 2000, attackRange = 300, attackSpeed = 5, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_270, }) {
-        const frames = createFrames({ initFrames });
+        const frames = createFrames({ initFrames, moveSpeed: attackSpeed });
         super({ position, offset, width, height, frames });
         this.name = name;
         this.gateType = gateType;
@@ -20,7 +20,7 @@ export default class Gate extends Sprite {
         this._remainHealth = health;
         this.health = health;
         this.explosions = [];
-        this.holdAttack = parseInt((500 / attackSpeed).toString());
+        this.holdAttack = parseInt((240 / attackSpeed).toString());
         this.projectiles = [];
         this.baseGateProperties = getGatesProperties(this.gateType);
     }
@@ -44,7 +44,7 @@ export default class Gate extends Sprite {
         if (context2D) {
             context2D.beginPath();
             context2D.arc(this.position.x + this.offset.x, this.position.y, this.attackRange, 0, 2 * Math.PI);
-            context2D.fillStyle = 'rgba(225,225,225,0.15)';
+            context2D.fillStyle = 'rgba(225,225,225,0.2)';
             context2D.fill();
         }
     }
@@ -69,6 +69,11 @@ export default class Gate extends Sprite {
             return;
         }
         const targetEnemy = this.findTargetEnemy(enemiesInRange);
+        const offsetTargetEnemyPosition = {
+            x: targetEnemy.position.x - 8 * targetEnemy.offset.x,
+            y: targetEnemy.position.y + 3.5 * targetEnemy.offset.y,
+        };
+        this.angelKey = this.getAngleKeyByTwoPoint(this.position, offsetTargetEnemyPosition);
         const distance = calculateDistanceTwoPoint(targetEnemy.position, this.position);
         if (distance <= 64 * 4) {
             this.behaviorKey = E_behaviors.ATTACK;
@@ -78,6 +83,8 @@ export default class Gate extends Sprite {
         }
         if (this.baseGateProperties) {
             const projectileInfo = this.baseGateProperties.projectileInfo[this.behaviorKey];
+            if (!projectileInfo)
+                return;
             const projectileOptions = {
                 name: projectileInfo.name,
                 ProjectileType: projectileInfo.projectileType,
@@ -87,7 +94,7 @@ export default class Gate extends Sprite {
                 },
                 damage: this.damage,
                 enemy: targetEnemy,
-                moveSpeed: 5,
+                moveSpeed: projectileInfo.moveSpeed,
                 width: projectileInfo.width,
                 height: projectileInfo.height,
                 offset: projectileInfo.offset,
@@ -96,6 +103,58 @@ export default class Gate extends Sprite {
             const newProjectile = new Projectile(projectileOptions);
             this.projectiles.push(newProjectile);
         }
+    }
+    getAngleKeyByTwoPoint(pointA, pointB) {
+        const angel = calAngleFromPointAToPointB(pointA, pointB);
+        if ((angel >= 0 && angel < 11.25) || angel >= 348.25) {
+            return E_angels.ANGEL_0;
+        }
+        if (angel >= 11.25 && angel < 33.25) {
+            return E_angels.ANGEL_22;
+        }
+        if (angel >= 33.25 && angel < 56.25) {
+            return E_angels.ANGEL_45;
+        }
+        if (angel >= 56.25 && angel < 78.25) {
+            return E_angels.ANGEL_67;
+        }
+        if (angel >= 78.25 && angel < 101.25) {
+            return E_angels.ANGEL_90;
+        }
+        if (angel >= 101.25 && angel < 123.25) {
+            return E_angels.ANGEL_112;
+        }
+        if (angel >= 123.25 && angel < 146.25) {
+            return E_angels.ANGEL_135;
+        }
+        if (angel >= 146.25 && angel < 168.25) {
+            return E_angels.ANGEL_157;
+        }
+        if (angel >= 168.25 && angel < 191.25) {
+            return E_angels.ANGEL_180;
+        }
+        if (angel >= 191.25 && angel < 213.25) {
+            return E_angels.ANGEL_202;
+        }
+        if (angel >= 213.25 && angel < 236.25) {
+            return E_angels.ANGEL_225;
+        }
+        if (angel >= 236.25 && angel < 258.25) {
+            return E_angels.ANGEL_247;
+        }
+        if (angel >= 258.25 && angel < 281.25) {
+            return E_angels.ANGEL_270;
+        }
+        if (angel >= 281.25 && angel < 302.25) {
+            return E_angels.ANGEL_292;
+        }
+        if (angel >= 302.25 && angel < 326.25) {
+            return E_angels.ANGEL_315;
+        }
+        if (angel >= 326.25 && angel < 348.25) {
+            return E_angels.ANGEL_337;
+        }
+        return E_angels.ANGEL_0;
     }
     getHit(damage) {
         this.remainHealth -= damage;
@@ -134,22 +193,24 @@ export default class Gate extends Sprite {
                 currentProjectile.targetEnemy.getHit(currentProjectile.damage);
                 if (this.baseGateProperties) {
                     const explosionInfo = this.baseGateProperties.projectileInfo[this.behaviorKey].explosionInfo;
-                    //create explosion
-                    const position = {
-                        x: currentProjectile.position.x - currentProjectile.offset.x,
-                        y: currentProjectile.position.y - currentProjectile.offset.y + currentProjectile.width / 2,
-                    };
-                    const explosionOptions = {
-                        name: explosionInfo.name,
-                        explosionType: explosionInfo.explosionType,
-                        position,
-                        offset: explosionInfo.offset,
-                        width: explosionInfo.width,
-                        height: explosionInfo.height,
-                        initFrames: explosionInfo.initFrames,
-                    };
-                    const explosion = new ExplosionProjectile(explosionOptions);
-                    this.explosions.push(explosion);
+                    if (explosionInfo) {
+                        //create explosion
+                        const position = {
+                            x: currentProjectile.position.x - currentProjectile.offset.x,
+                            y: currentProjectile.position.y - currentProjectile.offset.y + currentProjectile.width / 2,
+                        };
+                        const explosionOptions = {
+                            name: explosionInfo.name,
+                            explosionType: explosionInfo.explosionType,
+                            position,
+                            offset: explosionInfo.offset,
+                            width: explosionInfo.width,
+                            height: explosionInfo.height,
+                            initFrames: explosionInfo.initFrames,
+                        };
+                        const explosion = new ExplosionProjectile(explosionOptions);
+                        this.explosions.push(explosion);
+                    }
                 }
                 this.projectiles.splice(i, 1);
             }

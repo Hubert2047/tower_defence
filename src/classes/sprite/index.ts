@@ -28,6 +28,7 @@ export default class Sprite {
             const currentBehavior = this.frames.get(behaviorKey)
             if (!currentBehavior) return
             const currentFrame = currentBehavior.get(angelKey)
+
             if (!currentFrame) return
             if (this.currentBehaviorKey !== behaviorKey || angelKey !== this.currentAngelKey) {
                 this.cropPosition = { x: 0, y: 0 }
@@ -51,7 +52,7 @@ export default class Sprite {
     }
     updateFrame(currentFrame: T_frame): void {
         this.countFrameTime++
-        if (this.countFrameTime === currentFrame.holdTime) {
+        if (this.countFrameTime >= currentFrame.holdTime) {
             this.countFrameTime = 0
             if (this.cropPosition.x === currentFrame.maxX - 1 && this.cropPosition.y === currentFrame.maxY - 1) {
                 this.cropPosition = { x: 0, y: 0 }

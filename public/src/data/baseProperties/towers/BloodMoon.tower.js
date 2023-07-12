@@ -9,49 +9,49 @@ const BloodMoonProperties = {
     initFrames: {
         [E_behaviors.ATTACK]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/gate/girl_hero/idle/0.png',
+                imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
                 maxX: 11,
                 maxY: 1,
                 holdTime: 4,
             },
             [E_angels.ANGEL_45]: {
-                imageSourceString: '../../../public/src/assets/images/gate/girl_hero/idle/45.png',
+                imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
                 maxX: 11,
                 maxY: 1,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/gate/girl_hero/idle/90.png',
+                imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
                 maxX: 11,
                 maxY: 1,
                 holdTime: 4,
             },
             [E_angels.ANGEL_135]: {
-                imageSourceString: '../../../public/src/assets/images/gate/girl_hero/idle/135.png',
+                imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
                 maxX: 11,
                 maxY: 1,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/gate/girl_hero/idle/180.png',
+                imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
                 maxX: 11,
                 maxY: 1,
                 holdTime: 4,
             },
             [E_angels.ANGEL_225]: {
-                imageSourceString: '../../../public/src/assets/images/gate/girl_hero/idle/225.png',
+                imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
                 maxX: 11,
                 maxY: 1,
                 holdTime: 4,
             },
             [E_angels.ANGEL_270]: {
-                imageSourceString: '../../../public/src/assets/images/gate/girl_hero/idle/270.png',
+                imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
                 maxX: 11,
                 maxY: 1,
                 holdTime: 4,
             },
             [E_angels.ANGEL_315]: {
-                imageSourceString: '../../../public/src/assets/images/gate/girl_hero/idle/315.png',
+                imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
                 maxX: 11,
                 maxY: 1,
                 holdTime: 4,

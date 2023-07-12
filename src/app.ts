@@ -47,6 +47,7 @@ function handleAddEventGame({ gameMap, mouse }: { gameMap: GameMap; mouse: T_pos
     function handleEventMousemove(event: MouseEvent) {
         mouse.x = event.offsetX
         mouse.y = event.offsetY
+        console.log(mouse)
         gameMap.checkMouseOverTile({ mouse })
         gameMap.checkMouseOverDashboardTower({ mouse })
     }

@@ -2,7 +2,7 @@ import { E_angels, E_behaviors } from '../../enum/index.js';
 import { createFrames, getAngleKeyByTwoPoint, getVectorNomalized } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Projectile extends Sprite {
-    constructor({ position, offset = { x: 0, y: 0 }, width = 64, height = 64, initFrames, moveSpeed = 1, damage = 100, enemy, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, }) {
+    constructor({ position, offset = { x: 0, y: 0 }, width = 64, height = 64, initFrames, moveSpeed = 1, damage = 100, enemy, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, }) {
         const frames = createFrames({ initFrames });
         super({ position, offset, width, height, frames });
         this.moveSpeed = moveSpeed;
@@ -16,7 +16,11 @@ export default class Projectile extends Sprite {
     update() {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
         this.updatePosition();
-        this.angelKey = getAngleKeyByTwoPoint(this.position, this.targetEnemy.position);
+        const realPosi = {
+            x: this.targetEnemy.position.x - 2 * this.targetEnemy.offset.x,
+            y: this.targetEnemy.position.y - 2 * this.targetEnemy.offset.y,
+        };
+        this.angelKey = getAngleKeyByTwoPoint(this.position, realPosi);
     }
     updatePosition() {
         this.updateVelocity();

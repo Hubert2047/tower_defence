@@ -43,7 +43,6 @@ export default class GameMap {
     public backgroundImage: HTMLImageElement
     private towers: Tower[]
     private waypoints: T_position[]
-    private limitAttacks: number
     public coins: number
     // private isVictory: boolean
     public shootingAudio: HTMLElement | HTMLAudioElement | null
@@ -63,14 +62,12 @@ export default class GameMap {
         placementTiles2D,
         waypoints,
         backgroundImage,
-        limitAttacks,
         startCoins,
         initDashboardTowerInfo,
     }: T_gameMapData) {
         this._currentEnemiesData = []
         this.rounds = rounds
         this.waypoints = waypoints
-        this.limitAttacks = limitAttacks
         this.backgroundImage = backgroundImage
         this.currentRoundIndex = 0
         this.placementTiles = this.getPlacementTiles(placementTiles2D)
@@ -110,6 +107,7 @@ export default class GameMap {
     }
     private createDashboardTowers(initDashboardTowerInfo: T_initDashboardTowerInfo[]): Tower[] {
         const dashboardTowers: Tower[] = []
+        console.log('initDashboardTowerInfo', initDashboardTowerInfo)
         initDashboardTowerInfo.forEach((dashboardTower) => {
             const baseTowerProperties: T_baseTowerProperties = getBaseTowerProperties(dashboardTower.towerType)
             const towerOptions: T_tower = {
@@ -306,6 +304,9 @@ export default class GameMap {
     //     return new Sprite(options)
     // }
     private updateDashboardTowers(): void {
+        this.dashboardTowers.map((dashboard) => {
+            dashboard.draw()
+        })
         //   this.currentDashboardEnemiesInfo.forEach((dashboardEnemyInfor, index) => {
         //       dashboardEnemyInfor.dashboardEnemyBorder.update()
         //       dashboardEnemyInfor.dashboardEnemy.draw({ behaviorKey: E_behaviors.RUN, angelKey: E_angels.ANGEL_90 })
@@ -553,6 +554,7 @@ export default class GameMap {
     public checkMouseOverDashboardTower({ mouse }: { mouse: T_position }) {
         this.mouseOverDashboardTower =
             this.dashboardTowers.find((dashboardTower) => dashboardTower.hasCollisionWithMouse(mouse)) ?? null
+        console.log(this.mouseOverDashboardTower)
     }
     private getPlacementTiles(placementTiles2D: number[][]): PlacementTile[] {
         const placementTiles: PlacementTile[] = []
