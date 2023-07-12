@@ -102,6 +102,7 @@ export default class Tower extends Sprite {
             mouse.y <= this.position.y + this.height - 3 * this.offset.y);
     }
     updateProjectile(shootingAudio) {
+        var _a;
         for (var i = this.projectiles.length - 1; i >= 0; i--) {
             const currentProjectile = this.projectiles[i];
             const realEnemyPostion = {
@@ -112,7 +113,7 @@ export default class Tower extends Sprite {
             if (distance < 5) {
                 currentProjectile.targetEnemy.getHit(currentProjectile.damage);
                 if (this.baseTowerProperties) {
-                    const explosionInfo = this.baseTowerProperties.projectileInfo[this.behaviorKey].explosionInfo;
+                    const explosionInfo = (_a = this.baseTowerProperties.projectileInfo[this.behaviorKey]) === null || _a === void 0 ? void 0 : _a.explosionInfo;
                     //create explosion
                     if (explosionInfo) {
                         const position = {

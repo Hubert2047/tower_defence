@@ -8,6 +8,7 @@ import Dragon from './Dragon.js'
 import Fox from './Fox.js'
 import NagaSiren from './NagaSiren.js'
 import TideHunter from './TideHunter.js'
+import Hunter from './Hunter.js'
 const enemiesBaseProperty: Map<E_enemy, T_baseEnemyProperties> = new Map([
     [E_enemy.BEAR, Bear],
     [E_enemy.FOX, Fox],
@@ -16,6 +17,7 @@ const enemiesBaseProperty: Map<E_enemy, T_baseEnemyProperties> = new Map([
     [E_enemy.SIREN, NagaSiren],
     [E_enemy.Blue_Brood_Mother, BlueBroodMother],
     [E_enemy.TIDE_HUNTER, TideHunter],
+    [E_enemy.Hunter, Hunter],
 ])
 function getBaseEnemyProperties(enemyType: E_enemy): T_baseEnemyProperties | undefined {
     if (enemiesBaseProperty.has(enemyType)) return deepClone(enemiesBaseProperty.get(enemyType))

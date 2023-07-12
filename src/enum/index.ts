@@ -6,9 +6,12 @@ enum E_enemy {
     BROOD_MOTHER = 5,
     Blue_Brood_Mother = 6,
     TIDE_HUNTER,
+    Hunter,
 }
 enum E_tower {
     BLOOD_MOON = 1,
+    FLYING_OBELISK = 2,
+    HAUNTED_TREE = 3,
 }
 enum E_projectile {
     FIRE = 1,

@@ -107,7 +107,6 @@ export default class GameMap {
     }
     private createDashboardTowers(initDashboardTowerInfo: T_initDashboardTowerInfo[]): Tower[] {
         const dashboardTowers: Tower[] = []
-        console.log('initDashboardTowerInfo', initDashboardTowerInfo)
         initDashboardTowerInfo.forEach((dashboardTower) => {
             const baseTowerProperties: T_baseTowerProperties = getBaseTowerProperties(dashboardTower.towerType)
             const towerOptions: T_tower = {
@@ -477,7 +476,9 @@ export default class GameMap {
         }
         const tower: Tower = new Tower(towerOptions)
         this.towers.push(tower)
+        this.towers.sort((a, b) => a.position.y - b.position.y)
         this.mouseOverTile.isOccupied = true
+        this.activeDashboardTower = null
     }
     private spawingCurrentRoundEnemies(): void {
         if (this.rounds.length <= 0) {
@@ -554,7 +555,6 @@ export default class GameMap {
     public checkMouseOverDashboardTower({ mouse }: { mouse: T_position }) {
         this.mouseOverDashboardTower =
             this.dashboardTowers.find((dashboardTower) => dashboardTower.hasCollisionWithMouse(mouse)) ?? null
-        console.log(this.mouseOverDashboardTower)
     }
     private getPlacementTiles(placementTiles2D: number[][]): PlacementTile[] {
         const placementTiles: PlacementTile[] = []

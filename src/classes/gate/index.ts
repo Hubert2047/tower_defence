@@ -239,7 +239,7 @@ export default class Gate extends Sprite {
             if (distance < 5) {
                 currentProjectile.targetEnemy.getHit(currentProjectile.damage)
                 if (this.baseGateProperties) {
-                    const explosionInfo = this.baseGateProperties.projectileInfo[this.behaviorKey].explosionInfo
+                    const explosionInfo = this.baseGateProperties.projectileInfo[this.behaviorKey]?.explosionInfo
                     if (explosionInfo) {
                         //create explosion
                         const position: T_position = {

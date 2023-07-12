@@ -182,6 +182,7 @@ export default class Gate extends Sprite {
         return enemiesInRange;
     }
     updateProjectile() {
+        var _a;
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
             const currentProjectile = this.projectiles[i];
             const realEnemyPostion = {
@@ -192,7 +193,7 @@ export default class Gate extends Sprite {
             if (distance < 5) {
                 currentProjectile.targetEnemy.getHit(currentProjectile.damage);
                 if (this.baseGateProperties) {
-                    const explosionInfo = this.baseGateProperties.projectileInfo[this.behaviorKey].explosionInfo;
+                    const explosionInfo = (_a = this.baseGateProperties.projectileInfo[this.behaviorKey]) === null || _a === void 0 ? void 0 : _a.explosionInfo;
                     if (explosionInfo) {
                         //create explosion
                         const position = {

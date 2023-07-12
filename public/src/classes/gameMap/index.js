@@ -54,7 +54,6 @@ export default class GameMap {
     }
     createDashboardTowers(initDashboardTowerInfo) {
         const dashboardTowers = [];
-        console.log('initDashboardTowerInfo', initDashboardTowerInfo);
         initDashboardTowerInfo.forEach((dashboardTower) => {
             const baseTowerProperties = getBaseTowerProperties(dashboardTower.towerType);
             const towerOptions = {
@@ -426,7 +425,9 @@ export default class GameMap {
         };
         const tower = new Tower(towerOptions);
         this.towers.push(tower);
+        this.towers.sort((a, b) => a.position.y - b.position.y);
         this.mouseOverTile.isOccupied = true;
+        this.activeDashboardTower = null;
     }
     spawingCurrentRoundEnemies() {
         if (this.rounds.length <= 0) {
@@ -501,7 +502,6 @@ export default class GameMap {
         var _a;
         this.mouseOverDashboardTower =
             (_a = this.dashboardTowers.find((dashboardTower) => dashboardTower.hasCollisionWithMouse(mouse))) !== null && _a !== void 0 ? _a : null;
-        console.log(this.mouseOverDashboardTower);
     }
     getPlacementTiles(placementTiles2D) {
         const placementTiles = [];

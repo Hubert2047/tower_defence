@@ -7,10 +7,13 @@ var E_enemy;
     E_enemy[E_enemy["BROOD_MOTHER"] = 5] = "BROOD_MOTHER";
     E_enemy[E_enemy["Blue_Brood_Mother"] = 6] = "Blue_Brood_Mother";
     E_enemy[E_enemy["TIDE_HUNTER"] = 7] = "TIDE_HUNTER";
+    E_enemy[E_enemy["Hunter"] = 8] = "Hunter";
 })(E_enemy || (E_enemy = {}));
 var E_tower;
 (function (E_tower) {
     E_tower[E_tower["BLOOD_MOON"] = 1] = "BLOOD_MOON";
+    E_tower[E_tower["FLYING_OBELISK"] = 2] = "FLYING_OBELISK";
+    E_tower[E_tower["HAUNTED_TREE"] = 3] = "HAUNTED_TREE";
 })(E_tower || (E_tower = {}));
 var E_projectile;
 (function (E_projectile) {

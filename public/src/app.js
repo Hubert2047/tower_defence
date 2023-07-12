@@ -45,7 +45,6 @@ function handleAddEventGame({ gameMap, mouse }) {
     function handleEventMousemove(event) {
         mouse.x = event.offsetX;
         mouse.y = event.offsetY;
-        console.log(mouse);
         gameMap.checkMouseOverTile({ mouse });
         gameMap.checkMouseOverDashboardTower({ mouse });
     }

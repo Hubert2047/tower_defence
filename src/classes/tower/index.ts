@@ -147,7 +147,7 @@ export default class Tower extends Sprite {
             if (distance < 5) {
                 currentProjectile.targetEnemy.getHit(currentProjectile.damage)
                 if (this.baseTowerProperties) {
-                    const explosionInfo = this.baseTowerProperties.projectileInfo[this.behaviorKey].explosionInfo
+                    const explosionInfo = this.baseTowerProperties.projectileInfo[this.behaviorKey]?.explosionInfo
                     //create explosion
                     if (explosionInfo) {
                         const position: T_position = {
