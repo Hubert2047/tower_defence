@@ -13,25 +13,49 @@ const Dragon: T_baseEnemyProperties = {
     initFrames: {
         [E_behaviors.RUN]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/run/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/run/0.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
-            [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/run/left_290.png',
+            [E_angels.ANGEL_45]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/run/45.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/run/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/run/90.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_135]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/run/135.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/run/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/run/180.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_225]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/run/225.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_270]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/run/270.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_315]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/run/315.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
@@ -39,25 +63,49 @@ const Dragon: T_baseEnemyProperties = {
         },
         [E_behaviors.DEATH]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/death/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/death/0.png',
                 maxX: 8,
                 maxY: 3,
                 holdTime: 4,
             },
-            [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/death/left_290.png',
+            [E_angels.ANGEL_45]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/death/45.png',
                 maxX: 8,
                 maxY: 3,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/death/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/death/90.png',
+                maxX: 8,
+                maxY: 3,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_135]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/death/135.png',
                 maxX: 8,
                 maxY: 3,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/death/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/death/180.png',
+                maxX: 8,
+                maxY: 3,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_225]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/death/225.png',
+                maxX: 8,
+                maxY: 3,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_270]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/death/270.png',
+                maxX: 8,
+                maxY: 3,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_315]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/death/315.png',
                 maxX: 8,
                 maxY: 3,
                 holdTime: 4,
@@ -65,25 +113,49 @@ const Dragon: T_baseEnemyProperties = {
         },
         [E_behaviors.ATTACK]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/attack/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/attack/0.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
-            [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/attack/left_290.png',
+            [E_angels.ANGEL_45]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/attack/45.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/attack/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/attack/90.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_135]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/attack/135.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/attack/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/attack/180.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_225]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/attack/225.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_270]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/attack/270.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_315]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Dragon/attack/315.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
@@ -98,24 +170,6 @@ const Dragon: T_baseEnemyProperties = {
         initFrames: {
             [E_behaviors.IDLE]: {
                 [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../../public/src/assets/images/borders/6.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-                [E_angels.ANGEL_290]: {
-                    imageSourceString: '../../../public/src/assets/images/borders/6.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-                [E_angels.ANGEL_90]: {
-                    imageSourceString: '../../../public/src/assets/images/borders/6.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-                [E_angels.ANGEL_180]: {
                     imageSourceString: '../../../public/src/assets/images/borders/6.png',
                     maxX: 1,
                     maxY: 1,

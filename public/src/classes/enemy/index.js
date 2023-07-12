@@ -1,5 +1,5 @@
 import { E_angels, E_behaviors } from '../../enum/index.js';
-import { calAngleFromPointAToPointB, createFrames, getVectorNomalized, updateHealthBars } from '../../helper/index.js';
+import { createFrames, getAngleKeyByTwoPoint, getVectorNomalized, updateHealthBars } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Enemy extends Sprite {
     constructor({ name, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, coins = 1, moveSpeed = 1, health = 1000, damage = 100, attackRange = 200, attackSpeed = 5, enemyType, angelKey = E_angels.ANGEL_90, behaviorKey = E_behaviors.RUN, }) {
@@ -64,7 +64,7 @@ export default class Enemy extends Sprite {
             this.attackGate(gate);
     }
     updateFrameKeys(waypoints) {
-        this.updateAngelKey(waypoints);
+        this.angelKey = getAngleKeyByTwoPoint(this.position, waypoints[this.currentWayPointIndex]);
     }
     updatePosition(waypoints) {
         this.updateVelocity(waypoints);
@@ -87,24 +87,7 @@ export default class Enemy extends Sprite {
         this.velocityX = this.moveSpeed * v_normalized.x;
         this.velocityY = this.moveSpeed * v_normalized.y;
     }
-    updateAngelKey(waypoints) {
-        const angel = calAngleFromPointAToPointB(this.position, waypoints[this.currentWayPointIndex]);
-        let angelKey = E_angels.ANGEL_0;
-        if (angel <= 45 && angel > -45) {
-            angelKey = E_angels.ANGEL_90;
-        }
-        if (angel <= -45 && angel > -135) {
-            angelKey = E_angels.ANGEL_0;
-        }
-        if (angel <= 135 && angel > 45) {
-            angelKey = E_angels.ANGEL_180;
-        }
-        if (angel <= 180 && angel > 135) {
-            angelKey = E_angels.ANGEL_290;
-        }
-        this.angelKey = angelKey;
-    }
-    getHit(projectile) {
-        this.remainHealth -= projectile.damage;
+    getHit(damage) {
+        this.remainHealth -= damage;
     }
 }

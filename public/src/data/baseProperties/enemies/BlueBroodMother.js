@@ -11,25 +11,49 @@ const BlueBroodMother = {
     initFrames: {
         [E_behaviors.RUN]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/run/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/run/0.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
-            [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/run/left_290.png',
+            [E_angels.ANGEL_45]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/run/45.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/run/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/run/90.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_135]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/run/135.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/run/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/run/180.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_225]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/run/225.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_270]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/run/270.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_315]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/run/315.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
@@ -37,25 +61,49 @@ const BlueBroodMother = {
         },
         [E_behaviors.DEATH]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/death/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/death/0.png',
                 maxX: 5,
                 maxY: 4,
                 holdTime: 4,
             },
-            [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/death/left_290.png',
+            [E_angels.ANGEL_45]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/death/45.png',
                 maxX: 5,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/death/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/death/90.png',
+                maxX: 5,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_135]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/death/135.png',
                 maxX: 5,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/death/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/death/180.png',
+                maxX: 5,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_225]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/death/225.png',
+                maxX: 5,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_270]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/death/270.png',
+                maxX: 5,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_315]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/death/315.png',
                 maxX: 5,
                 maxY: 4,
                 holdTime: 4,
@@ -63,25 +111,49 @@ const BlueBroodMother = {
         },
         [E_behaviors.ATTACK]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/attack/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/attack/0.png',
                 maxX: 5,
                 maxY: 4,
                 holdTime: 4,
             },
-            [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/attack/left_290.png',
+            [E_angels.ANGEL_45]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/attack/45.png',
                 maxX: 5,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/attack/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/attack/90.png',
+                maxX: 5,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_135]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/attack/135.png',
                 maxX: 5,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/attack/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/attack/180.png',
+                maxX: 5,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_225]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/attack/225.png',
+                maxX: 5,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_270]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/attack/270.png',
+                maxX: 5,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_315]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/BlueBroodmother/attack/315.png',
                 maxX: 5,
                 maxY: 4,
                 holdTime: 4,
@@ -95,24 +167,6 @@ const BlueBroodMother = {
         initFrames: {
             [E_behaviors.IDLE]: {
                 [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../../public/src/assets/images/borders/6.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-                [E_angels.ANGEL_290]: {
-                    imageSourceString: '../../../public/src/assets/images/borders/6.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-                [E_angels.ANGEL_90]: {
-                    imageSourceString: '../../../public/src/assets/images/borders/6.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-                [E_angels.ANGEL_180]: {
                     imageSourceString: '../../../public/src/assets/images/borders/6.png',
                     maxX: 1,
                     maxY: 1,

@@ -1,4 +1,4 @@
-import { E_enemy } from '../../enum/index.js';
+import { E_enemy, E_tower } from '../../enum/index.js';
 const placementTilesData = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0,
@@ -142,9 +142,27 @@ const rounds = [
         ],
     },
 ];
+const initDashboardTowerInfo = [
+    {
+        towerType: E_tower.BLOOD_MOON,
+        name: 'Blood moon',
+        position: { x: 0, y: 0 },
+        width: 64,
+        height: 64,
+        offset: { x: 0, y: 0 },
+    },
+];
 const backgroundImage = new Image();
 const limitAttacks = 1000;
 const startCoins = 20;
 backgroundImage.src = '../../public/src/assets/images/gameMap.png';
-const desertMapData = { rounds, backgroundImage, placementTiles2D, waypoints, limitAttacks, startCoins };
+const desertMapData = {
+    rounds,
+    backgroundImage,
+    placementTiles2D,
+    waypoints,
+    limitAttacks,
+    startCoins,
+    initDashboardTowerInfo,
+};
 export default desertMapData;

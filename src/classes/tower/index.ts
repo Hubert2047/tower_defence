@@ -5,6 +5,7 @@ import { calculateDistanceTwoPoint, createFrames } from '../../helper/index.js'
 import { T_baseTowerProperties, T_explosion, T_frame, T_position, T_projectile, T_tower } from '../../types/index.js'
 import Enemy from '../enemy/index.js'
 import ExplosionProjectile from '../explosionProjectile/index.js'
+import { TILE_SIZE } from '../../constants/index.js'
 import Projectile from '../projectile/index.js'
 import Sprite from '../sprite/index.js'
 
@@ -15,11 +16,13 @@ export default class Tower extends Sprite {
     public attackRange: number
     public damage: number
     public countAttackTime: number
+    public behaviorKey: E_behaviors
+    public angelKey: E_angels
     public holdAttack: number
-    public projectileType: E_projectile
+    public projectileType?: E_projectile
     public projectiles: Projectile[]
     public explosions: ExplosionProjectile[]
-    private baseTowerProperties: T_baseTowerProperties | undefined
+    private baseTowerProperties: T_baseTowerProperties
     constructor({
         name,
         towerType,
@@ -32,6 +35,8 @@ export default class Tower extends Sprite {
         damage = 100,
         attackSpeed = 1,
         attackRange = 300,
+        behaviorKey = E_behaviors.ATTACK,
+        angelKey = E_angels.ANGEL_0,
     }: T_tower) {
         const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames })
         super({ position, offset, width, height, frames })
@@ -45,10 +50,12 @@ export default class Tower extends Sprite {
         this.countAttackTime = 0
         this.holdAttack = parseInt((200 / attackSpeed).toString())
         this.explosions = []
+        this.behaviorKey = behaviorKey
+        this.angelKey = angelKey
         this.baseTowerProperties = getBaseTowerProperties(this.towerType)
     }
     public draw(): void {
-        super.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
+        super.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
         // this.drawAttackRangeCicle()
     }
     public drawAttackRangeCicle(): void {
@@ -81,9 +88,10 @@ export default class Tower extends Sprite {
         if (enemiesInRange.length > 0) {
             const targetEnemy: Enemy = this.findTargetEnemy(enemiesInRange)
             if (this.baseTowerProperties) {
+                const projectTileInfo = this.baseTowerProperties.projectileInfo[this.behaviorKey]
                 const projectileOptions: T_projectile = {
-                    name: this.baseTowerProperties.projectileInfo.name,
-                    ProjectileType: this.baseTowerProperties.projectileInfo.projectileType,
+                    name: projectTileInfo.name,
+                    ProjectileType: projectTileInfo.projectileType,
                     position: {
                         x: this.position.x - this.width + 1.5 * this.offset.x,
                         y: this.position.y - this.height + 1.8 * this.offset.y,
@@ -91,10 +99,10 @@ export default class Tower extends Sprite {
                     damage: this.damage,
                     enemy: targetEnemy,
                     moveSpeed: 5,
-                    width: this.baseTowerProperties.projectileInfo.width,
-                    height: this.baseTowerProperties.projectileInfo.height,
-                    offset: this.baseTowerProperties.projectileInfo.offset,
-                    initFrames: this.baseTowerProperties.projectileInfo.initFrames,
+                    width: projectTileInfo.width,
+                    height: projectTileInfo.height,
+                    offset: projectTileInfo.offset,
+                    initFrames: projectTileInfo.initFrames,
                 }
                 const newProjectile: Projectile = new Projectile(projectileOptions)
                 this.projectiles.push(newProjectile)
@@ -121,6 +129,14 @@ export default class Tower extends Sprite {
         })
         return enemiesInRange
     }
+    public hasCollisionWithMouse(mouse: T_position): boolean {
+        return (
+            this.position.x <= mouse.x &&
+            mouse.x <= this.position.x + TILE_SIZE &&
+            this.position.y <= mouse.y &&
+            mouse.y <= this.position.y + TILE_SIZE
+        )
+    }
     private updateProjectile(shootingAudio: HTMLAudioElement | HTMLElement | null) {
         for (var i = this.projectiles.length - 1; i >= 0; i--) {
             const currentProjectile: Projectile = this.projectiles[i]
@@ -130,21 +146,22 @@ export default class Tower extends Sprite {
             }
             const distance: number = calculateDistanceTwoPoint(currentProjectile.position, realEnemyPostion)
             if (distance < 5) {
-                currentProjectile.targetEnemy.getHit(currentProjectile)
+                currentProjectile.targetEnemy.getHit(currentProjectile.damage)
                 if (this.baseTowerProperties) {
+                    const explosionInfo = this.baseTowerProperties.projectileInfo[this.behaviorKey].explosionInfo
                     //create explosion
                     const position: T_position = {
                         x: currentProjectile.position.x - currentProjectile.offset.x,
                         y: currentProjectile.position.y - currentProjectile.offset.y + currentProjectile.width / 2,
                     }
                     const explosionOptions: T_explosion = {
-                        name: this.baseTowerProperties.projectileInfo.explosionInfo.name,
-                        explosionType: this.baseTowerProperties.projectileInfo.explosionInfo.explosionType,
+                        name: explosionInfo.name,
+                        explosionType: explosionInfo.explosionType,
                         position,
-                        offset: this.baseTowerProperties.projectileInfo.explosionInfo.offset,
-                        width: this.baseTowerProperties.projectileInfo.explosionInfo.width,
-                        height: this.baseTowerProperties.projectileInfo.explosionInfo.height,
-                        initFrames: this.baseTowerProperties.projectileInfo.explosionInfo.initFrames,
+                        offset: explosionInfo.offset,
+                        width: explosionInfo.width,
+                        height: explosionInfo.height,
+                        initFrames: explosionInfo.initFrames,
                     }
                     const explosion: ExplosionProjectile = new ExplosionProjectile(explosionOptions)
                     this.explosions.push(explosion)

@@ -13,25 +13,49 @@ const Fox: T_baseEnemyProperties = {
     initFrames: {
         [E_behaviors.RUN]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/0.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
-            [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/left_290.png',
+            [E_angels.ANGEL_45]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/45.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/90.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_135]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/135.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/180.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_225]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/225.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_270]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/270.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_315]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/run/315.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
@@ -39,25 +63,49 @@ const Fox: T_baseEnemyProperties = {
         },
         [E_behaviors.DEATH]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/0.png',
                 maxX: 4,
                 maxY: 5,
                 holdTime: 4,
             },
-            [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/left_290.png',
+            [E_angels.ANGEL_45]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/45.png',
                 maxX: 4,
                 maxY: 5,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/90.png',
+                maxX: 4,
+                maxY: 5,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_135]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/135.png',
                 maxX: 4,
                 maxY: 5,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/180.png',
+                maxX: 4,
+                maxY: 5,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_225]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/225.png',
+                maxX: 4,
+                maxY: 5,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_270]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/270.png',
+                maxX: 4,
+                maxY: 5,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_315]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/death/315.png',
                 maxX: 4,
                 maxY: 5,
                 holdTime: 4,
@@ -65,25 +113,49 @@ const Fox: T_baseEnemyProperties = {
         },
         [E_behaviors.ATTACK]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/0.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
-            [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/left_290.png',
+            [E_angels.ANGEL_45]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/45.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/90.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_135]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/135.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/180.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_225]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/225.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_270]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/270.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_315]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/Fox/attack/315.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
@@ -97,24 +169,6 @@ const Fox: T_baseEnemyProperties = {
         initFrames: {
             [E_behaviors.IDLE]: {
                 [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../../public/src/assets/images/borders/6.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-                [E_angels.ANGEL_290]: {
-                    imageSourceString: '../../../public/src/assets/images/borders/6.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-                [E_angels.ANGEL_90]: {
-                    imageSourceString: '../../../public/src/assets/images/borders/6.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-                [E_angels.ANGEL_180]: {
                     imageSourceString: '../../../public/src/assets/images/borders/6.png',
                     maxX: 1,
                     maxY: 1,

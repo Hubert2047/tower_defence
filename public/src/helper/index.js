@@ -1,6 +1,7 @@
 import { BASE_HEALTH } from '../constants/index.js';
 import context2D from '../context2D/index.js';
 import gameData from '../data/gameMaps/index.js';
+import { E_angels } from '../enum/index.js';
 function calculateDistanceTwoPoint(pointA, pointB) {
     const dx = pointA.x - pointB.x;
     const dy = pointA.y - pointB.y;
@@ -101,11 +102,40 @@ function drawHealthText(position, fullHealthWidth, remainHealth) {
     }
 }
 function calAngleFromPointAToPointB(pointA, pointB) {
-    const dx = pointB.x - pointA.x;
-    const dy = pointB.y - pointA.y;
-    const angleRad = Math.atan2(dy, dx);
+    const pointC = { x: pointA.x, y: 0 }; // 0degree
+    const vectorAC = { x: pointC.x - pointA.x, y: pointC.y - pointA.y };
+    const vectorAB = { x: pointB.x - pointA.x, y: pointB.y - pointA.y };
+    const angleRad = Math.atan2(vectorAB.y, vectorAB.x) - Math.atan2(vectorAC.y, vectorAC.x);
     const angleDeg = angleRad * (180 / Math.PI);
     return angleDeg;
+}
+function getAngleKeyByTwoPoint(pointA, pointB) {
+    const angel = calAngleFromPointAToPointB(pointA, pointB);
+    if ((angel >= 0 && angel <= 22.5) || angel >= 337.5) {
+        return E_angels.ANGEL_0;
+    }
+    if (angel >= 22.5 && angel < 67.5) {
+        return E_angels.ANGEL_45;
+    }
+    if (angel >= 67.5 && angel < 112.5) {
+        return E_angels.ANGEL_90;
+    }
+    if (angel >= 112.5 && angel < 157.5) {
+        return E_angels.ANGEL_135;
+    }
+    if (angel >= 157.5 && angel < 202.5) {
+        return E_angels.ANGEL_180;
+    }
+    if (angel >= 202.5 && angel < 247.5) {
+        return E_angels.ANGEL_225;
+    }
+    if (angel >= 247.5 && angel < 292.5) {
+        return E_angels.ANGEL_270;
+    }
+    if (angel >= 292.5 && angel < 337.5) {
+        return E_angels.ANGEL_315;
+    }
+    return E_angels.ANGEL_0;
 }
 function getVectorNomalized(startPointLocation, endPointLocation) {
     const v = {
@@ -153,6 +183,7 @@ function getGameMapData(gameMapType) {
             waypoints: deepClone(data.waypoints),
             limitAttacks: data.limitAttacks,
             startCoins: data.startCoins,
+            initDashboardTowerInfo: deepClone(data.waypoints),
         };
     }
     return undefined;
@@ -172,4 +203,4 @@ function deepClone(data) {
 function randomNumberInRange(min, max) {
     return Math.random() * (max - min) + min;
 }
-export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createFrames, createImage, deepClone, getGameMapData, getVectorNomalized, randomNumberInRange, updateHealthBars, };
+export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createFrames, createImage, deepClone, getAngleKeyByTwoPoint, getGameMapData, getVectorNomalized, randomNumberInRange, updateHealthBars, };

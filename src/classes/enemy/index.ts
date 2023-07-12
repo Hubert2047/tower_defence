@@ -1,8 +1,7 @@
 import { E_angels, E_behaviors, E_enemy } from '../../enum/index.js'
-import { calAngleFromPointAToPointB, createFrames, getVectorNomalized, updateHealthBars } from '../../helper/index.js'
+import { createFrames, getAngleKeyByTwoPoint, getVectorNomalized, updateHealthBars } from '../../helper/index.js'
 import { T_enemy, T_frame, T_initFramesDictionary, T_position } from '../../types/index.js'
 import Gate from '../gate/index.js'
-import Projectile from '../projectile/index.js'
 import Sprite from '../sprite/index.js'
 interface healthBar {
     lineWidth: number
@@ -105,7 +104,7 @@ export default class Enemy extends Sprite {
         if (gate) this.attackGate(gate)
     }
     private updateFrameKeys(waypoints: T_position[]) {
-        this.updateAngelKey(waypoints)
+        this.angelKey = getAngleKeyByTwoPoint(this.position, waypoints[this.currentWayPointIndex])
     }
     private updatePosition(waypoints: T_position[]): void {
         this.updateVelocity(waypoints)
@@ -130,24 +129,7 @@ export default class Enemy extends Sprite {
         this.velocityX = this.moveSpeed * v_normalized.x
         this.velocityY = this.moveSpeed * v_normalized.y
     }
-    private updateAngelKey(waypoints: T_position[]): void {
-        const angel = calAngleFromPointAToPointB(this.position, waypoints[this.currentWayPointIndex])
-        let angelKey: E_angels = E_angels.ANGEL_0
-        if (angel <= 45 && angel > -45) {
-            angelKey = E_angels.ANGEL_90
-        }
-        if (angel <= -45 && angel > -135) {
-            angelKey = E_angels.ANGEL_0
-        }
-        if (angel <= 135 && angel > 45) {
-            angelKey = E_angels.ANGEL_180
-        }
-        if (angel <= 180 && angel > 135) {
-            angelKey = E_angels.ANGEL_290
-        }
-        this.angelKey = angelKey
-    }
-    public getHit(projectile: Projectile): void {
-        this.remainHealth -= projectile.damage
+    public getHit(damage: number): void {
+        this.remainHealth -= damage
     }
 }

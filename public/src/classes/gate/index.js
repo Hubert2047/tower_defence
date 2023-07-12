@@ -6,7 +6,7 @@ import ExplosionProjectile from '../explosionProjectile/index.js';
 import Projectile from '../projectile/index.js';
 import Sprite from '../sprite/index.js';
 export default class Gate extends Sprite {
-    constructor({ name, gateType, position, initFrames, offset = { x: 0, y: 0 }, width = 128, height = 128, health = 10000, damage = 2000, attackRange = 300, attackSpeed = 5, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_290, }) {
+    constructor({ name, gateType, position, initFrames, offset = { x: 0, y: 0 }, width = 128, height = 128, health = 10000, damage = 2000, attackRange = 300, attackSpeed = 5, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_270, }) {
         const frames = createFrames({ initFrames });
         super({ position, offset, width, height, frames });
         this.name = name;
@@ -35,8 +35,8 @@ export default class Gate extends Sprite {
     get remainHealth() {
         return this._remainHealth;
     }
-    draw({ behaviorKey, angelKey }) {
-        super.draw({ behaviorKey, angelKey });
+    draw() {
+        super.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
         updateHealthBars({ sprite: this, health: this.health, remainHealth: this.remainHealth });
         this.drawAttackRangeCicle();
     }
@@ -49,7 +49,7 @@ export default class Gate extends Sprite {
         }
     }
     update({ enemies }) {
-        this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
+        this.draw();
         this.attackEnemies(enemies);
         this.updateProjectile();
     }
@@ -77,9 +77,10 @@ export default class Gate extends Sprite {
             this.behaviorKey = E_behaviors.ATTACK_BOW;
         }
         if (this.baseGateProperties) {
+            const projectileInfo = this.baseGateProperties.projectileInfo[this.behaviorKey];
             const projectileOptions = {
-                name: this.baseGateProperties.projectileInfo.name,
-                ProjectileType: this.baseGateProperties.projectileInfo.projectileType,
+                name: projectileInfo.name,
+                ProjectileType: projectileInfo.projectileType,
                 position: {
                     x: this.position.x - this.width + 1.5 * this.offset.x,
                     y: this.position.y - this.height + 1.8 * this.offset.y,
@@ -87,10 +88,10 @@ export default class Gate extends Sprite {
                 damage: this.damage,
                 enemy: targetEnemy,
                 moveSpeed: 5,
-                width: this.baseGateProperties.projectileInfo.width,
-                height: this.baseGateProperties.projectileInfo.height,
-                offset: this.baseGateProperties.projectileInfo.offset,
-                initFrames: this.baseGateProperties.projectileInfo.initFrames,
+                width: projectileInfo.width,
+                height: projectileInfo.height,
+                offset: projectileInfo.offset,
+                initFrames: projectileInfo.initFrames,
             };
             const newProjectile = new Projectile(projectileOptions);
             this.projectiles.push(newProjectile);
@@ -122,7 +123,7 @@ export default class Gate extends Sprite {
         return enemiesInRange;
     }
     updateProjectile() {
-        for (var i = this.projectiles.length - 1; i >= 0; i--) {
+        for (let i = this.projectiles.length - 1; i >= 0; i--) {
             const currentProjectile = this.projectiles[i];
             const realEnemyPostion = {
                 x: currentProjectile.targetEnemy.position.x - currentProjectile.targetEnemy.width / 4,
@@ -130,21 +131,22 @@ export default class Gate extends Sprite {
             };
             const distance = calculateDistanceTwoPoint(currentProjectile.position, realEnemyPostion);
             if (distance < 5) {
-                currentProjectile.targetEnemy.getHit(currentProjectile);
+                currentProjectile.targetEnemy.getHit(currentProjectile.damage);
                 if (this.baseGateProperties) {
+                    const explosionInfo = this.baseGateProperties.projectileInfo[this.behaviorKey].explosionInfo;
                     //create explosion
                     const position = {
                         x: currentProjectile.position.x - currentProjectile.offset.x,
                         y: currentProjectile.position.y - currentProjectile.offset.y + currentProjectile.width / 2,
                     };
                     const explosionOptions = {
-                        name: this.baseGateProperties.projectileInfo.explosionInfo.name,
-                        explosionType: this.baseGateProperties.projectileInfo.explosionInfo.explosionType,
+                        name: explosionInfo.name,
+                        explosionType: explosionInfo.explosionType,
                         position,
-                        offset: this.baseGateProperties.projectileInfo.explosionInfo.offset,
-                        width: this.baseGateProperties.projectileInfo.explosionInfo.width,
-                        height: this.baseGateProperties.projectileInfo.explosionInfo.height,
-                        initFrames: this.baseGateProperties.projectileInfo.explosionInfo.initFrames,
+                        offset: explosionInfo.offset,
+                        width: explosionInfo.width,
+                        height: explosionInfo.height,
+                        initFrames: explosionInfo.initFrames,
                     };
                     const explosion = new ExplosionProjectile(explosionOptions);
                     this.explosions.push(explosion);
@@ -156,7 +158,7 @@ export default class Gate extends Sprite {
             }
         }
         //update or delete explosions - when explosion finieshed one time animation then delete it,otherwise update it
-        for (var i = this.explosions.length - 1; i >= 0; i--) {
+        for (let i = this.explosions.length - 1; i >= 0; i--) {
             const currentExplosion = this.explosions[i];
             this.explosions[i].update();
             const currentExplosionFrame = this.explosions[i].currentFrame;

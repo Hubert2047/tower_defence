@@ -39,10 +39,12 @@ var E_behaviors;
 var E_angels;
 (function (E_angels) {
     E_angels["ANGEL_0"] = "0degree";
+    E_angels["ANGEL_45"] = "45degree";
     E_angels["ANGEL_90"] = "90degree";
+    E_angels["ANGEL_135"] = "135degree";
     E_angels["ANGEL_180"] = "180degree";
-    E_angels["ANGEL_290"] = "290degree";
-    E_angels["ANGEL_35"] = "35degree";
-    E_angels["ANGEL_145"] = "145degree";
+    E_angels["ANGEL_225"] = "225degree";
+    E_angels["ANGEL_270"] = "270degree";
+    E_angels["ANGEL_315"] = "315degree";
 })(E_angels || (E_angels = {}));
 export { E_angels, E_behaviors, E_enemy, E_explosion, E_gameMap, E_gate, E_projectile, E_tower };

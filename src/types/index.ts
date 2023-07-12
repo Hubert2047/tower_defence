@@ -37,6 +37,7 @@ type T_gameMapData = {
     backgroundImage: HTMLImageElement
     startCoins: number
     waypoints: T_position[]
+    initDashboardTowerInfo: T_initDashboardTowerInfo[]
     limitAttacks: number
 }
 
@@ -88,7 +89,9 @@ type T_tower = {
     attackSpeed?: number
     attackRange?: number
     damage?: number
-    projectileType: E_projectile
+    behaviorKey?: E_behaviors
+    angelKey?: E_angels
+    projectileType?: E_projectile
 }
 type T_explosion = {
     name: string
@@ -133,7 +136,7 @@ type T_baseTowerProperties = {
     attackSpeed: number
     attackRange: number
     damage: number
-    projectileInfo: T_projectileInfo
+    projectileInfo: Record<string, T_projectileInfo>
 }
 type T_baseGateProperties = {
     name: string
@@ -146,7 +149,7 @@ type T_baseGateProperties = {
     attackSpeed: number
     attackRange: number
     damage: number
-    projectileInfo: T_projectileInfo
+    projectileInfo: Record<string, T_projectileInfo>
 }
 type T_sprite = {
     position: T_position
@@ -170,6 +173,14 @@ type T_gate = {
     behaviorKey?: E_behaviors
     angelKey?: E_angels
 }
+type T_initDashboardTowerInfo = {
+    name: string
+    towerType: E_tower
+    position: T_position
+    offset: T_position
+    width: number
+    height: number
+}
 export {
     T_baseEnemyProperties,
     T_baseGateProperties,
@@ -181,6 +192,7 @@ export {
     T_frame,
     T_gameMapData,
     T_gate,
+    T_initDashboardTowerInfo,
     T_initFrame,
     T_initFramesDictionary,
     T_position,

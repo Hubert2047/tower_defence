@@ -4,7 +4,6 @@ export default class PlacementTile {
     constructor({ position = { x: 0, y: 0 } }) {
         this.position = position;
         this.defaultColor = 'rgba(255,255,255,0.2)';
-        this.collisionColor = '#ccc';
         this.color = this.defaultColor;
         this.isOccupied = false;
     }
@@ -14,12 +13,9 @@ export default class PlacementTile {
             context2D.fillRect(this.position.x, this.position.y, TILE_SIZE, TILE_SIZE);
         }
     }
-    update(mouse) {
-        this.draw();
-        if (this.hasCollisionWithMouse(mouse) && !this.isOccupied) {
-            this.color = this.collisionColor;
-        }
-        else {
+    update(activeDashboardTower) {
+        if (activeDashboardTower && !this.isOccupied) {
+            this.draw();
             this.color = this.defaultColor;
         }
     }

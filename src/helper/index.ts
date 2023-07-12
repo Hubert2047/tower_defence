@@ -2,7 +2,7 @@ import Sprite from '../classes/sprite/index.js'
 import { BASE_HEALTH } from '../constants/index.js'
 import context2D from '../context2D/index.js'
 import gameData from '../data/gameMaps/index.js'
-import { E_gameMap } from '../enum/index.js'
+import { E_angels, E_gameMap } from '../enum/index.js'
 import { T_frame, T_gameMapData, T_initFrame, T_initFramesDictionary, T_position } from '../types/index.js'
 
 function calculateDistanceTwoPoint(pointA: T_position, pointB: T_position): number {
@@ -170,11 +170,40 @@ function drawHealthText(position: T_position, fullHealthWidth: number, remainHea
     }
 }
 function calAngleFromPointAToPointB(pointA: T_position, pointB: T_position): number {
-    const dx: number = pointB.x - pointA.x
-    const dy: number = pointB.y - pointA.y
-    const angleRad: number = Math.atan2(dy, dx)
+    const pointC: T_position = { x: pointA.x, y: 0 } // 0degree
+    const vectorAC: T_position = { x: pointC.x - pointA.x, y: pointC.y - pointA.y }
+    const vectorAB: T_position = { x: pointB.x - pointA.x, y: pointB.y - pointA.y }
+    const angleRad: number = Math.atan2(vectorAB.y, vectorAB.x) - Math.atan2(vectorAC.y, vectorAC.x)
     const angleDeg: number = angleRad * (180 / Math.PI)
     return angleDeg
+}
+function getAngleKeyByTwoPoint(pointA: T_position, pointB: T_position): E_angels {
+    const angel = calAngleFromPointAToPointB(pointA, pointB)
+    if ((angel >= 0 && angel <= 22.5) || angel >= 337.5) {
+        return E_angels.ANGEL_0
+    }
+    if (angel >= 22.5 && angel < 67.5) {
+        return E_angels.ANGEL_45
+    }
+    if (angel >= 67.5 && angel < 112.5) {
+        return E_angels.ANGEL_90
+    }
+    if (angel >= 112.5 && angel < 157.5) {
+        return E_angels.ANGEL_135
+    }
+    if (angel >= 157.5 && angel < 202.5) {
+        return E_angels.ANGEL_180
+    }
+    if (angel >= 202.5 && angel < 247.5) {
+        return E_angels.ANGEL_225
+    }
+    if (angel >= 247.5 && angel < 292.5) {
+        return E_angels.ANGEL_270
+    }
+    if (angel >= 292.5 && angel < 337.5) {
+        return E_angels.ANGEL_315
+    }
+    return E_angels.ANGEL_0
 }
 function getVectorNomalized(startPointLocation: T_position, endPointLocation: T_position): T_position {
     const v: T_position = {
@@ -229,6 +258,7 @@ function getGameMapData(gameMapType: E_gameMap): T_gameMapData | undefined {
             waypoints: deepClone(data.waypoints),
             limitAttacks: data.limitAttacks,
             startCoins: data.startCoins,
+            initDashboardTowerInfo: deepClone(data.waypoints),
         }
     }
     return undefined
@@ -256,6 +286,7 @@ export {
     createFrames,
     createImage,
     deepClone,
+    getAngleKeyByTwoPoint,
     getGameMapData,
     getVectorNomalized,
     randomNumberInRange,

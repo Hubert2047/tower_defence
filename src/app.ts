@@ -1,6 +1,6 @@
 import GameMap from './classes/gameMap/index.js'
 import { resetCanvas } from './context2D/index.js'
-import { E_gameMap, E_tower } from './enum/index.js'
+import { E_gameMap } from './enum/index.js'
 import { getGameMapData } from './helper/index.js'
 import { T_position } from './types/index.js'
 main()
@@ -20,7 +20,7 @@ function newGame() {
 }
 function startGame({ gameMap, mouse }: { gameMap: GameMap; mouse: T_position }): void {
     resetCanvas()
-    const [isGameOver, isVictory] = gameMap.updateMap(mouse)
+    const [isGameOver, isVictory] = gameMap.updateMap()
     if (isGameOver) {
         handleFinishedGame({ text: 'Game Over' })
         return
@@ -47,11 +47,24 @@ function handleAddEventGame({ gameMap, mouse }: { gameMap: GameMap; mouse: T_pos
     function handleEventMousemove(event: MouseEvent) {
         mouse.x = event.offsetX
         mouse.y = event.offsetY
-        gameMap.checkActiveTile({ mouse })
+        gameMap.checkMouseOverTile({ mouse })
+        gameMap.checkMouseOverDashboardTower({ mouse })
     }
     function handleEventClick() {
-        if (gameMap.activeTile && !gameMap.activeTile.isOccupied) {
-            gameMap.addTower({ towerType: E_tower.BLOOD_MOON })
+        if (!gameMap.mouseOverTile && !gameMap.mouseOverDashboardTower) {
+            gameMap.activeDashboardTower = null
+            return
+        }
+        if (!gameMap.mouseOverTile && gameMap.activeDashboardTower) {
+            gameMap.activeDashboardTower = null
+            return
+        }
+        if (gameMap.mouseOverDashboardTower) {
+            gameMap.activeDashboardTower = gameMap.mouseOverDashboardTower
+            return
+        }
+        if (gameMap.mouseOverTile && gameMap.activeDashboardTower) {
+            gameMap.addTower()
         }
     }
 }

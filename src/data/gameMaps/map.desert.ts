@@ -1,5 +1,5 @@
-import { E_enemy } from '../../enum/index.js'
-import { T_gameMapData, T_position, T_round } from '../../types/index.js'
+import { E_enemy, E_tower } from '../../enum/index.js'
+import { T_gameMapData, T_initDashboardTowerInfo, T_position, T_round } from '../../types/index.js'
 const placementTilesData: number[] = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0,
@@ -143,9 +143,27 @@ const rounds: T_round[] = [
         ],
     },
 ]
+const initDashboardTowerInfo: T_initDashboardTowerInfo[] = [
+    {
+        towerType: E_tower.BLOOD_MOON,
+        name: 'Blood moon',
+        position: { x: 0, y: 0 },
+        width: 64,
+        height: 64,
+        offset: { x: 0, y: 0 },
+    },
+]
 const backgroundImage: HTMLImageElement = new Image()
 const limitAttacks: number = 1000
 const startCoins: number = 20
 backgroundImage.src = '../../public/src/assets/images/gameMap.png'
-const desertMapData: T_gameMapData = { rounds, backgroundImage, placementTiles2D, waypoints, limitAttacks, startCoins }
+const desertMapData: T_gameMapData = {
+    rounds,
+    backgroundImage,
+    placementTiles2D,
+    waypoints,
+    limitAttacks,
+    startCoins,
+    initDashboardTowerInfo,
+}
 export default desertMapData

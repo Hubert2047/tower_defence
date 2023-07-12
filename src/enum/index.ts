@@ -31,10 +31,12 @@ enum E_behaviors {
 }
 enum E_angels {
     ANGEL_0 = '0degree',
+    ANGEL_45 = '45degree',
     ANGEL_90 = '90degree',
+    ANGEL_135 = '135degree',
     ANGEL_180 = '180degree',
-    ANGEL_290 = '290degree',
-    ANGEL_35 = '35degree',
-    ANGEL_145 = '145degree',
+    ANGEL_225 = '225degree',
+    ANGEL_270 = '270degree',
+    ANGEL_315 = '315degree',
 }
 export { E_angels, E_behaviors, E_enemy, E_explosion, E_gameMap, E_gate, E_projectile, E_tower }

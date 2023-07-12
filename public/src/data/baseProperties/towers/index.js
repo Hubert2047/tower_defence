@@ -5,6 +5,6 @@ const towersBaseProperties = new Map([[E_tower.BLOOD_MOON, BloodMoonProperties]]
 function getBaseTowerProperties(towerType) {
     if (towersBaseProperties.has(towerType))
         return deepClone(towersBaseProperties.get(towerType));
-    return undefined;
+    return deepClone(BloodMoonProperties);
 }
 export default getBaseTowerProperties;

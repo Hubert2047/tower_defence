@@ -11,25 +11,49 @@ const TideHunter = {
     initFrames: {
         [E_behaviors.RUN]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/run/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/run/0.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
-            [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/run/left_290.png',
+            [E_angels.ANGEL_45]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/run/45.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/run/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/run/90.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_135]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/run/135.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/run/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/run/180.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_225]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/run/225.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_270]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/run/270.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_315]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/run/315.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
@@ -37,25 +61,49 @@ const TideHunter = {
         },
         [E_behaviors.DEATH]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/death/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/death/0.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
-            [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/death/left_290.png',
+            [E_angels.ANGEL_45]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/death/45.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/death/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/death/90.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_135]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/death/135.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/death/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/death/180.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_225]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/death/225.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_270]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/death/270.png',
+                maxX: 4,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_315]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/death/315.png',
                 maxX: 4,
                 maxY: 4,
                 holdTime: 4,
@@ -63,25 +111,49 @@ const TideHunter = {
         },
         [E_behaviors.ATTACK]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/attack/top_0.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/attack/0.png',
                 maxX: 6,
                 maxY: 4,
                 holdTime: 4,
             },
-            [E_angels.ANGEL_290]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/attack/left_290.png',
+            [E_angels.ANGEL_45]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/attack/45.png',
                 maxX: 6,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/attack/right_90.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/attack/90.png',
+                maxX: 6,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_135]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/attack/135.png',
                 maxX: 6,
                 maxY: 4,
                 holdTime: 4,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/attack/bottom_180.png',
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/attack/180.png',
+                maxX: 6,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_225]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/attack/225.png',
+                maxX: 6,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_270]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/attack/270.png',
+                maxX: 6,
+                maxY: 4,
+                holdTime: 4,
+            },
+            [E_angels.ANGEL_315]: {
+                imageSourceString: '../../../public/src/assets/images/enemies/TideHunter/attack/315.png',
                 maxX: 6,
                 maxY: 4,
                 holdTime: 4,
@@ -95,24 +167,6 @@ const TideHunter = {
         initFrames: {
             [E_behaviors.IDLE]: {
                 [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../../public/src/assets/images/borders/6.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-                [E_angels.ANGEL_290]: {
-                    imageSourceString: '../../../public/src/assets/images/borders/6.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-                [E_angels.ANGEL_90]: {
-                    imageSourceString: '../../../public/src/assets/images/borders/6.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-                [E_angels.ANGEL_180]: {
                     imageSourceString: '../../../public/src/assets/images/borders/6.png',
                     maxX: 1,
                     maxY: 1,

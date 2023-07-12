@@ -1,16 +1,15 @@
 import { TILE_SIZE } from '../../constants/index.js'
 import context2D from '../../context2D/index.js'
 import { T_position } from '../../types/index.js'
+import Tower from '../tower/index.js'
 export default class PlacementTile {
     public position: T_position
     private defaultColor: string
-    private collisionColor: string
     private color: string
     public isOccupied: boolean
     constructor({ position = { x: 0, y: 0 } }: { position: T_position }) {
         this.position = position
         this.defaultColor = 'rgba(255,255,255,0.2)'
-        this.collisionColor = '#ccc'
         this.color = this.defaultColor
         this.isOccupied = false
     }
@@ -20,11 +19,9 @@ export default class PlacementTile {
             context2D.fillRect(this.position.x, this.position.y, TILE_SIZE, TILE_SIZE)
         }
     }
-    public update(mouse: T_position): void {
-        this.draw()
-        if (this.hasCollisionWithMouse(mouse) && !this.isOccupied) {
-            this.color = this.collisionColor
-        } else {
+    public update(activeDashboardTower: Tower | null): void {
+        if (activeDashboardTower && !this.isOccupied) {
+            this.draw()
             this.color = this.defaultColor
         }
     }
