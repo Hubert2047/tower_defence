@@ -3,9 +3,9 @@ import { T_baseEnemyProperties } from '../../../types/index.js'
 const TideHunter: T_baseEnemyProperties = {
     name: 'TideHunter',
     enemyType: E_enemy.TIDE_HUNTER,
-    width: 200,
-    height: 200,
-    offset: { x: 65, y: 65 },
+    width: 160,
+    height: 160,
+    offset: { x: 30, y: 40 },
     baseHealth: 4000,
     baseMoveSpeed: 1.2,
     baseCoins: 2,

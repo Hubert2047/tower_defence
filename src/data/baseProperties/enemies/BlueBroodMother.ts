@@ -4,9 +4,9 @@ import { T_baseEnemyProperties } from '../../../types/index.js'
 const BlueBroodMother: T_baseEnemyProperties = {
     name: 'Brood Mother',
     enemyType: E_enemy.Blue_Brood_Mother,
-    width: 200,
-    height: 200,
-    offset: { x: 65, y: 65 },
+    width: 160,
+    height: 160,
+    offset: { x: 30, y: 40 },
     baseHealth: 3000,
     baseMoveSpeed: 3.9,
     baseCoins: 1,

@@ -2,9 +2,9 @@ import { E_angels, E_behaviors, E_explosion, E_projectile, E_tower } from '../..
 const HauntedTreeProperties = {
     name: 'HAUNTED TREE',
     towerType: E_tower.HAUNTED_TREE,
-    offset: { x: 10, y: 70 },
-    width: 200,
-    height: 200,
+    offset: { x: 60, y: 100 },
+    width: 192,
+    height: 230,
     prices: 10,
     initFrames: {
         [E_behaviors.ATTACK]: {

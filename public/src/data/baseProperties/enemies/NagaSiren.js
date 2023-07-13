@@ -2,9 +2,9 @@ import { E_angels, E_behaviors, E_enemy } from '../../../enum/index.js';
 const NagaSiren = {
     name: 'Naga Siren',
     enemyType: E_enemy.SIREN,
-    width: 200,
-    height: 200,
-    offset: { x: 65, y: 55 },
+    width: 160,
+    height: 160,
+    offset: { x: 65, y: 40 },
     baseHealth: 6000,
     baseMoveSpeed: 1.5,
     baseCoins: 2,

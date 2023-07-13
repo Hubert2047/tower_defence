@@ -87,7 +87,7 @@ export default class Gate extends Sprite {
     public draw(): void {
         super.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
         updateHealthBars({ sprite: this, health: this.health, remainHealth: this.remainHealth })
-        this.drawAttackRangeCicle()
+        // this.drawAttackRangeCicle()
     }
     public drawAttackRangeCicle(): void {
         if (context2D) {
@@ -120,10 +120,14 @@ export default class Gate extends Sprite {
         }
         const targetEnemy: Enemy = this.findTargetEnemy(enemiesInRange)
         const centerRightTargetEnemyPosition = {
-            x: targetEnemy.position.x - 8 * targetEnemy.offset.x,
-            y: targetEnemy.position.y + 3.5 * targetEnemy.offset.y,
+            x: targetEnemy.position.x,
+            y: targetEnemy.position.y + targetEnemy.height,
         }
-        this.angelKey = this.getAngleKeyByTwoPoint(this.position, centerRightTargetEnemyPosition)
+        const centerLeftGatePosition = {
+            x: this.position.x,
+            y: this.position.y - this.offset.y / 8,
+        }
+        this.angelKey = this.getAngleKeyByTwoPoint(centerLeftGatePosition, centerRightTargetEnemyPosition)
         const distance = calculateDistanceTwoPoint(targetEnemy.position, this.position)
         if (distance <= 64 * 4) {
             this.behaviorKey = E_behaviors.ATTACK

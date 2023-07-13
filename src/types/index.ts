@@ -92,6 +92,7 @@ type T_tower = {
     behaviorKey?: E_behaviors
     angelKey?: E_angels
     projectileType?: E_projectile
+    opacity?: number
 }
 type T_explosion = {
     name: string

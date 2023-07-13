@@ -1,6 +1,7 @@
 import { TILE_SIZE } from '../../constants/index.js'
 import context2D from '../../context2D/index.js'
 import { T_position } from '../../types/index.js'
+import DashboardTower from '../tower/dashboardTower.js'
 import Tower from '../tower/index.js'
 export default class PlacementTile {
     public position: T_position
@@ -25,12 +26,12 @@ export default class PlacementTile {
             this.color = this.defaultColor
         }
     }
-    public hasCollisionWithMouse(mouse: T_position): boolean {
+    public hasCollisionWithMouse(dashboardTowerShadow: DashboardTower): boolean {
         return (
-            this.position.x <= mouse.x &&
-            mouse.x <= this.position.x + TILE_SIZE &&
-            this.position.y <= mouse.y &&
-            mouse.y <= this.position.y + TILE_SIZE
+            this.position.x <= dashboardTowerShadow.position.x &&
+            dashboardTowerShadow.position.x <= this.position.x + TILE_SIZE &&
+            this.position.y <= dashboardTowerShadow.position.y &&
+            dashboardTowerShadow.position.y <= this.position.y + TILE_SIZE
         )
     }
 }

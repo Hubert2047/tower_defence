@@ -4,9 +4,9 @@ import { T_baseEnemyProperties } from '../../../types/index.js'
 const Hunter: T_baseEnemyProperties = {
     name: 'Hunter',
     enemyType: E_enemy.Hunter,
-    width: 200,
-    height: 200,
-    offset: { x: 65, y: 50 },
+    width: 120,
+    height: 120,
+    offset: { x: 45, y: 15 },
     baseHealth: 3000,
     baseMoveSpeed: 1.5,
     baseCoins: 2,

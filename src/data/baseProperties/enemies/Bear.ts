@@ -3,9 +3,9 @@ import { T_baseEnemyProperties } from '../../../types/index.js'
 const Bear: T_baseEnemyProperties = {
     name: 'Bear',
     enemyType: E_enemy.BEAR,
-    width: 200,
-    height: 200,
-    offset: { x: 65, y: 65 },
+    width: 160,
+    height: 160,
+    offset: { x: 30, y: 30 },
     baseHealth: 4000,
     baseMoveSpeed: 1.2,
     baseCoins: 2,

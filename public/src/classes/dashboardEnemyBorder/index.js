@@ -18,16 +18,16 @@ export default class Border extends Sprite {
                 initFrames: {
                     [E_behaviors.IDLE]: {
                         [E_angels.ANGEL_0]: {
-                            imageSourceString: '../../../public/src/assets/images/borders/6.png',
-                            maxX: 1,
-                            maxY: 1,
-                            holdTime: 100,
+                            imageSourceString: '../../../public/src/assets/images/effect/7_firespin_spritesheet.png',
+                            maxX: 8,
+                            maxY: 8,
+                            holdTime: 2,
                         },
                     },
                 },
-                offset: { x: offset.x - 5, y: offset.y - 5 },
-                width: width + 10,
-                height: height + 10,
+                offset: { x: 50, y: 40 },
+                width: 160,
+                height: 160,
             };
             this.selectedBorder = this.createSelectedBorder(selectedBorderOptions);
         }

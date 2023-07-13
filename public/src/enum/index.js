@@ -14,6 +14,7 @@ var E_tower;
     E_tower[E_tower["BLOOD_MOON"] = 1] = "BLOOD_MOON";
     E_tower[E_tower["FLYING_OBELISK"] = 2] = "FLYING_OBELISK";
     E_tower[E_tower["HAUNTED_TREE"] = 3] = "HAUNTED_TREE";
+    E_tower[E_tower["OBELISK_THUNDER"] = 4] = "OBELISK_THUNDER";
 })(E_tower || (E_tower = {}));
 var E_projectile;
 (function (E_projectile) {

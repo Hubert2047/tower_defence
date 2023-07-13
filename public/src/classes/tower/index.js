@@ -1,14 +1,14 @@
 import context2D from '../../context2D/index.js';
 import getBaseTowerProperties from '../../data/baseProperties/towers/index.js';
 import { E_angels, E_behaviors, E_projectile } from '../../enum/index.js';
-import { calculateDistanceTwoPoint, createFrames } from '../../helper/index.js';
+import { calAngleFromPointAToPointB, calculateDistanceTwoPoint, createFrames } from '../../helper/index.js';
 import ExplosionProjectile from '../explosionProjectile/index.js';
 import Projectile from '../projectile/index.js';
 import Sprite from '../sprite/index.js';
 export default class Tower extends Sprite {
-    constructor({ name, towerType, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, projectileType = E_projectile.FIRE, damage = 100, attackSpeed = 1, attackRange = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, }) {
+    constructor({ name, towerType, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, projectileType = E_projectile.FIRE, damage = 100, attackSpeed = 1, attackRange = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, }) {
         const frames = createFrames({ initFrames });
-        super({ position, offset, width, height, frames });
+        super({ position, offset, width, height, frames, opacity });
         this.name = name;
         this.towerType = towerType;
         this.damage = damage;
@@ -49,8 +49,20 @@ export default class Tower extends Sprite {
         if (enemies.length <= 0)
             return;
         const enemiesInRange = this.getEnemiesInAttackRange(enemies);
+        if (enemiesInRange.length <= 0) {
+            this.angelKey = E_angels.ANGEL_225;
+        }
         if (enemiesInRange.length > 0) {
             const targetEnemy = this.findTargetEnemy(enemiesInRange);
+            const centerRightTargetEnemyPosition = {
+                x: targetEnemy.position.x + targetEnemy.width - targetEnemy.offset.x,
+                y: targetEnemy.position.y - targetEnemy.height / 2,
+            };
+            const centerLeftTowerPosition = {
+                x: this.position.x + this.width - this.offset.x,
+                y: this.position.y - this.height / 2,
+            };
+            this.angelKey = this.getAngleKeyByTwoPoint(centerLeftTowerPosition, centerRightTargetEnemyPosition);
             if (this.baseTowerProperties) {
                 const projectTileInfo = this.baseTowerProperties.projectileInfo[this.behaviorKey];
                 const projectileOptions = {
@@ -72,6 +84,58 @@ export default class Tower extends Sprite {
                 this.projectiles.push(newProjectile);
             }
         }
+    }
+    getAngleKeyByTwoPoint(pointA, pointB) {
+        const angel = calAngleFromPointAToPointB(pointA, pointB);
+        if ((angel >= 0 && angel < 11.25) || angel >= 348.25) {
+            return E_angels.ANGEL_0;
+        }
+        if (angel >= 11.25 && angel < 33.25) {
+            return E_angels.ANGEL_22;
+        }
+        if (angel >= 33.25 && angel < 56.25) {
+            return E_angels.ANGEL_45;
+        }
+        if (angel >= 56.25 && angel < 78.25) {
+            return E_angels.ANGEL_67;
+        }
+        if (angel >= 78.25 && angel < 101.25) {
+            return E_angels.ANGEL_90;
+        }
+        if (angel >= 101.25 && angel < 123.25) {
+            return E_angels.ANGEL_112;
+        }
+        if (angel >= 123.25 && angel < 146.25) {
+            return E_angels.ANGEL_135;
+        }
+        if (angel >= 146.25 && angel < 168.25) {
+            return E_angels.ANGEL_157;
+        }
+        if (angel >= 168.25 && angel < 191.25) {
+            return E_angels.ANGEL_180;
+        }
+        if (angel >= 191.25 && angel < 213.25) {
+            return E_angels.ANGEL_202;
+        }
+        if (angel >= 213.25 && angel < 236.25) {
+            return E_angels.ANGEL_225;
+        }
+        if (angel >= 236.25 && angel < 258.25) {
+            return E_angels.ANGEL_247;
+        }
+        if (angel >= 258.25 && angel < 281.25) {
+            return E_angels.ANGEL_270;
+        }
+        if (angel >= 281.25 && angel < 302.25) {
+            return E_angels.ANGEL_292;
+        }
+        if (angel >= 302.25 && angel < 326.25) {
+            return E_angels.ANGEL_315;
+        }
+        if (angel >= 326.25 && angel < 348.25) {
+            return E_angels.ANGEL_337;
+        }
+        return E_angels.ANGEL_0;
     }
     //Find the closest enemy to the objective
     findTargetEnemy(enemies) {

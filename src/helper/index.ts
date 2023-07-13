@@ -12,8 +12,8 @@ function calculateDistanceTwoPoint(pointA: T_position, pointB: T_position): numb
     return distance
 }
 function calFullHealthWidth(health: number): number {
-    const width = (health * 15) / BASE_HEALTH
-    return width > 120 ? 120 : width
+    const width = (health * 6) / BASE_HEALTH
+    return width > 80 ? 80 : width
 }
 function calculateHoldTime({ maxX, maxY, moveSpeed }: { maxX: number; maxY: number; moveSpeed: number }): number {
     const holdTime = parseInt(((maxX * maxY) / 2 / moveSpeed).toString())
@@ -22,7 +22,7 @@ function calculateHoldTime({ maxX, maxY, moveSpeed }: { maxX: number; maxY: numb
 function updateHealthBars({ sprite, health, remainHealth }: { sprite: Sprite; health: number; remainHealth: number }) {
     const drawOption = {
         lineWidth: 2,
-        height: 8,
+        height: 7,
         borderRadius: 4,
         strokeStyle: 'white',
     }

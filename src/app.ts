@@ -47,20 +47,21 @@ function handleAddEventGame({ gameMap, mouse }: { gameMap: GameMap; mouse: T_pos
     function handleEventMousemove(event: MouseEvent) {
         mouse.x = event.offsetX
         mouse.y = event.offsetY
-        gameMap.checkMouseOverTile({ mouse })
+        gameMap.checkMouseOverTile()
         gameMap.checkMouseOverDashboardTower({ mouse })
+        gameMap.updateDashboardShadowPosition(mouse)
     }
     function handleEventClick() {
         if (!gameMap.mouseOverTile && !gameMap.mouseOverDashboardTower) {
             gameMap.activeDashboardTower = null
             return
         }
-        if (!gameMap.mouseOverTile && gameMap.activeDashboardTower) {
-            gameMap.activeDashboardTower = null
-            return
-        }
         if (gameMap.mouseOverDashboardTower) {
             gameMap.activeDashboardTower = gameMap.mouseOverDashboardTower
+            return
+        }
+        if (!gameMap.mouseOverTile && gameMap.activeDashboardTower) {
+            gameMap.activeDashboardTower = null
             return
         }
         if (gameMap.mouseOverTile && gameMap.activeDashboardTower) {

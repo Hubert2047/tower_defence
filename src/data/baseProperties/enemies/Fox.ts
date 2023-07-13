@@ -4,9 +4,9 @@ import { T_baseEnemyProperties } from '../../../types/index.js'
 const Fox: T_baseEnemyProperties = {
     name: 'Fox',
     enemyType: E_enemy.FOX,
-    width: 200,
-    height: 200,
-    offset: { x: 65, y: 65 },
+    width: 160,
+    height: 160,
+    offset: { x: 30, y: 40 },
     baseHealth: 3000,
     baseMoveSpeed: 1.5,
     baseCoins: 2,

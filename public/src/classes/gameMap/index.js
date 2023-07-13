@@ -4,11 +4,13 @@ import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js';
 import gatesBaseProperties from '../../data/baseProperties/gates/index.js';
 import getBaseTowerProperties from '../../data/baseProperties/towers/index.js';
 import { E_angels, E_behaviors, E_gate } from '../../enum/index.js';
-import { randomNumberInRange } from '../../helper/index.js';
+import { createFrames, randomNumberInRange } from '../../helper/index.js';
 import Border from '../dashboardEnemyBorder/index.js';
 import Enemy from '../enemy/index.js';
 import Gate from '../gate/index.js';
 import PlacementTile from '../placementTile/index.js';
+import Sprite from '../sprite/index.js';
+import DashboardTower from '../tower/dashboardTower.js';
 import Tower from '../tower/index.js';
 export default class GameMap {
     constructor({ rounds, placementTiles2D, waypoints, backgroundImage, startCoins, initDashboardTowerInfo, }) {
@@ -22,16 +24,12 @@ export default class GameMap {
         this.towers = [];
         this.coins = startCoins;
         this.currentDashboardEnemiesInfo = [];
-        // this.menu = this.createMenu()
-        // this.coinsIcon = this.createCoinsIcon()
-        // this.heartIcon = this.createHeartIcon()
-        // this.effect = this.createEffec()
+        this.menu = this.createMenu();
+        this.coinsIcon = this.createCoinsIcon();
         this._mouseOverTile = null;
         this.mouseOverDashboardTower = null;
         this.activeDashboardTower = null;
         this.deathEffectEnemies = [];
-        this.activeDashboardTowerShadow = null;
-        // this.isVictory = false
         this.dashboardTowers = this.createDashboardTowers(initDashboardTowerInfo);
         this.spawingCurrentRoundEnemies();
         this.gate = this.createGate();
@@ -53,7 +51,6 @@ export default class GameMap {
         };
         return new Gate(gateOptions);
     }
-    createDashboardTowerShadow() { }
     createDashboardTowers(initDashboardTowerInfo) {
         const dashboardTowers = [];
         initDashboardTowerInfo.forEach((dashboardTower) => {
@@ -76,7 +73,7 @@ export default class GameMap {
                 width: dashboardTower.dashboardBorderInfo.width,
                 height: dashboardTower.dashboardBorderInfo.height,
             };
-            const newDashboardTower = new Tower(towerOptions);
+            const newDashboardTower = new DashboardTower(towerOptions);
             const newBorder = new Border(borderOptions);
             dashboardTowers.push({ dashboardTower: newDashboardTower, border: newBorder });
         });
@@ -89,14 +86,21 @@ export default class GameMap {
         this.updateTowers();
         this.updateDashboardEnemies();
         this.updateDashboardTowers();
-        // this.drawCoinsAndGameHearts()
+        this.drawCoinsAndGameHearts();
         this.updateGate();
-        this.updateDashboardTowerShadow();
+        this.updateDashboardShadow();
         return this.getGameStatus();
     }
-    updateDashboardTowerShadow() {
-        if (this.activeDashboardTowerShadow) {
-            this.activeDashboardTowerShadow.draw();
+    updateDashboardShadow() {
+        var _a;
+        if ((_a = this.activeDashboardTower) === null || _a === void 0 ? void 0 : _a.dashboardShadow) {
+            this.activeDashboardTower.dashboardShadow.draw();
+        }
+    }
+    updateDashboardShadowPosition(mouse) {
+        var _a;
+        if ((_a = this.activeDashboardTower) === null || _a === void 0 ? void 0 : _a.dashboardShadow) {
+            this.activeDashboardTower.dashboardShadow.position = { x: mouse.x, y: mouse.y };
         }
     }
     getGameStatus() {
@@ -109,186 +113,58 @@ export default class GameMap {
             this.gate.update({ enemies: this.currentEnemiesData });
         }
     }
-    // private createMenu() {
-    //     const initFrames: T_initFramesDictionary = {
-    //         [E_behaviors.IDLE]: {
-    //             [E_angels.ANGEL_0]: {
-    //                 imageSourceString: '../../public/src/assets/images/screen/layout_target.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //             [E_angels.ANGEL_290]: {
-    //                 imageSourceString: '../../public/src/assets/images/screen/layout_target.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //             [E_angels.ANGEL_90]: {
-    //                 imageSourceString: '../../public/src/assets/images/screen/layout_target.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //             [E_angels.ANGEL_180]: {
-    //                 imageSourceString: '../../public/src/assets/images/screen/layout_target.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //         },
-    //     }
-    //     const frames = createFrames({ initFrames })
-    //     const options: T_sprite = {
-    //         frames,
-    //         position: { x: 64 * 17, y: 64 * 1 },
-    //         offset: { x: 10, y: 26 },
-    //         height: 120,
-    //         width: 230,
-    //     }
-    //     return new Sprite(options)
-    // }
-    // private createCoinsIcon() {
-    //     const initFrames: T_initFramesDictionary = {
-    //         [E_behaviors.IDLE]: {
-    //             [E_angels.ANGEL_0]: {
-    //                 imageSourceString: '../../public/src/assets/images/screen/coins.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //             [E_angels.ANGEL_290]: {
-    //                 imageSourceString: '../../public/src/assets/images/screen/coins.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //             [E_angels.ANGEL_90]: {
-    //                 imageSourceString: '../../public/src/assets/images/screen/coins.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //             [E_angels.ANGEL_180]: {
-    //                 imageSourceString: '../../public/src/assets/images/screen/coins.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //         },
-    //     }
-    //     const frames = createFrames({ initFrames })
-    //     const options: T_sprite = {
-    //         frames,
-    //         position: { x: 64 * 17, y: 64 * 1 },
-    //         offset: { x: 4, y: -12 },
-    //         height: 40,
-    //         width: 40,
-    //     }
-    //     return new Sprite(options)
-    // }
-    // private createHeartIcon() {
-    //     const initFrames: T_initFramesDictionary = {
-    //         [E_behaviors.IDLE]: {
-    //             [E_angels.ANGEL_0]: {
-    //                 imageSourceString: '../../public/src/assets/images/screen/heart.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //             [E_angels.ANGEL_290]: {
-    //                 imageSourceString: '../../public/src/assets/images/screen/heart.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //             [E_angels.ANGEL_90]: {
-    //                 imageSourceString: '../../public/src/assets/images/screen/heart.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //             [E_angels.ANGEL_180]: {
-    //                 imageSourceString: '../../public/src/assets/images/screen/heart.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //         },
-    //     }
-    //     const frames = createFrames({ initFrames })
-    //     const options: T_sprite = {
-    //         frames,
-    //         position: { x: 64 * 19, y: 64 * 1 },
-    //         offset: { x: 40, y: -14 },
-    //         height: 34,
-    //         width: 34,
-    //     }
-    //     return new Sprite(options)
-    // }
-    // private createEffec() {
-    //     const initFrames: T_initFramesDictionary = {
-    //         [E_behaviors.IDLE]: {
-    //             [E_angels.ANGEL_0]: {
-    //                 imageSourceString: '../../public/src/assets/images/effect/7_firespin_spritesheet.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //             [E_angels.ANGEL_290]: {
-    //                 imageSourceString: '../../public/src/assets/images/effect/7_firespin_spritesheet.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //             [E_angels.ANGEL_90]: {
-    //                 imageSourceString: '../../public/src/assets/images/effect/7_firespin_spritesheet.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //             [E_angels.ANGEL_180]: {
-    //                 imageSourceString: '../../public/src/assets/images/effect/7_firespin_spritesheet.png',
-    //                 maxX: 1,
-    //                 maxY: 1,
-    //                 holdTime: 4,
-    //             },
-    //         },
-    //     }
-    //     const frames = createFrames({ initFrames })
-    //     const options: T_sprite = {
-    //         frames,
-    //         position: { x: 64 * 16, y: 64 * 6 },
-    //         offset: { x: -20, y: -30 },
-    //         height: 400,
-    //         width: 400,
-    //     }
-    //     return new Sprite(options)
-    // }
+    createMenu() {
+        const initFrames = {
+            [E_behaviors.IDLE]: {
+                [E_angels.ANGEL_0]: {
+                    imageSourceString: '../../public/src/assets/images/screen/layout_target.png',
+                    maxX: 1,
+                    maxY: 1,
+                    holdTime: 4,
+                },
+            },
+        };
+        const frames = createFrames({ initFrames });
+        const options = {
+            frames,
+            position: { x: 64 * 17, y: 64 * 1 },
+            offset: { x: 10, y: 26 },
+            height: 120,
+            width: 230,
+        };
+        return new Sprite(options);
+    }
+    createCoinsIcon() {
+        const initFrames = {
+            [E_behaviors.IDLE]: {
+                [E_angels.ANGEL_0]: {
+                    imageSourceString: '../../public/src/assets/images/screen/coins.png',
+                    maxX: 1,
+                    maxY: 1,
+                    holdTime: 4,
+                },
+            },
+        };
+        const frames = createFrames({ initFrames });
+        const options = {
+            frames,
+            position: { x: 64 * 17, y: 64 * 1 },
+            offset: { x: 4, y: -12 },
+            height: 40,
+            width: 40,
+        };
+        return new Sprite(options);
+    }
     updateDashboardTowers() {
         this.dashboardTowers.map((dashboardTowerInfo) => {
+            dashboardTowerInfo.border.update();
             if (dashboardTowerInfo.dashboardTower === this.activeDashboardTower) {
                 dashboardTowerInfo.border.updateSelected();
             }
             else {
-                dashboardTowerInfo.border.update();
             }
             dashboardTowerInfo.dashboardTower.draw();
         });
-        //   this.currentDashboardEnemiesInfo.forEach((dashboardEnemyInfor, index) => {
-        //       dashboardEnemyInfor.dashboardEnemyBorder.update()
-        //       dashboardEnemyInfor.dashboardEnemy.draw({ behaviorKey: E_behaviors.RUN, angelKey: E_angels.ANGEL_90 })
-        //       const textOptions: T_text = {
-        //           text: dashboardEnemyInfor.remainEnemiesTotal.toString(),
-        //           position: {
-        //               x: dashboardEnemyInfor.dashboardEnemyBorder.position.x + 25,
-        //               y: dashboardEnemyInfor.dashboardEnemyBorder.position.y - 5,
-        //           },
-        //           color: '#8B4513',
-        //           fontSize: 20,
-        //       }
-        //       this.drawText(textOptions)
-        //   })
     }
     get mouseOverTile() {
         return this._mouseOverTile;
@@ -300,31 +176,21 @@ export default class GameMap {
         if (context2D)
             context2D.drawImage(this.backgroundImage, 0, 0);
     }
-    // private drawCoinsAndGameHearts(): void {
-    //     this.menu.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
-    //     this.drawCoins()
-    //     // this.drawHearts()
-    // }
-    // private drawCoins() {
-    //     this.coinsIcon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
-    //     const textOptions: T_text = {
-    //         text: this.coins.toString(),
-    //         position: { x: this.coinsIcon.position.x + 46, y: this.coinsIcon.position.y - 26 },
-    //         color: 'white',
-    //         fontSize: 20,
-    //     }
-    //     this.drawText(textOptions)
-    // }
-    // private drawHearts() {
-    //     this.heartIcon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
-    //     const textOptions: T_text = {
-    //         text: this.limitAttacks.toString(),
-    //         position: { x: this.heartIcon.position.x, y: this.heartIcon.position.y - 26 },
-    //         color: 'white',
-    //         fontSize: 20,
-    //     }
-    //     this.drawText(textOptions)
-    // }
+    drawCoinsAndGameHearts() {
+        this.menu.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 });
+        this.drawCoins();
+        // this.drawHearts()
+    }
+    drawCoins() {
+        this.coinsIcon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 });
+        const textOptions = {
+            text: this.coins.toString(),
+            position: { x: this.coinsIcon.position.x + 46, y: this.coinsIcon.position.y - 26 },
+            color: 'white',
+            fontSize: 20,
+        };
+        this.drawText(textOptions);
+    }
     drawText({ text, position, color = 'black', fontSize = 16 }) {
         if (context2D) {
             context2D.font = `${fontSize}px Changa One`;
@@ -430,6 +296,8 @@ export default class GameMap {
         if (!this.activeDashboardTower)
             return;
         const towerBaseProperties = getBaseTowerProperties(this.activeDashboardTower.towerType);
+        if (!this.activeDashboardTower)
+            return;
         if (this.coins < towerBaseProperties.prices)
             return;
         this.coins -= towerBaseProperties.prices;
@@ -517,9 +385,16 @@ export default class GameMap {
         };
         return new Enemy(enemyOptions);
     }
-    checkMouseOverTile({ mouse }) {
-        var _a;
-        this._mouseOverTile = (_a = this.placementTiles.find((tile) => tile.hasCollisionWithMouse(mouse))) !== null && _a !== void 0 ? _a : null;
+    checkMouseOverTile() {
+        var _a, _b;
+        if (!((_a = this.activeDashboardTower) === null || _a === void 0 ? void 0 : _a.dashboardShadow)) {
+            this._mouseOverTile = null;
+        }
+        else {
+            const dashboardShadow = this.activeDashboardTower.dashboardShadow;
+            this._mouseOverTile =
+                (_b = this.placementTiles.find((tile) => tile.hasCollisionWithMouse(dashboardShadow))) !== null && _b !== void 0 ? _b : null;
+        }
     }
     checkMouseOverDashboardTower({ mouse }) {
         var _a, _b;

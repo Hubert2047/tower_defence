@@ -4,9 +4,9 @@ import { T_baseEnemyProperties } from '../../../types/index.js'
 const NagaSiren: T_baseEnemyProperties = {
     name: 'Naga Siren',
     enemyType: E_enemy.SIREN,
-    width: 200,
-    height: 200,
-    offset: { x: 65, y: 55 },
+    width: 160,
+    height: 160,
+    offset: { x: 65, y: 40 },
     baseHealth: 6000,
     baseMoveSpeed: 1.5,
     baseCoins: 2,

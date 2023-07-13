@@ -2,10 +2,10 @@ import { E_angels, E_behaviors, E_enemy } from '../../../enum/index.js';
 const BroodMother = {
     name: 'Brood Mother',
     enemyType: E_enemy.BROOD_MOTHER,
-    width: 200,
-    height: 200,
-    offset: { x: 65, y: 65 },
-    baseHealth: 3000,
+    width: 160,
+    height: 160,
+    offset: { x: 30, y: 50 },
+    baseHealth: 5000,
     baseMoveSpeed: 1.9,
     baseCoins: 1,
     initFrames: {

@@ -12,6 +12,7 @@ enum E_tower {
     BLOOD_MOON = 1,
     FLYING_OBELISK = 2,
     HAUNTED_TREE = 3,
+    OBELISK_THUNDER = 4,
 }
 enum E_projectile {
     FIRE = 1,
