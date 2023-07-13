@@ -1,4 +1,4 @@
-import { E_enemy, E_tower } from '../../enum/index.js';
+import { E_enemy, E_tower, E_behaviors, E_angels } from '../../enum/index.js';
 const placementTilesData = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0,
@@ -156,26 +156,77 @@ const initDashboardTowerInfo = [
     {
         towerType: E_tower.BLOOD_MOON,
         name: 'Blood moon',
-        position: { x: 64 * 12, y: 64 * 11 },
+        position: { x: 64 * 12, y: 64 * 12 },
         width: 64,
         height: 64,
         offset: { x: 0, y: -10 },
+        dashboardBorderInfo: {
+            name: 'Border 1',
+            position: { x: 64 * 12, y: 64 * 12 },
+            offset: { x: 0, y: 0 },
+            initFrames: {
+                [E_behaviors.IDLE]: {
+                    [E_angels.ANGEL_0]: {
+                        imageSourceString: '../../../public/src/assets/images/borders/6.png',
+                        maxX: 1,
+                        maxY: 1,
+                        holdTime: 4,
+                    },
+                },
+            },
+            width: 64,
+            height: 64,
+        },
     },
     {
         towerType: E_tower.FLYING_OBELISK,
         name: 'FLYING OBELISK',
-        position: { x: 64 * 11, y: 64 * 11 },
+        position: { x: 64 * 11, y: 64 * 12 },
         width: 64,
         height: 64,
         offset: { x: 0, y: -10 },
+        dashboardBorderInfo: {
+            name: 'Border 1',
+            position: { x: 64 * 11, y: 64 * 12 },
+            offset: { x: 0, y: 0 },
+            initFrames: {
+                [E_behaviors.IDLE]: {
+                    [E_angels.ANGEL_0]: {
+                        imageSourceString: '../../../public/src/assets/images/borders/6.png',
+                        maxX: 1,
+                        maxY: 1,
+                        holdTime: 4,
+                    },
+                },
+            },
+            width: 64,
+            height: 64,
+        },
     },
     {
         towerType: E_tower.HAUNTED_TREE,
         name: 'HAUNTED TREE',
-        position: { x: 64 * 10, y: 64 * 11 },
+        position: { x: 64 * 10, y: 64 * 12 },
         width: 100,
         height: 100,
         offset: { x: 10, y: 10 },
+        dashboardBorderInfo: {
+            name: 'Border 1',
+            position: { x: 64 * 10, y: 64 * 12 },
+            offset: { x: 0, y: 0 },
+            initFrames: {
+                [E_behaviors.IDLE]: {
+                    [E_angels.ANGEL_0]: {
+                        imageSourceString: '../../../public/src/assets/images/borders/6.png',
+                        maxX: 1,
+                        maxY: 1,
+                        holdTime: 4,
+                    },
+                },
+            },
+            width: 64,
+            height: 64,
+        },
     },
 ];
 const backgroundImage = new Image();

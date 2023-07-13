@@ -8,7 +8,7 @@ import { randomNumberInRange } from '../../helper/index.js'
 import {
     T_baseEnemyProperties,
     T_baseTowerProperties,
-    T_dashboardEnemyBorder,
+    T_dashboardBorder,
     T_enemy,
     T_enemyInfo,
     T_gameMapData,
@@ -23,11 +23,15 @@ import Enemy from '../enemy/index.js'
 import Gate from '../gate/index.js'
 import PlacementTile from '../placementTile/index.js'
 import Tower from '../tower/index.js'
-interface T_dashboardEnemiesInfo {
+interface I_dashboardEnemiesInfo {
     enemyType: E_enemy
     dashboardEnemy: Enemy
     dashboardEnemyBorder: Border
     remainEnemiesTotal: number
+}
+interface I_dashboardTowersInfo {
+    dashboardTower: Tower
+    border: Border
 }
 type T_text = {
     text: string
@@ -49,14 +53,15 @@ export default class GameMap {
     private _mouseOverTile: PlacementTile | null
     public mouseOverDashboardTower: Tower | null
     public activeDashboardTower: Tower | null
-    public dashboardTowers: Tower[]
+    public activeDashboardTowerShadow: Tower | null
+    public dashboardTowers: I_dashboardTowersInfo[]
     // private menu: Sprite
     // private coinsIcon: Sprite
     // private heartIcon: Sprite
     // private effect: Sprite
     private deathEffectEnemies: Enemy[]
     private gate: Gate
-    private currentDashboardEnemiesInfo: T_dashboardEnemiesInfo[]
+    private currentDashboardEnemiesInfo: I_dashboardEnemiesInfo[]
     constructor({
         rounds,
         placementTiles2D,
@@ -83,6 +88,7 @@ export default class GameMap {
         this.mouseOverDashboardTower = null
         this.activeDashboardTower = null
         this.deathEffectEnemies = []
+        this.activeDashboardTowerShadow = null
         // this.isVictory = false
         this.dashboardTowers = this.createDashboardTowers(initDashboardTowerInfo)
         this.spawingCurrentRoundEnemies()
@@ -105,8 +111,9 @@ export default class GameMap {
         }
         return new Gate(gateOptions)
     }
-    private createDashboardTowers(initDashboardTowerInfo: T_initDashboardTowerInfo[]): Tower[] {
-        const dashboardTowers: Tower[] = []
+    private createDashboardTowerShadow() {}
+    private createDashboardTowers(initDashboardTowerInfo: T_initDashboardTowerInfo[]): I_dashboardTowersInfo[] {
+        const dashboardTowers: I_dashboardTowersInfo[] = []
         initDashboardTowerInfo.forEach((dashboardTower) => {
             const baseTowerProperties: T_baseTowerProperties = getBaseTowerProperties(dashboardTower.towerType)
             const towerOptions: T_tower = {
@@ -119,8 +126,17 @@ export default class GameMap {
                 height: dashboardTower.height,
                 projectileType: baseTowerProperties.projectileInfo[E_behaviors.ATTACK].projectileType,
             }
+            const borderOptions: T_dashboardBorder = {
+                name: dashboardTower.dashboardBorderInfo.name,
+                position: dashboardTower.dashboardBorderInfo.position,
+                initFrames: dashboardTower.dashboardBorderInfo.initFrames,
+                offset: dashboardTower.dashboardBorderInfo.offset,
+                width: dashboardTower.dashboardBorderInfo.width,
+                height: dashboardTower.dashboardBorderInfo.height,
+            }
             const newDashboardTower = new Tower(towerOptions)
-            dashboardTowers.push(newDashboardTower)
+            const newBorder = new Border(borderOptions)
+            dashboardTowers.push({ dashboardTower: newDashboardTower, border: newBorder })
         })
         return dashboardTowers
     }
@@ -133,7 +149,13 @@ export default class GameMap {
         this.updateDashboardTowers()
         // this.drawCoinsAndGameHearts()
         this.updateGate()
+        this.updateDashboardTowerShadow()
         return this.getGameStatus()
+    }
+    private updateDashboardTowerShadow() {
+        if (this.activeDashboardTowerShadow) {
+            this.activeDashboardTowerShadow.draw()
+        }
     }
     private getGameStatus(): [boolean, boolean] {
         const isGameOver = this.gate.remainHealth === 0
@@ -142,7 +164,7 @@ export default class GameMap {
     }
     private updateGate() {
         if (this.gate) {
-            this.gate.update({ enemies: this._currentEnemiesData })
+            this.gate.update({ enemies: this.currentEnemiesData })
         }
     }
     // private createMenu() {
@@ -303,8 +325,13 @@ export default class GameMap {
     //     return new Sprite(options)
     // }
     private updateDashboardTowers(): void {
-        this.dashboardTowers.map((dashboard) => {
-            dashboard.draw()
+        this.dashboardTowers.map((dashboardTowerInfo) => {
+            if (dashboardTowerInfo.dashboardTower === this.activeDashboardTower) {
+                dashboardTowerInfo.border.updateSelected()
+            } else {
+                dashboardTowerInfo.border.update()
+            }
+            dashboardTowerInfo.dashboardTower.draw()
         })
         //   this.currentDashboardEnemiesInfo.forEach((dashboardEnemyInfor, index) => {
         //       dashboardEnemyInfor.dashboardEnemyBorder.update()
@@ -388,7 +415,7 @@ export default class GameMap {
     }
     public updateTowers(): void {
         this.towers.forEach((tower: Tower) => {
-            tower.update({ enemies: this._currentEnemiesData, shootingAudio: this.shootingAudio })
+            tower.update({ enemies: this.currentEnemiesData, shootingAudio: this.shootingAudio })
         })
     }
     public updateEnemies(): void {
@@ -491,7 +518,7 @@ export default class GameMap {
             if (baseEnemyProperty) {
                 //create dashboard enemies and its border
                 const dashboardEnemy: Enemy = this.createDashboardEnemy(enemyInfo, baseEnemyProperty, index)
-                const dashboardEnemyBorderOptions: T_dashboardEnemyBorder = {
+                const dashboardEnemyBorderOptions: T_dashboardBorder = {
                     name: baseEnemyProperty.dashboardBorderInfo.name,
                     position: { x: 64 * index, y: 64 },
                     initFrames: baseEnemyProperty.dashboardBorderInfo.initFrames,
@@ -554,7 +581,9 @@ export default class GameMap {
     }
     public checkMouseOverDashboardTower({ mouse }: { mouse: T_position }) {
         this.mouseOverDashboardTower =
-            this.dashboardTowers.find((dashboardTower) => dashboardTower.hasCollisionWithMouse(mouse)) ?? null
+            this.dashboardTowers.find((dashboardTowerInfo) =>
+                dashboardTowerInfo.dashboardTower.hasCollisionWithMouse(mouse)
+            )?.dashboardTower ?? null
     }
     private getPlacementTiles(placementTiles2D: number[][]): PlacementTile[] {
         const placementTiles: PlacementTile[] = []

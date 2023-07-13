@@ -119,11 +119,11 @@ export default class Gate extends Sprite {
             return
         }
         const targetEnemy: Enemy = this.findTargetEnemy(enemiesInRange)
-        const offsetTargetEnemyPosition = {
+        const centerRightTargetEnemyPosition = {
             x: targetEnemy.position.x - 8 * targetEnemy.offset.x,
             y: targetEnemy.position.y + 3.5 * targetEnemy.offset.y,
         }
-        this.angelKey = this.getAngleKeyByTwoPoint(this.position, offsetTargetEnemyPosition)
+        this.angelKey = this.getAngleKeyByTwoPoint(this.position, centerRightTargetEnemyPosition)
         const distance = calculateDistanceTwoPoint(targetEnemy.position, this.position)
         if (distance <= 64 * 4) {
             this.behaviorKey = E_behaviors.ATTACK

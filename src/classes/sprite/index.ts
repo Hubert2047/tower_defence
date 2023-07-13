@@ -11,7 +11,8 @@ export default class Sprite {
     private currentBehaviorKey: string | null
     private currentAngelKey: string | null
     public offset: T_position
-    constructor({ position, offset = { x: 0, y: 0 }, width = 128, height = 128, frames }: T_sprite) {
+    private opacity: number
+    constructor({ position, offset = { x: 0, y: 0 }, width = 128, height = 128, frames, opacity = 1 }: T_sprite) {
         this.position = position
         this.offset = offset
         this.width = width
@@ -19,6 +20,7 @@ export default class Sprite {
         this.frames = frames
         this.currentFrame = null
         this.currentBehaviorKey = null
+        this.opacity = opacity
         this.currentAngelKey = null
         this.cropPosition = { x: 0, y: 0 }
         this.countFrameTime = 0
@@ -36,6 +38,7 @@ export default class Sprite {
             this.currentAngelKey = angelKey
             this.currentBehaviorKey = behaviorKey
             this.currentFrame = currentFrame
+            context2D.globalAlpha = this.opacity
             context2D.drawImage(
                 currentFrame.image,
                 (this.cropPosition.x * currentFrame.image.width) / currentFrame.maxX,
@@ -47,6 +50,7 @@ export default class Sprite {
                 this.width,
                 this.height
             )
+            context2D.globalAlpha = 1
             this.updateFrame(currentFrame)
         }
     }

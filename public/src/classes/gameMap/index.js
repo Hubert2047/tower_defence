@@ -30,6 +30,7 @@ export default class GameMap {
         this.mouseOverDashboardTower = null;
         this.activeDashboardTower = null;
         this.deathEffectEnemies = [];
+        this.activeDashboardTowerShadow = null;
         // this.isVictory = false
         this.dashboardTowers = this.createDashboardTowers(initDashboardTowerInfo);
         this.spawingCurrentRoundEnemies();
@@ -52,6 +53,7 @@ export default class GameMap {
         };
         return new Gate(gateOptions);
     }
+    createDashboardTowerShadow() { }
     createDashboardTowers(initDashboardTowerInfo) {
         const dashboardTowers = [];
         initDashboardTowerInfo.forEach((dashboardTower) => {
@@ -66,8 +68,17 @@ export default class GameMap {
                 height: dashboardTower.height,
                 projectileType: baseTowerProperties.projectileInfo[E_behaviors.ATTACK].projectileType,
             };
+            const borderOptions = {
+                name: dashboardTower.dashboardBorderInfo.name,
+                position: dashboardTower.dashboardBorderInfo.position,
+                initFrames: dashboardTower.dashboardBorderInfo.initFrames,
+                offset: dashboardTower.dashboardBorderInfo.offset,
+                width: dashboardTower.dashboardBorderInfo.width,
+                height: dashboardTower.dashboardBorderInfo.height,
+            };
             const newDashboardTower = new Tower(towerOptions);
-            dashboardTowers.push(newDashboardTower);
+            const newBorder = new Border(borderOptions);
+            dashboardTowers.push({ dashboardTower: newDashboardTower, border: newBorder });
         });
         return dashboardTowers;
     }
@@ -80,7 +91,13 @@ export default class GameMap {
         this.updateDashboardTowers();
         // this.drawCoinsAndGameHearts()
         this.updateGate();
+        this.updateDashboardTowerShadow();
         return this.getGameStatus();
+    }
+    updateDashboardTowerShadow() {
+        if (this.activeDashboardTowerShadow) {
+            this.activeDashboardTowerShadow.draw();
+        }
     }
     getGameStatus() {
         const isGameOver = this.gate.remainHealth === 0;
@@ -89,7 +106,7 @@ export default class GameMap {
     }
     updateGate() {
         if (this.gate) {
-            this.gate.update({ enemies: this._currentEnemiesData });
+            this.gate.update({ enemies: this.currentEnemiesData });
         }
     }
     // private createMenu() {
@@ -249,8 +266,14 @@ export default class GameMap {
     //     return new Sprite(options)
     // }
     updateDashboardTowers() {
-        this.dashboardTowers.map((dashboard) => {
-            dashboard.draw();
+        this.dashboardTowers.map((dashboardTowerInfo) => {
+            if (dashboardTowerInfo.dashboardTower === this.activeDashboardTower) {
+                dashboardTowerInfo.border.updateSelected();
+            }
+            else {
+                dashboardTowerInfo.border.update();
+            }
+            dashboardTowerInfo.dashboardTower.draw();
         });
         //   this.currentDashboardEnemiesInfo.forEach((dashboardEnemyInfor, index) => {
         //       dashboardEnemyInfor.dashboardEnemyBorder.update()
@@ -335,7 +358,7 @@ export default class GameMap {
     }
     updateTowers() {
         this.towers.forEach((tower) => {
-            tower.update({ enemies: this._currentEnemiesData, shootingAudio: this.shootingAudio });
+            tower.update({ enemies: this.currentEnemiesData, shootingAudio: this.shootingAudio });
         });
     }
     updateEnemies() {
@@ -499,9 +522,9 @@ export default class GameMap {
         this._mouseOverTile = (_a = this.placementTiles.find((tile) => tile.hasCollisionWithMouse(mouse))) !== null && _a !== void 0 ? _a : null;
     }
     checkMouseOverDashboardTower({ mouse }) {
-        var _a;
+        var _a, _b;
         this.mouseOverDashboardTower =
-            (_a = this.dashboardTowers.find((dashboardTower) => dashboardTower.hasCollisionWithMouse(mouse))) !== null && _a !== void 0 ? _a : null;
+            (_b = (_a = this.dashboardTowers.find((dashboardTowerInfo) => dashboardTowerInfo.dashboardTower.hasCollisionWithMouse(mouse))) === null || _a === void 0 ? void 0 : _a.dashboardTower) !== null && _b !== void 0 ? _b : null;
     }
     getPlacementTiles(placementTiles2D) {
         const placementTiles = [];

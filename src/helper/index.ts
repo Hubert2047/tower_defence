@@ -178,7 +178,7 @@ function calAngleFromPointAToPointB(pointA: T_position, pointB: T_position): num
     return angleDeg
 }
 function getAngleKeyByTwoPoint(pointA: T_position, pointB: T_position): E_angels {
-    const angel = calAngleFromPointAToPointB(pointA, pointB)
+    const angel = Math.abs(calAngleFromPointAToPointB(pointA, pointB))
     if ((angel >= 0 && angel <= 22.5) || angel >= 337.5) {
         return E_angels.ANGEL_0
     }
@@ -248,6 +248,43 @@ function createFrames({
 
     return frames
 }
+// function updateMap(data, startRow, startCol, numCol, numRow) {
+//     for (var i = startRow; i < startRow + numRow; i++) {
+//         if (!data[i]) {
+//             data[i] = []
+//         }
+//         for (var j = startCol; j < startCol + numCol; j++) {
+//             data[i][j] = 1
+//         }
+//     }
+// }
+// function findBuildablePositions(map, numcol, numRow) {
+//     var buildablePositions = []
+
+//     for (var i = 0; i <= map.length - numRow; i++) {
+//         for (var j = 0; j <= map[i].length - numcol; j++) {
+//             var isBuildable = true
+
+//             for (var k = i; k < i + numRow; k++) {
+//                 for (var l = j; l < j + numcol; l++) {
+//                     if (map[k][l] !== 0) {
+//                         isBuildable = false
+//                         break
+//                     }
+//                 }
+//                 if (!isBuildable) {
+//                     break
+//                 }
+//             }
+
+//             if (isBuildable) {
+//                 buildablePositions.push([j, i])
+//             }
+//         }
+//     }
+
+//     return buildablePositions
+// }
 function getGameMapData(gameMapType: E_gameMap): T_gameMapData | undefined {
     const data: T_gameMapData | undefined = gameData.get(gameMapType)
     if (data) {

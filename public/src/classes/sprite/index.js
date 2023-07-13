@@ -1,6 +1,6 @@
 import context2D from '../../context2D/index.js';
 export default class Sprite {
-    constructor({ position, offset = { x: 0, y: 0 }, width = 128, height = 128, frames }) {
+    constructor({ position, offset = { x: 0, y: 0 }, width = 128, height = 128, frames, opacity = 1 }) {
         this.position = position;
         this.offset = offset;
         this.width = width;
@@ -8,6 +8,7 @@ export default class Sprite {
         this.frames = frames;
         this.currentFrame = null;
         this.currentBehaviorKey = null;
+        this.opacity = opacity;
         this.currentAngelKey = null;
         this.cropPosition = { x: 0, y: 0 };
         this.countFrameTime = 0;
@@ -26,7 +27,9 @@ export default class Sprite {
             this.currentAngelKey = angelKey;
             this.currentBehaviorKey = behaviorKey;
             this.currentFrame = currentFrame;
+            context2D.globalAlpha = this.opacity;
             context2D.drawImage(currentFrame.image, (this.cropPosition.x * currentFrame.image.width) / currentFrame.maxX, (this.cropPosition.y * currentFrame.image.height) / currentFrame.maxY, currentFrame.image.width / currentFrame.maxX, currentFrame.image.height / currentFrame.maxY, this.position.x - this.offset.x, this.position.y - this.height + this.offset.y, this.width, this.height);
+            context2D.globalAlpha = 1;
             this.updateFrame(currentFrame);
         }
     }

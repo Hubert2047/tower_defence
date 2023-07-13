@@ -57,13 +57,14 @@ type T_enemy = {
     attackRange?: number
     attackSpeed?: number
 }
-type T_dashboardEnemyBorder = {
+type T_dashboardBorder = {
     name: string
     position: T_position
     initFrames: T_initFramesDictionary
     offset?: T_position
     width?: number
     height?: number
+    isSelectedBorder?: boolean
 }
 type T_baseEnemyProperties = {
     name: string
@@ -75,7 +76,7 @@ type T_baseEnemyProperties = {
     baseMoveSpeed: number
     baseCoins: number
     initFrames: T_initFramesDictionary
-    dashboardBorderInfo: T_dashboardEnemyBorder
+    dashboardBorderInfo: T_dashboardBorder
 }
 type T_tower = {
     name: string
@@ -156,6 +157,7 @@ type T_sprite = {
     offset?: T_position
     width?: number
     height?: number
+    opacity?: number
     frames: Map<string, Map<string, T_frame>>
 }
 type T_gate = {
@@ -180,12 +182,13 @@ type T_initDashboardTowerInfo = {
     offset: T_position
     width: number
     height: number
+    dashboardBorderInfo: T_dashboardBorder
 }
 export {
     T_baseEnemyProperties,
     T_baseGateProperties,
     T_baseTowerProperties,
-    T_dashboardEnemyBorder,
+    T_dashboardBorder,
     T_enemy,
     T_enemyInfo,
     T_explosion,
