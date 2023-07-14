@@ -1,17 +1,19 @@
+import BloodMoon from '../../classes/tower/BloodMoon.js';
+import FlyingObelisk from '../../classes/tower/FlyingObelisk.js';
+import ObeliskThunder from '../../classes/tower/ObeliskThunder.js';
 import { GATE_POSITION_X, TILE_SIZE } from '../../constants/index.js';
 import context2D from '../../context2D/index.js';
 import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js';
 import gatesBaseProperties from '../../data/baseProperties/gates/index.js';
 import getBaseTowerProperties from '../../data/baseProperties/towers/index.js';
-import { E_angels, E_behaviors, E_gate } from '../../enum/index.js';
+import { E_angels, E_behaviors, E_gate, E_tower } from '../../enum/index.js';
 import { createFrames, randomNumberInRange } from '../../helper/index.js';
-import Border from '../dashboardEnemyBorder/index.js';
+import Border from '../dashboardBorder/index.js';
 import Enemy from '../enemy/index.js';
 import Gate from '../gate/index.js';
 import PlacementTile from '../placementTile/index.js';
 import Sprite from '../sprite/index.js';
 import DashboardTower from '../tower/dashboardTower.js';
-import Tower from '../tower/index.js';
 export default class GameMap {
     constructor({ rounds, placementTiles2D, waypoints, backgroundImage, startCoins, initDashboardTowerInfo, }) {
         this._currentEnemiesData = [];
@@ -63,7 +65,6 @@ export default class GameMap {
                 offset: dashboardTower.offset,
                 width: dashboardTower.width,
                 height: dashboardTower.height,
-                projectileType: baseTowerProperties.projectileInfo[E_behaviors.ATTACK].projectileType,
             };
             const borderOptions = {
                 name: dashboardTower.dashboardBorderInfo.name,
@@ -290,35 +291,43 @@ export default class GameMap {
         });
     }
     addTower() {
-        var _a;
         if (!this.mouseOverTile)
             return;
         if (!this.activeDashboardTower)
             return;
-        const towerBaseProperties = getBaseTowerProperties(this.activeDashboardTower.towerType);
-        if (!this.activeDashboardTower)
+        const coinsToBuildTower = this.coinsToBuildTower(this.activeDashboardTower.towerType);
+        if (!coinsToBuildTower || this.coins < coinsToBuildTower)
             return;
-        if (this.coins < towerBaseProperties.prices)
-            return;
-        this.coins -= towerBaseProperties.prices;
+        this.coins -= coinsToBuildTower;
         const towerOptions = {
-            name: towerBaseProperties.name,
-            projectileType: towerBaseProperties.projectileInfo[E_behaviors.ATTACK].projectileType,
-            towerType: towerBaseProperties.towerType,
-            position: (_a = this.mouseOverTile) === null || _a === void 0 ? void 0 : _a.position,
-            offset: towerBaseProperties.offset,
-            width: towerBaseProperties.width,
-            height: towerBaseProperties.height,
-            initFrames: towerBaseProperties.initFrames,
-            attackSpeed: towerBaseProperties.attackSpeed,
-            attackRange: towerBaseProperties.attackRange,
-            damage: towerBaseProperties.damage,
+            position: this.mouseOverTile.position,
         };
-        const tower = new Tower(towerOptions);
+        const tower = this.createTower({ towerOptions, towerType: this.activeDashboardTower.towerType });
         this.towers.push(tower);
         this.towers.sort((a, b) => a.position.y - b.position.y);
         this.mouseOverTile.isOccupied = true;
         this.activeDashboardTower = null;
+    }
+    createTower({ towerOptions, towerType }) {
+        switch (towerType) {
+            case E_tower.BLOOD_MOON:
+                return new BloodMoon(towerOptions);
+            case E_tower.FLYING_OBELISK:
+                return new FlyingObelisk(towerOptions);
+            case E_tower.OBELISK_THUNDER:
+                return new ObeliskThunder(towerOptions);
+        }
+        return new BloodMoon(towerOptions);
+    }
+    coinsToBuildTower(towerType) {
+        switch (towerType) {
+            case E_tower.BLOOD_MOON:
+                return BloodMoon.prices;
+            case E_tower.FLYING_OBELISK:
+                return FlyingObelisk.prices;
+            case E_tower.OBELISK_THUNDER:
+                return ObeliskThunder.prices;
+        }
     }
     spawingCurrentRoundEnemies() {
         if (this.rounds.length <= 0) {

@@ -16,12 +16,14 @@ enum E_tower {
 }
 enum E_projectile {
     FIRE = 1,
+    THUNDER = 2,
 }
 enum E_gameMap {
     DESERT = 1,
 }
 enum E_explosion {
     FIRE_BALL,
+    THUNDER,
 }
 enum E_gate {
     GIRL_HERO,

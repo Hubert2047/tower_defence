@@ -19,6 +19,7 @@ var E_tower;
 var E_projectile;
 (function (E_projectile) {
     E_projectile[E_projectile["FIRE"] = 1] = "FIRE";
+    E_projectile[E_projectile["THUNDER"] = 2] = "THUNDER";
 })(E_projectile || (E_projectile = {}));
 var E_gameMap;
 (function (E_gameMap) {
@@ -27,6 +28,7 @@ var E_gameMap;
 var E_explosion;
 (function (E_explosion) {
     E_explosion[E_explosion["FIRE_BALL"] = 0] = "FIRE_BALL";
+    E_explosion[E_explosion["THUNDER"] = 1] = "THUNDER";
 })(E_explosion || (E_explosion = {}));
 var E_gate;
 (function (E_gate) {

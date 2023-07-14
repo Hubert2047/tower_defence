@@ -1,6 +1,13 @@
+import ThunderExplosion from '../../classes/explosionProjectile/Thunder.js'
+import ExplosionProjectile from '../../classes/explosionProjectile/index.js'
 import { E_angels, E_behaviors } from '../../enum/index.js'
-import { createFrames, getAngleKeyByTwoPoint, getVectorNomalized } from '../../helper/index.js'
-import { T_frame, T_position, T_projectile } from '../../types/index.js'
+import {
+    calculateDistanceTwoPoint,
+    createFrames,
+    getAngleKeyByTwoPoint,
+    getVectorNomalized,
+} from '../../helper/index.js'
+import { T_frame, T_position, T_projectile, T_thunderExplosion } from '../../types/index.js'
 import Enemy from '../enemy/index.js'
 import Sprite from '../sprite/index.js'
 export default class Projectile extends Sprite {
@@ -42,7 +49,7 @@ export default class Projectile extends Sprite {
         }
         this.angelKey = getAngleKeyByTwoPoint(this.position, realPosi)
     }
-    private updatePosition(): void {
+    public updatePosition(): void {
         this.updateVelocity()
         this.position.x += this.velocityX
         this.position.y += this.velocityY
@@ -60,5 +67,20 @@ export default class Projectile extends Sprite {
         })
         this.velocityX = this.moveSpeed * v_normalized.x
         this.velocityY = this.moveSpeed * v_normalized.y
+    }
+    public get canHitEnemy(): boolean {
+        const realEnemyPostion: T_position = {
+            x: this.targetEnemy.position.x - this.targetEnemy.width / 4,
+            y: this.targetEnemy.position.y - this.targetEnemy.height / 5,
+        }
+        const distance: number = calculateDistanceTwoPoint(this.position, realEnemyPostion)
+        return distance < 5
+    }
+    public createExplosion(): ExplosionProjectile {
+        let explosionOptions: T_thunderExplosion = {
+            position: { x: 0, y: 0 },
+            offset: { x: 0, y: 0 },
+        }
+        return new ThunderExplosion(explosionOptions)
     }
 }

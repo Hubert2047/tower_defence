@@ -139,7 +139,7 @@ export default class Gate extends Sprite {
             if (!projectileInfo) return
             const projectileOptions: T_projectile = {
                 name: projectileInfo.name,
-                ProjectileType: projectileInfo.projectileType,
+                projectileType: projectileInfo.projectileType,
                 position: {
                     x: this.position.x - this.width + 1.5 * this.offset.x,
                     y: this.position.y - this.height + 1.8 * this.offset.y,

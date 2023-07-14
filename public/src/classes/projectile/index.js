@@ -1,5 +1,6 @@
+import ThunderExplosion from '../../classes/explosionProjectile/Thunder.js';
 import { E_angels, E_behaviors } from '../../enum/index.js';
-import { createFrames, getAngleKeyByTwoPoint, getVectorNomalized } from '../../helper/index.js';
+import { calculateDistanceTwoPoint, createFrames, getAngleKeyByTwoPoint, getVectorNomalized, } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Projectile extends Sprite {
     constructor({ position, offset = { x: 0, y: 0 }, width = 64, height = 64, initFrames, moveSpeed = 1, damage = 100, enemy, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, }) {
@@ -40,5 +41,20 @@ export default class Projectile extends Sprite {
         });
         this.velocityX = this.moveSpeed * v_normalized.x;
         this.velocityY = this.moveSpeed * v_normalized.y;
+    }
+    get canHitEnemy() {
+        const realEnemyPostion = {
+            x: this.targetEnemy.position.x - this.targetEnemy.width / 4,
+            y: this.targetEnemy.position.y - this.targetEnemy.height / 5,
+        };
+        const distance = calculateDistanceTwoPoint(this.position, realEnemyPostion);
+        return distance < 5;
+    }
+    createExplosion() {
+        let explosionOptions = {
+            position: { x: 0, y: 0 },
+            offset: { x: 0, y: 0 },
+        };
+        return new ThunderExplosion(explosionOptions);
     }
 }

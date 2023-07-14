@@ -1,5 +1,6 @@
 import Enemy from '../classes/enemy/index.js'
 import { E_angels, E_behaviors, E_enemy, E_explosion, E_gate, E_projectile, E_tower } from '../enum/index.js'
+
 type T_position = {
     x: number
     y: number
@@ -102,6 +103,8 @@ type T_explosion = {
     width?: number
     height?: number
     initFrames: T_initFramesDictionary
+    behaviorKey?: E_behaviors
+    angelKey?: E_angels
 }
 type T_projectileInfo = {
     name: string
@@ -115,7 +118,7 @@ type T_projectileInfo = {
 }
 type T_projectile = {
     name: string
-    ProjectileType: E_projectile
+    projectileType: E_projectile
     position: T_position
     initFrames: T_initFramesDictionary
     enemy: Enemy
@@ -185,6 +188,25 @@ type T_initDashboardTowerInfo = {
     height: number
     dashboardBorderInfo: T_dashboardBorder
 }
+type T_thunderExplosion = {
+    position: T_position
+    offset?: T_position | undefined
+    width?: number | undefined
+    height?: number | undefined
+    behaviorKey?: E_behaviors
+    angelKey?: E_angels
+}
+type T_thunderProjectile = {
+    position: T_position
+    enemy: Enemy
+    offset: T_position
+    width?: number
+    height?: number
+    moveSpeed?: number
+    damage?: number
+    behaviorKey?: E_behaviors
+    angelKey?: E_angels
+}
 export {
     T_baseEnemyProperties,
     T_baseGateProperties,
@@ -205,4 +227,6 @@ export {
     T_round,
     T_sprite,
     T_tower,
+    T_thunderExplosion,
+    T_thunderProjectile,
 }

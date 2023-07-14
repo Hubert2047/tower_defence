@@ -1,9 +1,12 @@
+import BloodMoon from '../../classes/tower/BloodMoon.js'
+import FlyingObelisk from '../../classes/tower/FlyingObelisk.js'
+import ObeliskThunder from '../../classes/tower/ObeliskThunder.js'
 import { GATE_POSITION_X, TILE_SIZE } from '../../constants/index.js'
 import context2D from '../../context2D/index.js'
 import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js'
 import gatesBaseProperties from '../../data/baseProperties/gates/index.js'
 import getBaseTowerProperties from '../../data/baseProperties/towers/index.js'
-import { E_angels, E_behaviors, E_enemy, E_gate } from '../../enum/index.js'
+import { E_angels, E_behaviors, E_enemy, E_gate, E_tower } from '../../enum/index.js'
 import { createFrames, randomNumberInRange } from '../../helper/index.js'
 import {
     T_baseEnemyProperties,
@@ -20,7 +23,8 @@ import {
     T_sprite,
     T_tower,
 } from '../../types/index.js'
-import Border from '../dashboardEnemyBorder/index.js'
+import { I_tower } from '../../types/interface.js'
+import Border from '../dashboardBorder/index.js'
 import Enemy from '../enemy/index.js'
 import Gate from '../gate/index.js'
 import PlacementTile from '../placementTile/index.js'
@@ -119,7 +123,6 @@ export default class GameMap {
                 offset: dashboardTower.offset,
                 width: dashboardTower.width,
                 height: dashboardTower.height,
-                projectileType: baseTowerProperties.projectileInfo[E_behaviors.ATTACK].projectileType,
             }
             const borderOptions: T_dashboardBorder = {
                 name: dashboardTower.dashboardBorderInfo.name,
@@ -135,6 +138,7 @@ export default class GameMap {
         })
         return dashboardTowers
     }
+
     public updateMap(): [boolean, boolean] {
         this.updateScreenGame()
         this.updateEnemies()
@@ -347,29 +351,38 @@ export default class GameMap {
     public addTower(): void {
         if (!this.mouseOverTile) return
         if (!this.activeDashboardTower) return
-        const towerBaseProperties: T_baseTowerProperties = getBaseTowerProperties(this.activeDashboardTower.towerType)
-        if (!this.activeDashboardTower) return
-
-        if (this.coins < towerBaseProperties.prices) return
-        this.coins -= towerBaseProperties.prices
-        const towerOptions: T_tower = {
-            name: towerBaseProperties.name,
-            projectileType: towerBaseProperties.projectileInfo[E_behaviors.ATTACK].projectileType,
-            towerType: towerBaseProperties.towerType,
-            position: this.mouseOverTile?.position,
-            offset: towerBaseProperties.offset,
-            width: towerBaseProperties.width,
-            height: towerBaseProperties.height,
-            initFrames: towerBaseProperties.initFrames,
-            attackSpeed: towerBaseProperties.attackSpeed,
-            attackRange: towerBaseProperties.attackRange,
-            damage: towerBaseProperties.damage,
+        const coinsToBuildTower = this.coinsToBuildTower(this.activeDashboardTower.towerType)
+        if (!coinsToBuildTower || this.coins < coinsToBuildTower) return
+        this.coins -= coinsToBuildTower
+        const towerOptions: I_tower = {
+            position: this.mouseOverTile.position,
         }
-        const tower: Tower = new Tower(towerOptions)
+        const tower: Tower = this.createTower({ towerOptions, towerType: this.activeDashboardTower.towerType })
         this.towers.push(tower)
         this.towers.sort((a, b) => a.position.y - b.position.y)
         this.mouseOverTile.isOccupied = true
         this.activeDashboardTower = null
+    }
+    private createTower({ towerOptions, towerType }: { towerOptions: I_tower; towerType: E_tower }): Tower {
+        switch (towerType) {
+            case E_tower.BLOOD_MOON:
+                return new BloodMoon(towerOptions)
+            case E_tower.FLYING_OBELISK:
+                return new FlyingObelisk(towerOptions)
+            case E_tower.OBELISK_THUNDER:
+                return new ObeliskThunder(towerOptions)
+        }
+        return new BloodMoon(towerOptions)
+    }
+    private coinsToBuildTower(towerType: E_tower): number | undefined {
+        switch (towerType) {
+            case E_tower.BLOOD_MOON:
+                return BloodMoon.prices
+            case E_tower.FLYING_OBELISK:
+                return FlyingObelisk.prices
+            case E_tower.OBELISK_THUNDER:
+                return ObeliskThunder.prices
+        }
     }
     private spawingCurrentRoundEnemies(): void {
         if (this.rounds.length <= 0) {

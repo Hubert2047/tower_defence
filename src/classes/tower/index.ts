@@ -1,13 +1,13 @@
+import FireProjectile from '../../classes/projectile/Fire.js'
 import context2D from '../../context2D/index.js'
-import getBaseTowerProperties from '../../data/baseProperties/towers/index.js'
 import { E_angels, E_behaviors, E_projectile, E_tower } from '../../enum/index.js'
 import { calAngleFromPointAToPointB, calculateDistanceTwoPoint, createFrames } from '../../helper/index.js'
-import { T_baseTowerProperties, T_explosion, T_frame, T_position, T_projectile, T_tower } from '../../types/index.js'
+import { T_frame, T_position, T_tower } from '../../types/index.js'
+import { I_projectile } from '../../types/interface.js'
 import Enemy from '../enemy/index.js'
 import ExplosionProjectile from '../explosionProjectile/index.js'
 import Projectile from '../projectile/index.js'
 import Sprite from '../sprite/index.js'
-
 export default class Tower extends Sprite {
     public name: string
     public towerType: E_tower
@@ -21,7 +21,6 @@ export default class Tower extends Sprite {
     public projectileType?: E_projectile
     public projectiles: Projectile[]
     public explosions: ExplosionProjectile[]
-    private baseTowerProperties: T_baseTowerProperties
     constructor({
         name,
         towerType,
@@ -52,7 +51,6 @@ export default class Tower extends Sprite {
         this.explosions = []
         this.behaviorKey = behaviorKey
         this.angelKey = angelKey
-        this.baseTowerProperties = getBaseTowerProperties(this.towerType)
     }
     public draw(): void {
         super.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
@@ -77,6 +75,30 @@ export default class Tower extends Sprite {
         this.attackEnemies(enemies)
         this.updateProjectile(shootingAudio)
     }
+    private updateProjectile(shootingAudio: HTMLAudioElement | HTMLElement | null) {
+        for (var i = this.projectiles.length - 1; i >= 0; i--) {
+            const currentProjectile: Projectile = this.projectiles[i]
+            currentProjectile.update()
+            if (currentProjectile.canHitEnemy) {
+                currentProjectile.targetEnemy.getHit(currentProjectile.damage)
+                //create explosion
+                const explosion: ExplosionProjectile = currentProjectile.createExplosion()
+                this.explosions.push(explosion)
+                this.projectiles.splice(i, 1)
+            }
+        }
+        //update or delete explosions - when explosion finieshed one time animation then delete it,otherwise update it
+        for (var i = this.explosions.length - 1; i >= 0; i--) {
+            const currentExplosion: ExplosionProjectile = this.explosions[i]
+            this.explosions[i].update()
+            if (currentExplosion.hasFinishedAnimation) {
+                if (shootingAudio && shootingAudio instanceof HTMLAudioElement && shootingAudio.paused) {
+                    shootingAudio.play()
+                }
+                this.explosions.splice(i, 1)
+            }
+        }
+    }
     private attackEnemies(enemies: Enemy[]): void {
         if (this.countAttackTime < this.holdAttack) {
             this.countAttackTime++
@@ -99,28 +121,53 @@ export default class Tower extends Sprite {
                 y: this.position.y - this.height / 2,
             }
             this.angelKey = this.getAngleKeyByTwoPoint(centerLeftTowerPosition, centerRightTargetEnemyPosition)
-            if (this.baseTowerProperties) {
-                const projectTileInfo = this.baseTowerProperties.projectileInfo[this.behaviorKey]
-                const projectileOptions: T_projectile = {
-                    name: projectTileInfo.name,
-                    ProjectileType: projectTileInfo.projectileType,
-                    position: {
-                        x: this.position.x - this.width + 1.5 * this.offset.x,
-                        y: this.position.y - this.height + 1.8 * this.offset.y,
-                    },
-                    damage: this.damage,
-                    enemy: targetEnemy,
-                    moveSpeed: 5,
-                    width: projectTileInfo.width,
-                    height: projectTileInfo.height,
-                    offset: projectTileInfo.offset,
-                    initFrames: projectTileInfo.initFrames,
-                }
-                const newProjectile: Projectile = new Projectile(projectileOptions)
-                this.projectiles.push(newProjectile)
-            }
+            const newProjectile: Projectile = this.createProjectile(targetEnemy)
+            this.projectiles.push(newProjectile)
         }
     }
+    public createProjectile(targetEnemy: Enemy): Projectile {
+        const projectileOptions: I_projectile = {
+            position: {
+                x: this.position.x - this.width + 1.5 * this.offset.x,
+                y: this.position.y - this.height + 1.8 * this.offset.y,
+            },
+            damage: this.damage,
+            enemy: targetEnemy,
+            moveSpeed: 5,
+            offset: { x: 0, y: 0 },
+        }
+        return new FireProjectile(projectileOptions)
+    }
+
+    //Find the closest enemy to the objective
+    private findTargetEnemy(enemies: Enemy[]): Enemy {
+        const enemyTarget: Enemy = enemies.reduce((target, currentEnemy) => {
+            if (target.position.x < currentEnemy.position.x) {
+                return currentEnemy
+            } else return target
+        })
+        return enemyTarget
+    }
+    private getEnemiesInAttackRange(currentEnemies: Enemy[]): Enemy[] {
+        const enemiesInRange: Enemy[] = []
+        currentEnemies.forEach((enemy: Enemy) => {
+            const realPostion: T_position = { x: this.position.x + this.offset.x, y: this.position.y }
+            const distance: number = calculateDistanceTwoPoint(enemy.position, realPostion)
+            if (distance <= this.attackRange) {
+                enemiesInRange.push(enemy)
+            }
+        })
+        return enemiesInRange
+    }
+    public hasCollisionWithMouse(mouse: T_position): boolean {
+        return (
+            this.position.x + this.offset.x <= mouse.x &&
+            mouse.x <= this.position.x + this.width - this.offset.x &&
+            this.position.y - this.height + this.offset.y <= mouse.y &&
+            mouse.y <= this.position.y + this.height - 3 * this.offset.y
+        )
+    }
+
     private getAngleKeyByTwoPoint(pointA: T_position, pointB: T_position): E_angels {
         const angel = calAngleFromPointAToPointB(pointA, pointB)
         if ((angel >= 0 && angel < 11.25) || angel >= 348.25) {
@@ -173,89 +220,5 @@ export default class Tower extends Sprite {
             return E_angels.ANGEL_337
         }
         return E_angels.ANGEL_0
-    }
-    //Find the closest enemy to the objective
-    private findTargetEnemy(enemies: Enemy[]): Enemy {
-        const enemyTarget: Enemy = enemies.reduce((target, currentEnemy) => {
-            if (target.position.x < currentEnemy.position.x) {
-                return currentEnemy
-            } else return target
-        })
-        return enemyTarget
-    }
-    private getEnemiesInAttackRange(currentEnemies: Enemy[]): Enemy[] {
-        const enemiesInRange: Enemy[] = []
-        currentEnemies.forEach((enemy: Enemy) => {
-            const realPostion: T_position = { x: this.position.x + this.offset.x, y: this.position.y }
-            const distance: number = calculateDistanceTwoPoint(enemy.position, realPostion)
-            if (distance <= this.attackRange) {
-                enemiesInRange.push(enemy)
-            }
-        })
-        return enemiesInRange
-    }
-    public hasCollisionWithMouse(mouse: T_position): boolean {
-        return (
-            this.position.x + this.offset.x <= mouse.x &&
-            mouse.x <= this.position.x + this.width - this.offset.x &&
-            this.position.y - this.height + this.offset.y <= mouse.y &&
-            mouse.y <= this.position.y + this.height - 3 * this.offset.y
-        )
-    }
-    private updateProjectile(shootingAudio: HTMLAudioElement | HTMLElement | null) {
-        for (var i = this.projectiles.length - 1; i >= 0; i--) {
-            const currentProjectile: Projectile = this.projectiles[i]
-            const realEnemyPostion: T_position = {
-                x: currentProjectile.targetEnemy.position.x - currentProjectile.targetEnemy.width / 4,
-                y: currentProjectile.targetEnemy.position.y - currentProjectile.targetEnemy.height / 5,
-            }
-            const distance: number = calculateDistanceTwoPoint(currentProjectile.position, realEnemyPostion)
-            if (distance < 5) {
-                currentProjectile.targetEnemy.getHit(currentProjectile.damage)
-                if (this.baseTowerProperties) {
-                    const explosionInfo = this.baseTowerProperties.projectileInfo[this.behaviorKey]?.explosionInfo
-                    //create explosion
-                    if (explosionInfo) {
-                        const position: T_position = {
-                            x: currentProjectile.position.x - currentProjectile.offset.x,
-                            y: currentProjectile.position.y - currentProjectile.offset.y + currentProjectile.width / 2,
-                        }
-                        const explosionOptions: T_explosion = {
-                            name: explosionInfo.name,
-                            explosionType: explosionInfo.explosionType,
-                            position,
-                            offset: explosionInfo.offset,
-                            width: explosionInfo.width,
-                            height: explosionInfo.height,
-                            initFrames: explosionInfo.initFrames,
-                        }
-                        const explosion: ExplosionProjectile = new ExplosionProjectile(explosionOptions)
-                        this.explosions.push(explosion)
-                    }
-                }
-                this.projectiles.splice(i, 1)
-            } else {
-                currentProjectile.update()
-            }
-        }
-        //update or delete explosions - when explosion finieshed one time animation then delete it,otherwise update it
-        for (var i = this.explosions.length - 1; i >= 0; i--) {
-            const currentExplosion: ExplosionProjectile = this.explosions[i]
-            this.explosions[i].update()
-            const currentExplosionFrame = this.explosions[i].currentFrame
-            if (!currentExplosionFrame) {
-                this.explosions.splice(i, 1)
-                continue
-            }
-            const isFinishedOneTimeAnimation: boolean =
-                currentExplosion.cropPosition.x === currentExplosionFrame.maxX - 1 &&
-                currentExplosion.cropPosition.y === currentExplosionFrame.maxY - 1
-            if (isFinishedOneTimeAnimation) {
-                if (shootingAudio && shootingAudio instanceof HTMLAudioElement && shootingAudio.paused) {
-                    shootingAudio.play()
-                }
-                this.explosions.splice(i, 1)
-            }
-        }
     }
 }
