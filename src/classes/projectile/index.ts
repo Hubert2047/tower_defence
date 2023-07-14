@@ -1,3 +1,4 @@
+import { I_explosion } from 'src/types/interface.js'
 import ThunderExplosion from '../../classes/explosionProjectile/Thunder.js'
 import ExplosionProjectile from '../../classes/explosionProjectile/index.js'
 import { E_angels, E_behaviors } from '../../enum/index.js'
@@ -7,13 +8,13 @@ import {
     getAngleKeyByTwoPoint,
     getVectorNomalized,
 } from '../../helper/index.js'
-import { T_frame, T_position, T_projectile, T_thunderExplosion } from '../../types/index.js'
+import { T_frame, T_position, T_projectile } from '../../types/index.js'
 import Enemy from '../enemy/index.js'
 import Sprite from '../sprite/index.js'
 export default class Projectile extends Sprite {
     public moveSpeed: number
-    private velocityX: number
-    private velocityY: number
+    public velocityX: number
+    public velocityY: number
     public targetEnemy: Enemy
     public damage: number
     public behaviorKey: E_behaviors
@@ -48,6 +49,7 @@ export default class Projectile extends Sprite {
             y: this.targetEnemy.position.y - 2 * this.targetEnemy.offset.y,
         }
         this.angelKey = getAngleKeyByTwoPoint(this.position, realPosi)
+        console.log('run in')
     }
     public updatePosition(): void {
         this.updateVelocity()
@@ -60,7 +62,7 @@ export default class Projectile extends Sprite {
             this.position.y = this.targetEnemy.position.y - this.targetEnemy.height / 5
         }
     }
-    private updateVelocity(): void {
+    public updateVelocity(): void {
         const v_normalized: T_position = getVectorNomalized(this.position, {
             x: this.targetEnemy.position.x - this.targetEnemy.width / 4,
             y: this.targetEnemy.position.y - this.targetEnemy.height / 5,
@@ -77,7 +79,7 @@ export default class Projectile extends Sprite {
         return distance < 5
     }
     public createExplosion(): ExplosionProjectile {
-        let explosionOptions: T_thunderExplosion = {
+        let explosionOptions: I_explosion = {
             position: { x: 0, y: 0 },
             offset: { x: 0, y: 0 },
         }

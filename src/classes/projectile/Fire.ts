@@ -1,18 +1,18 @@
-import ThunderExplosion from '../../classes/explosionProjectile/Thunder.js'
+import FireExplosion from '../../classes/explosionProjectile/Fire.js'
 import ExplosionProjectile from '../../classes/explosionProjectile/index.js'
 import { E_angels, E_behaviors, E_projectile } from '../../enum/index.js'
-import { T_thunderExplosion } from '../../types/index.js'
-import { I_projectile } from '../../types/interface.js'
+import { I_explosion, I_projectile } from '../../types/interface.js'
 import Projectile from './index.js'
 export default class FireProjectile extends Projectile {
     name: string
+    currentMove: number
     constructor({
         position,
         enemy,
         offset = { x: 0, y: 0 },
-        width = 40,
-        height = 40,
-        moveSpeed = 5,
+        width = 320,
+        height = 200,
+        moveSpeed = 1,
         damage = 300,
         behaviorKey = E_behaviors.ATTACK,
         angelKey = E_angels.ANGEL_0,
@@ -20,10 +20,10 @@ export default class FireProjectile extends Projectile {
         const initFrames = {
             [E_behaviors.ATTACK]: {
                 [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../../public/src/assets/images/projectiles/fireBall/fire_ball.png',
-                    maxX: 9,
+                    imageSourceString: '../../../public/src/assets/images/projectiles/fireBall/fire.png',
+                    maxX: 8,
                     maxY: 8,
-                    holdTime: 10,
+                    holdTime: 2,
                 },
             },
         }
@@ -42,13 +42,28 @@ export default class FireProjectile extends Projectile {
             angelKey,
         })
         this.name = 'Fire Projectile'
+        this.currentMove = 0
     }
-
+    public update(): void {
+        this.updatePosition()
+        this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
+    }
+    public updatePosition(): void {
+        this.currentMove += 5
+        this.position.x = this.targetEnemy.position.x + this.targetEnemy.width / 2
+        this.position.y = this.targetEnemy.position.y - this.targetEnemy.position.y / 4 + this.currentMove
+    }
+    public get canHitEnemy(): boolean {
+        return this.position.y > this.targetEnemy.position.y
+    }
     public createExplosion(): ExplosionProjectile {
-        let explosionOptions: T_thunderExplosion = {
-            position: { x: 0, y: 0 },
-            offset: { x: 0, y: 0 },
+        let explosionOptions: I_explosion = {
+            position: {
+                x: this.position.x + this.offset.x,
+                y: this.position.y - this.offset.y,
+            },
+            offset: { x: 300, y: -60 },
         }
-        return new ThunderExplosion(explosionOptions)
+        return new FireExplosion(explosionOptions)
     }
 }

@@ -5,7 +5,7 @@ import { GATE_POSITION_X, TILE_SIZE } from '../../constants/index.js';
 import context2D from '../../context2D/index.js';
 import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js';
 import gatesBaseProperties from '../../data/baseProperties/gates/index.js';
-import getBaseTowerProperties from '../../data/baseProperties/towers/index.js';
+import getTowerInitFrames from '../../data/baseProperties/towers/index.js';
 import { E_angels, E_behaviors, E_gate, E_tower } from '../../enum/index.js';
 import { createFrames, randomNumberInRange } from '../../helper/index.js';
 import Border from '../dashboardBorder/index.js';
@@ -15,7 +15,7 @@ import PlacementTile from '../placementTile/index.js';
 import Sprite from '../sprite/index.js';
 import DashboardTower from '../tower/dashboardTower.js';
 export default class GameMap {
-    constructor({ rounds, placementTiles2D, waypoints, backgroundImage, startCoins, initDashboardTowerInfo, }) {
+    constructor({ rounds, placementTiles2D, waypoints, backgroundImage, startCoins, initDashboardTowerInfo, gateInfor, }) {
         this._currentEnemiesData = [];
         this.rounds = rounds;
         this.waypoints = waypoints;
@@ -32,6 +32,7 @@ export default class GameMap {
         this.mouseOverDashboardTower = null;
         this.activeDashboardTower = null;
         this.deathEffectEnemies = [];
+        this.gateInfor = gateInfor;
         this.dashboardTowers = this.createDashboardTowers(initDashboardTowerInfo);
         this.spawingCurrentRoundEnemies();
         this.gate = this.createGate();
@@ -46,17 +47,17 @@ export default class GameMap {
             gateType: gateBaseProperties.gateType,
             position: { x: 64 * 18, y: 64 * 5 },
             offset: gateBaseProperties.offset,
-            attackSpeed: gateBaseProperties.attackSpeed,
-            attackRange: gateBaseProperties.attackRange,
-            damage: gateBaseProperties.damage,
-            health: gateBaseProperties.health,
+            attackSpeed: this.gateInfor.attackSpeed,
+            attackRange: this.gateInfor.attackRange,
+            damage: this.gateInfor.damage,
+            health: this.gateInfor.health,
         };
         return new Gate(gateOptions);
     }
     createDashboardTowers(initDashboardTowerInfo) {
         const dashboardTowers = [];
         initDashboardTowerInfo.forEach((dashboardTower) => {
-            const baseTowerProperties = getBaseTowerProperties(dashboardTower.towerType);
+            const baseTowerProperties = getTowerInitFrames(dashboardTower.towerType);
             const towerOptions = {
                 name: dashboardTower.name,
                 towerType: dashboardTower.towerType,
@@ -76,7 +77,11 @@ export default class GameMap {
             };
             const newDashboardTower = new DashboardTower(towerOptions);
             const newBorder = new Border(borderOptions);
-            dashboardTowers.push({ dashboardTower: newDashboardTower, border: newBorder });
+            dashboardTowers.push({
+                dashboardTower: newDashboardTower,
+                border: newBorder,
+                towerType: dashboardTower.towerType,
+            });
         });
         return dashboardTowers;
     }
@@ -150,21 +155,37 @@ export default class GameMap {
         const options = {
             frames,
             position: { x: 64 * 17, y: 64 * 1 },
-            offset: { x: 4, y: -12 },
-            height: 40,
-            width: 40,
+            offset: { x: 4, y: -18 },
+            height: 32,
+            width: 32,
         };
         return new Sprite(options);
     }
     updateDashboardTowers() {
         this.dashboardTowers.map((dashboardTowerInfo) => {
+            const coinsToBuildTower = this.coinsToBuildTower(dashboardTowerInfo.towerType);
+            const opacity = coinsToBuildTower && this.coins < coinsToBuildTower ? 0.4 : 1;
+            dashboardTowerInfo.border.opacity = opacity;
             dashboardTowerInfo.border.update();
             if (dashboardTowerInfo.dashboardTower === this.activeDashboardTower) {
                 dashboardTowerInfo.border.updateSelected();
             }
-            else {
-            }
+            dashboardTowerInfo.dashboardTower.opacity = opacity;
             dashboardTowerInfo.dashboardTower.draw();
+            if (coinsToBuildTower && context2D) {
+                const textString = coinsToBuildTower.toString();
+                const textWidth = context2D.measureText(textString).width;
+                const textOptions = {
+                    text: textString,
+                    position: {
+                        x: dashboardTowerInfo.border.position.x + dashboardTowerInfo.border.width / 2 - textWidth / 2,
+                        y: dashboardTowerInfo.border.position.y - dashboardTowerInfo.border.height,
+                    },
+                    color: '#250806',
+                    fontSize: 20,
+                };
+                this.drawText(textOptions);
+            }
         });
     }
     get mouseOverTile() {
@@ -201,12 +222,17 @@ export default class GameMap {
     }
     updateDashboardEnemies() {
         this.currentDashboardEnemiesInfo.forEach((dashboardEnemyInfor, index) => {
+            var _a;
             dashboardEnemyInfor.dashboardEnemyBorder.update();
             dashboardEnemyInfor.dashboardEnemy.draw({ behaviorKey: E_behaviors.RUN, angelKey: E_angels.ANGEL_90 });
+            const textString = dashboardEnemyInfor.remainEnemiesTotal.toString();
+            const textWidth = (_a = context2D === null || context2D === void 0 ? void 0 : context2D.measureText(textString).width) !== null && _a !== void 0 ? _a : 2;
             const textOptions = {
-                text: dashboardEnemyInfor.remainEnemiesTotal.toString(),
+                text: textString,
                 position: {
-                    x: dashboardEnemyInfor.dashboardEnemyBorder.position.x + 25,
+                    x: dashboardEnemyInfor.dashboardEnemyBorder.position.x +
+                        dashboardEnemyInfor.dashboardEnemyBorder.width / 2 -
+                        textWidth / 2,
                     y: dashboardEnemyInfor.dashboardEnemyBorder.position.y - 5,
                 },
                 color: '#8B4513',
@@ -329,6 +355,18 @@ export default class GameMap {
                 return ObeliskThunder.prices;
         }
     }
+    hasEnoughCoins(towerType) {
+        switch (towerType) {
+            case E_tower.BLOOD_MOON:
+                return BloodMoon.prices >= this.coins;
+            case E_tower.FLYING_OBELISK:
+                return FlyingObelisk.prices >= this.coins;
+            case E_tower.OBELISK_THUNDER:
+                return ObeliskThunder.prices >= this.coins;
+            default:
+                return false;
+        }
+    }
     spawingCurrentRoundEnemies() {
         if (this.rounds.length <= 0) {
             this._currentEnemiesData = [];
@@ -414,7 +452,7 @@ export default class GameMap {
         const placementTiles = [];
         placementTiles2D.forEach((row, y) => {
             row.forEach((symbol, x) => {
-                if (symbol === 14) {
+                if (symbol === 1) {
                     placementTiles.push(new PlacementTile({ position: { x: x * TILE_SIZE, y: y * TILE_SIZE } }));
                 }
             });

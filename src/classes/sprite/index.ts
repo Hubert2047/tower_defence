@@ -11,7 +11,7 @@ export default class Sprite {
     private currentBehaviorKey: string | null
     private currentAngelKey: string | null
     public offset: T_position
-    private opacity: number
+    public opacity: number
     constructor({ position, offset = { x: 0, y: 0 }, width = 128, height = 128, frames, opacity = 1 }: T_sprite) {
         this.position = position
         this.offset = offset
@@ -58,11 +58,11 @@ export default class Sprite {
         this.countFrameTime++
         if (this.countFrameTime >= currentFrame.holdTime) {
             this.countFrameTime = 0
-            if (this.cropPosition.x === currentFrame.maxX - 1 && this.cropPosition.y === currentFrame.maxY - 1) {
+            if (this.cropPosition.x >= currentFrame.maxX - 1 && this.cropPosition.y >= currentFrame.maxY - 1) {
                 this.cropPosition = { x: 0, y: 0 }
                 return
             }
-            if (this.cropPosition.x === currentFrame.maxX - 1) {
+            if (this.cropPosition.x >= currentFrame.maxX - 1) {
                 this.cropPosition.x = 0
                 this.cropPosition.y++
                 return

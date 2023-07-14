@@ -2,12 +2,12 @@ import { E_angels, E_behaviors, E_enemy, E_tower } from '../../enum/index.js'
 import { T_gameMapData, T_initDashboardTowerInfo, T_position, T_round } from '../../types/index.js'
 const placementTilesData: number[] = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0,
-    0, 0, 0, 0, 14, 0, 0, 0, 0, 14, 0, 14, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0,
-    14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0,
-    0, 0, 0, 14, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 14, 0, 14, 0, 14, 0,
-    14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0,
+    0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0,
+    0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0,
 ]
 const placementTiles2D: number[][] = []
 for (let i = 0; i < placementTilesData.length; i += 20) {
@@ -111,7 +111,7 @@ const rounds: T_round[] = [
                 amount: 10,
                 spaceMin: 100,
                 spaceMax: 1000,
-                moveSpeed: 3,
+                moveSpeed: 1,
                 health: 15000,
                 coins: 3,
             },
@@ -204,31 +204,6 @@ const initDashboardTowerInfo: T_initDashboardTowerInfo[] = [
             height: 64,
         },
     },
-    // {
-    //     towerType: E_tower.HAUNTED_TREE,
-    //     name: 'HAUNTED TREE',
-    //     position: { x: 64 * 8, y: 64 * 12 },
-    //     width: 50,
-    //     height: 50,
-    //     offset: { x: -7, y: 0 },
-    //     dashboardBorderInfo: {
-    //         name: 'Border 1',
-    //         position: { x: 64 * 8, y: 64 * 12 },
-    //         offset: { x: 0, y: 0 },
-    //         initFrames: {
-    //             [E_behaviors.IDLE]: {
-    //                 [E_angels.ANGEL_0]: {
-    //                     imageSourceString: '../../../public/src/assets/images/borders/7.png',
-    //                     maxX: 1,
-    //                     maxY: 1,
-    //                     holdTime: 4,
-    //                 },
-    //             },
-    //         },
-    //         width: 64,
-    //         height: 64,
-    //     },
-    // },
     {
         towerType: E_tower.OBELISK_THUNDER,
         name: 'OBELISK THUNDER',
@@ -258,6 +233,12 @@ const initDashboardTowerInfo: T_initDashboardTowerInfo[] = [
 const backgroundImage: HTMLImageElement = new Image()
 const startCoins: number = 20
 backgroundImage.src = '../../public/src/assets/images/gameMap.png'
+const gateInfor = {
+    health: 20000,
+    damage: 2000,
+    attackRange: 600,
+    attackSpeed: 4,
+}
 const desertMapData: T_gameMapData = {
     rounds,
     backgroundImage,
@@ -265,5 +246,6 @@ const desertMapData: T_gameMapData = {
     waypoints,
     startCoins,
     initDashboardTowerInfo,
+    gateInfor,
 }
 export default desertMapData

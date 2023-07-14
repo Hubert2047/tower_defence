@@ -10,7 +10,7 @@ export default class PlacementTile {
     public isOccupied: boolean
     constructor({ position = { x: 0, y: 0 } }: { position: T_position }) {
         this.position = position
-        this.defaultColor = 'rgba(255,255,255,0.2)'
+        this.defaultColor = 'rgba(255,255,255,0.25)'
         this.color = this.defaultColor
         this.isOccupied = false
     }

@@ -4,7 +4,7 @@ import { E_angels, E_behaviors, E_projectile } from '../../enum/index.js';
 import { calAngleFromPointAToPointB, calculateDistanceTwoPoint, createFrames } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Tower extends Sprite {
-    constructor({ name, towerType, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, projectileType = E_projectile.FIRE, damage = 100, attackSpeed = 1, attackRange = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, }) {
+    constructor({ name, towerType, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, projectileType = E_projectile.FIRE, damage = 100, attackSpeed = 1, attackRange = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, attackTargetNums = 1, }) {
         const frames = createFrames({ initFrames });
         super({ position, offset, width, height, frames, opacity });
         this.name = name;
@@ -17,8 +17,10 @@ export default class Tower extends Sprite {
         this.countAttackTime = 0;
         this.holdAttack = parseInt((200 / attackSpeed).toString());
         this.explosions = [];
+        this.attackTargetNums = attackTargetNums;
         this.behaviorKey = behaviorKey;
         this.angelKey = angelKey;
+        // this.attacked = false
     }
     draw() {
         super.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
@@ -49,7 +51,7 @@ export default class Tower extends Sprite {
                 this.projectiles.splice(i, 1);
             }
         }
-        //update or delete explosions - when explosion finieshed one time animation then delete it,otherwise update it
+        // update or delete explosions - when explosion finieshed one time animation then delete it,otherwise update it
         for (var i = this.explosions.length - 1; i >= 0; i--) {
             const currentExplosion = this.explosions[i];
             this.explosions[i].update();
@@ -62,6 +64,7 @@ export default class Tower extends Sprite {
         }
     }
     attackEnemies(enemies) {
+        // if (this.attacked) return
         if (this.countAttackTime < this.holdAttack) {
             this.countAttackTime++;
             return;
@@ -73,44 +76,39 @@ export default class Tower extends Sprite {
         if (enemiesInRange.length <= 0) {
             this.angelKey = E_angels.ANGEL_225;
         }
-        if (enemiesInRange.length > 0) {
-            const targetEnemy = this.findTargetEnemy(enemiesInRange);
-            const centerRightTargetEnemyPosition = {
-                x: targetEnemy.position.x + targetEnemy.width - targetEnemy.offset.x,
-                y: targetEnemy.position.y - targetEnemy.height / 2,
-            };
-            const centerLeftTowerPosition = {
-                x: this.position.x + this.width - this.offset.x,
-                y: this.position.y - this.height / 2,
-            };
-            this.angelKey = this.getAngleKeyByTwoPoint(centerLeftTowerPosition, centerRightTargetEnemyPosition);
-            const newProjectile = this.createProjectile(targetEnemy);
-            this.projectiles.push(newProjectile);
+        if (enemiesInRange.length <= 0) {
+            this.behaviorKey = E_behaviors.IDLE;
+            return;
         }
-    }
-    createProjectile(targetEnemy) {
-        const projectileOptions = {
-            position: {
-                x: this.position.x - this.width + 1.5 * this.offset.x,
-                y: this.position.y - this.height + 1.8 * this.offset.y,
-            },
-            damage: this.damage,
-            enemy: targetEnemy,
-            moveSpeed: 5,
-            offset: { x: 0, y: 0 },
+        this.behaviorKey = E_behaviors.ATTACK;
+        const targetEnemies = enemiesInRange.slice(0, this.attackTargetNums);
+        const centerRightTargetEnemyPosition = {
+            x: targetEnemies[0].position.x + targetEnemies[0].width - targetEnemies[0].offset.x,
+            y: targetEnemies[0].position.y - targetEnemies[0].height / 2,
         };
-        return new FireProjectile(projectileOptions);
+        const centerLeftTowerPosition = {
+            x: this.position.x + this.width - this.offset.x,
+            y: this.position.y - this.height / 2,
+        };
+        this.angelKey = this.getAngleKeyByTwoPoint(centerLeftTowerPosition, centerRightTargetEnemyPosition);
+        const newProjectiles = this.createProjectiles(targetEnemies);
+        this.projectiles = [...this.projectiles, ...newProjectiles];
+        // this.attacked = true
     }
-    //Find the closest enemy to the objective
-    findTargetEnemy(enemies) {
-        const enemyTarget = enemies.reduce((target, currentEnemy) => {
-            if (target.position.x < currentEnemy.position.x) {
-                return currentEnemy;
-            }
-            else
-                return target;
+    createProjectiles(targetEnemies) {
+        return targetEnemies.map((enemy) => {
+            const projectileOptions = {
+                position: {
+                    x: this.position.x - this.width + 1.5 * this.offset.x,
+                    y: this.position.y - this.height + 1.8 * this.offset.y,
+                },
+                damage: this.damage,
+                enemy,
+                moveSpeed: 5,
+                offset: { x: 0, y: 0 },
+            };
+            return new FireProjectile(projectileOptions);
         });
-        return enemyTarget;
     }
     getEnemiesInAttackRange(currentEnemies) {
         const enemiesInRange = [];
@@ -121,7 +119,7 @@ export default class Tower extends Sprite {
                 enemiesInRange.push(enemy);
             }
         });
-        return enemiesInRange;
+        return enemiesInRange.sort((a, b) => b.position.x - a.position.x);
     }
     hasCollisionWithMouse(mouse) {
         return (this.position.x + this.offset.x <= mouse.x &&

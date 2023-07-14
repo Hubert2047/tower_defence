@@ -3,7 +3,7 @@ import context2D from '../../context2D/index.js';
 export default class PlacementTile {
     constructor({ position = { x: 0, y: 0 } }) {
         this.position = position;
-        this.defaultColor = 'rgba(255,255,255,0.2)';
+        this.defaultColor = 'rgba(255,255,255,0.25)';
         this.color = this.defaultColor;
         this.isOccupied = false;
     }

@@ -1,6 +1,6 @@
 import Enemy from '../classes/enemy/index.js'
-import { E_angels, E_behaviors } from '../enum/index.js'
-import { T_position } from '../types/index.js'
+import { E_angels, E_behaviors, E_tower } from '../enum/index.js'
+import { T_initFramesDictionary, T_position } from '../types/index.js'
 interface I_projectile {
     position: T_position
     enemy: Enemy
@@ -15,8 +15,6 @@ interface I_projectile {
 interface I_tower {
     position: T_position
     offset?: T_position
-    width?: number
-    height?: number
     damage?: number
     attackSpeed?: number
     attackRange?: number
@@ -24,4 +22,19 @@ interface I_tower {
     angelKey?: E_angels
     opacity?: number
 }
-export { I_projectile, I_tower }
+interface I_explosion {
+    position: T_position
+    offset?: T_position | undefined
+    width?: number | undefined
+    height?: number | undefined
+    moveSpeed?: number
+    behaviorKey?: E_behaviors
+    angelKey?: E_angels
+}
+type I_towerProperties = {
+    towerType: E_tower
+    initFrames: T_initFramesDictionary
+    width: number
+    height: number
+}
+export { I_explosion, I_towerProperties, I_projectile, I_tower }

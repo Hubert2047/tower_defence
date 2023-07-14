@@ -55,7 +55,8 @@ function handleAddEventGame({ gameMap, mouse }) {
             return;
         }
         if (gameMap.mouseOverDashboardTower) {
-            gameMap.activeDashboardTower = gameMap.mouseOverDashboardTower;
+            if (!gameMap.hasEnoughCoins(gameMap.mouseOverDashboardTower.towerType))
+                gameMap.activeDashboardTower = gameMap.mouseOverDashboardTower;
             return;
         }
         if (!gameMap.mouseOverTile && gameMap.activeDashboardTower) {

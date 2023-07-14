@@ -5,17 +5,17 @@ import { GATE_POSITION_X, TILE_SIZE } from '../../constants/index.js'
 import context2D from '../../context2D/index.js'
 import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js'
 import gatesBaseProperties from '../../data/baseProperties/gates/index.js'
-import getBaseTowerProperties from '../../data/baseProperties/towers/index.js'
+import getTowerInitFrames from '../../data/baseProperties/towers/index.js'
 import { E_angels, E_behaviors, E_enemy, E_gate, E_tower } from '../../enum/index.js'
 import { createFrames, randomNumberInRange } from '../../helper/index.js'
 import {
     T_baseEnemyProperties,
-    T_baseTowerProperties,
     T_dashboardBorder,
     T_enemy,
     T_enemyInfo,
     T_gameMapData,
     T_gate,
+    T_gateInfo,
     T_initDashboardTowerInfo,
     T_initFramesDictionary,
     T_position,
@@ -23,7 +23,7 @@ import {
     T_sprite,
     T_tower,
 } from '../../types/index.js'
-import { I_tower } from '../../types/interface.js'
+import { I_tower, I_towerProperties } from '../../types/interface.js'
 import Border from '../dashboardBorder/index.js'
 import Enemy from '../enemy/index.js'
 import Gate from '../gate/index.js'
@@ -40,6 +40,7 @@ interface I_dashboardEnemiesInfo {
 interface I_dashboardTowersInfo {
     dashboardTower: DashboardTower
     border: Border
+    towerType: E_tower
 }
 type T_text = {
     text: string
@@ -63,6 +64,7 @@ export default class GameMap {
     public dashboardTowers: I_dashboardTowersInfo[]
     private menu: Sprite
     private coinsIcon: Sprite
+    private gateInfor: T_gateInfo
     private deathEffectEnemies: Enemy[]
     private gate: Gate
     private currentDashboardEnemiesInfo: I_dashboardEnemiesInfo[]
@@ -73,6 +75,7 @@ export default class GameMap {
         backgroundImage,
         startCoins,
         initDashboardTowerInfo,
+        gateInfor,
     }: T_gameMapData) {
         this._currentEnemiesData = []
         this.rounds = rounds
@@ -90,6 +93,7 @@ export default class GameMap {
         this.mouseOverDashboardTower = null
         this.activeDashboardTower = null
         this.deathEffectEnemies = []
+        this.gateInfor = gateInfor
         this.dashboardTowers = this.createDashboardTowers(initDashboardTowerInfo)
         this.spawingCurrentRoundEnemies()
         this.gate = this.createGate()
@@ -104,17 +108,17 @@ export default class GameMap {
             gateType: gateBaseProperties.gateType,
             position: { x: 64 * 18, y: 64 * 5 },
             offset: gateBaseProperties.offset,
-            attackSpeed: gateBaseProperties.attackSpeed,
-            attackRange: gateBaseProperties.attackRange,
-            damage: gateBaseProperties.damage,
-            health: gateBaseProperties.health,
+            attackSpeed: this.gateInfor.attackSpeed,
+            attackRange: this.gateInfor.attackRange,
+            damage: this.gateInfor.damage,
+            health: this.gateInfor.health,
         }
         return new Gate(gateOptions)
     }
     private createDashboardTowers(initDashboardTowerInfo: T_initDashboardTowerInfo[]): I_dashboardTowersInfo[] {
         const dashboardTowers: I_dashboardTowersInfo[] = []
         initDashboardTowerInfo.forEach((dashboardTower) => {
-            const baseTowerProperties: T_baseTowerProperties = getBaseTowerProperties(dashboardTower.towerType)
+            const baseTowerProperties: I_towerProperties = getTowerInitFrames(dashboardTower.towerType)
             const towerOptions: T_tower = {
                 name: dashboardTower.name,
                 towerType: dashboardTower.towerType,
@@ -133,8 +137,13 @@ export default class GameMap {
                 height: dashboardTower.dashboardBorderInfo.height,
             }
             const newDashboardTower = new DashboardTower(towerOptions)
+
             const newBorder = new Border(borderOptions)
-            dashboardTowers.push({ dashboardTower: newDashboardTower, border: newBorder })
+            dashboardTowers.push({
+                dashboardTower: newDashboardTower,
+                border: newBorder,
+                towerType: dashboardTower.towerType,
+            })
         })
         return dashboardTowers
     }
@@ -208,21 +217,38 @@ export default class GameMap {
         const options: T_sprite = {
             frames,
             position: { x: 64 * 17, y: 64 * 1 },
-            offset: { x: 4, y: -12 },
-            height: 40,
-            width: 40,
+            offset: { x: 4, y: -18 },
+            height: 32,
+            width: 32,
         }
         return new Sprite(options)
     }
 
     private updateDashboardTowers(): void {
         this.dashboardTowers.map((dashboardTowerInfo) => {
+            const coinsToBuildTower = this.coinsToBuildTower(dashboardTowerInfo.towerType)
+            const opacity = coinsToBuildTower && this.coins < coinsToBuildTower ? 0.4 : 1
+            dashboardTowerInfo.border.opacity = opacity
             dashboardTowerInfo.border.update()
             if (dashboardTowerInfo.dashboardTower === this.activeDashboardTower) {
                 dashboardTowerInfo.border.updateSelected()
-            } else {
             }
+            dashboardTowerInfo.dashboardTower.opacity = opacity
             dashboardTowerInfo.dashboardTower.draw()
+            if (coinsToBuildTower && context2D) {
+                const textString = coinsToBuildTower.toString()
+                const textWidth = context2D.measureText(textString).width
+                const textOptions: T_text = {
+                    text: textString,
+                    position: {
+                        x: dashboardTowerInfo.border.position.x + dashboardTowerInfo.border.width / 2 - textWidth / 2,
+                        y: dashboardTowerInfo.border.position.y - dashboardTowerInfo.border.height,
+                    },
+                    color: '#250806',
+                    fontSize: 20,
+                }
+                this.drawText(textOptions)
+            }
         })
     }
     public get mouseOverTile(): PlacementTile | null {
@@ -260,10 +286,15 @@ export default class GameMap {
         this.currentDashboardEnemiesInfo.forEach((dashboardEnemyInfor, index) => {
             dashboardEnemyInfor.dashboardEnemyBorder.update()
             dashboardEnemyInfor.dashboardEnemy.draw({ behaviorKey: E_behaviors.RUN, angelKey: E_angels.ANGEL_90 })
+            const textString = dashboardEnemyInfor.remainEnemiesTotal.toString()
+            const textWidth = context2D?.measureText(textString).width ?? 2
             const textOptions: T_text = {
-                text: dashboardEnemyInfor.remainEnemiesTotal.toString(),
+                text: textString,
                 position: {
-                    x: dashboardEnemyInfor.dashboardEnemyBorder.position.x + 25,
+                    x:
+                        dashboardEnemyInfor.dashboardEnemyBorder.position.x +
+                        dashboardEnemyInfor.dashboardEnemyBorder.width / 2 -
+                        textWidth / 2,
                     y: dashboardEnemyInfor.dashboardEnemyBorder.position.y - 5,
                 },
                 color: '#8B4513',
@@ -384,6 +415,18 @@ export default class GameMap {
                 return ObeliskThunder.prices
         }
     }
+    public hasEnoughCoins(towerType: E_tower): boolean {
+        switch (towerType) {
+            case E_tower.BLOOD_MOON:
+                return BloodMoon.prices >= this.coins
+            case E_tower.FLYING_OBELISK:
+                return FlyingObelisk.prices >= this.coins
+            case E_tower.OBELISK_THUNDER:
+                return ObeliskThunder.prices >= this.coins
+            default:
+                return false
+        }
+    }
     private spawingCurrentRoundEnemies(): void {
         if (this.rounds.length <= 0) {
             this._currentEnemiesData = []
@@ -472,7 +515,7 @@ export default class GameMap {
         const placementTiles: PlacementTile[] = []
         placementTiles2D.forEach((row: number[], y: number) => {
             row.forEach((symbol: number, x: number) => {
-                if (symbol === 14) {
+                if (symbol === 1) {
                     placementTiles.push(new PlacementTile({ position: { x: x * TILE_SIZE, y: y * TILE_SIZE } }))
                 }
             })

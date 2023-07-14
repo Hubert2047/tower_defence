@@ -1,7 +1,8 @@
-import Fire from '../../classes/projectile/Thunder.js'
+import getBaseTowerProperties from '../../data/baseProperties/towers/index.js'
 import { E_angels, E_behaviors, E_tower } from '../../enum/index.js'
-import { I_tower } from '../../types/interface.js'
+import { I_tower, I_towerProperties } from '../../types/interface.js'
 import Enemy from '../enemy/index.js'
+import NuclearProjectile from '../projectile/Nuclear.js'
 import Projectile from '../projectile/index.js'
 import Tower from './index.js'
 
@@ -9,123 +10,22 @@ export default class BloodMoonTower extends Tower {
     constructor({
         position,
         offset = { x: 10, y: 60 },
-        width = 80,
-        height = 124,
         damage = 1000,
-        attackSpeed = 8,
+        attackSpeed = 5,
         attackRange = 300,
         behaviorKey = E_behaviors.ATTACK,
         angelKey = E_angels.ANGEL_0,
         opacity = 1,
     }: I_tower) {
-        const initFrames = {
-            [E_behaviors.ATTACK]: {
-                [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-                [E_angels.ANGEL_22]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-                [E_angels.ANGEL_45]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-                [E_angels.ANGEL_67]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-                [E_angels.ANGEL_90]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-                [E_angels.ANGEL_112]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-                [E_angels.ANGEL_135]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-                [E_angels.ANGEL_157]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-                [E_angels.ANGEL_180]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-                [E_angels.ANGEL_202]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-                [E_angels.ANGEL_225]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-                [E_angels.ANGEL_247]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-                [E_angels.ANGEL_270]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-                [E_angels.ANGEL_292]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-                [E_angels.ANGEL_315]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-                [E_angels.ANGEL_337]: {
-                    imageSourceString: '../../../public/src/assets/images/towers/BloodMoon/tower_bloodmoon.png',
-                    maxX: 11,
-                    maxY: 1,
-                    holdTime: 3,
-                },
-            },
-        }
+        const baseTowerProperties: I_towerProperties = getBaseTowerProperties(E_tower.BLOOD_MOON)
         super({
             name: 'Blood Moon Tower',
             towerType: E_tower.BLOOD_MOON,
             position,
             offset,
-            width,
-            height,
-            initFrames,
+            width: baseTowerProperties.width,
+            height: baseTowerProperties.height,
+            initFrames: baseTowerProperties.initFrames,
             damage,
             attackSpeed,
             attackRange,
@@ -135,17 +35,18 @@ export default class BloodMoonTower extends Tower {
         })
     }
     public static prices = 10
-    public createProjectile(targetEnemy: Enemy): Projectile {
-        const projectileOptions = {
-            position: {
-                x: this.position.x - this.width + 1.5 * this.offset.x,
-                y: this.position.y - this.height + 1.8 * this.offset.y,
-            },
-            damage: this.damage,
-            enemy: targetEnemy,
-            moveSpeed: 5,
-            offset: { x: 0, y: 0 },
-        }
-        return new Fire(projectileOptions)
+    public createProjectiles(targetEnemies: Enemy[]): Projectile[] {
+        return targetEnemies.map((enemy) => {
+            const projectileOptions = {
+                position: {
+                    x: this.position.x + this.width / 2,
+                    y: this.position.y,
+                },
+                damage: this.damage,
+                enemy,
+                offset: { x: 25, y: -40 },
+            }
+            return new NuclearProjectile(projectileOptions)
+        })
     }
 }

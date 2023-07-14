@@ -37,11 +37,11 @@ export default class Sprite {
         this.countFrameTime++;
         if (this.countFrameTime >= currentFrame.holdTime) {
             this.countFrameTime = 0;
-            if (this.cropPosition.x === currentFrame.maxX - 1 && this.cropPosition.y === currentFrame.maxY - 1) {
+            if (this.cropPosition.x >= currentFrame.maxX - 1 && this.cropPosition.y >= currentFrame.maxY - 1) {
                 this.cropPosition = { x: 0, y: 0 };
                 return;
             }
-            if (this.cropPosition.x === currentFrame.maxX - 1) {
+            if (this.cropPosition.x >= currentFrame.maxX - 1) {
                 this.cropPosition.x = 0;
                 this.cropPosition.y++;
                 return;

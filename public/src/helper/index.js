@@ -216,6 +216,7 @@ function getGameMapData(gameMapType) {
             waypoints: deepClone(data.waypoints),
             startCoins: data.startCoins,
             initDashboardTowerInfo: deepClone(data.initDashboardTowerInfo),
+            gateInfor: data.gateInfor,
         };
     }
     return undefined;

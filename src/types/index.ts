@@ -39,8 +39,9 @@ type T_gameMapData = {
     startCoins: number
     waypoints: T_position[]
     initDashboardTowerInfo: T_initDashboardTowerInfo[]
+    gateInfor: T_gateInfo
 }
-
+type T_gateInfo = { health: number; damage: number; attackRange: number; attackSpeed: number }
 type T_enemy = {
     name: string
     enemyType: E_enemy
@@ -66,6 +67,7 @@ type T_dashboardBorder = {
     width?: number
     height?: number
     isSelectedBorder?: boolean
+    opacity?: number
 }
 type T_baseEnemyProperties = {
     name: string
@@ -94,6 +96,7 @@ type T_tower = {
     angelKey?: E_angels
     projectileType?: E_projectile
     opacity?: number
+    attackTargetNums?: number
 }
 type T_explosion = {
     name: string
@@ -129,19 +132,6 @@ type T_projectile = {
     damage?: number
     behaviorKey?: E_behaviors
     angelKey?: E_angels
-}
-type T_baseTowerProperties = {
-    name: string
-    towerType: E_tower
-    offset: T_position
-    width: number
-    height: number
-    prices: number
-    initFrames: T_initFramesDictionary
-    attackSpeed: number
-    attackRange: number
-    damage: number
-    projectileInfo: Record<string, T_projectileInfo>
 }
 type T_baseGateProperties = {
     name: string
@@ -188,14 +178,6 @@ type T_initDashboardTowerInfo = {
     height: number
     dashboardBorderInfo: T_dashboardBorder
 }
-type T_thunderExplosion = {
-    position: T_position
-    offset?: T_position | undefined
-    width?: number | undefined
-    height?: number | undefined
-    behaviorKey?: E_behaviors
-    angelKey?: E_angels
-}
 type T_thunderProjectile = {
     position: T_position
     enemy: Enemy
@@ -210,7 +192,6 @@ type T_thunderProjectile = {
 export {
     T_baseEnemyProperties,
     T_baseGateProperties,
-    T_baseTowerProperties,
     T_dashboardBorder,
     T_enemy,
     T_enemyInfo,
@@ -218,6 +199,7 @@ export {
     T_frame,
     T_gameMapData,
     T_gate,
+    T_gateInfo,
     T_initDashboardTowerInfo,
     T_initFrame,
     T_initFramesDictionary,
@@ -226,7 +208,6 @@ export {
     T_projectileInfo,
     T_round,
     T_sprite,
-    T_tower,
-    T_thunderExplosion,
     T_thunderProjectile,
+    T_tower,
 }
