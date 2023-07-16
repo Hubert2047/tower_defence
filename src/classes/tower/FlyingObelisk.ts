@@ -10,12 +10,12 @@ export default class FlyingObelisk extends Tower {
         position,
         offset = { x: 10, y: 50 },
         damage = 2000,
-        attackSpeed = 4,
+        attackSpeed = 5,
         attackRange = 300,
         behaviorKey = E_behaviors.IDLE,
         angelKey = E_angels.ANGEL_0,
         opacity = 1,
-        placementTile = null,
+        placementTile,
     }: I_tower) {
         const baseTowerProperties: I_characterProperties = getBaseTowerProperties(E_characters.FLYING_OBELISK)
         super({

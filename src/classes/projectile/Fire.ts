@@ -12,7 +12,7 @@ export default class FireProjectile extends Projectile {
         offset = { x: 0, y: 0 },
         width = 320,
         height = 200,
-        moveSpeed = 1,
+        moveSpeed = 3,
         damage = 300,
         behaviorKey = E_behaviors.ATTACK,
         angelKey = E_angels.ANGEL_0,
@@ -49,7 +49,7 @@ export default class FireProjectile extends Projectile {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
     }
     public updatePosition(): void {
-        this.currentMove += 5
+        this.currentMove += 6
         this.position.x = this.targetEnemy.position.x + this.targetEnemy.width / 2
         this.position.y = this.targetEnemy.position.y - this.targetEnemy.position.y / 4 + this.currentMove
     }

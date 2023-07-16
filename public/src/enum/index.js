@@ -8,6 +8,10 @@ var E_enemy;
     E_enemy[E_enemy["Blue_Brood_Mother"] = 6] = "Blue_Brood_Mother";
     E_enemy[E_enemy["TIDE_HUNTER"] = 7] = "TIDE_HUNTER";
     E_enemy[E_enemy["Hunter"] = 8] = "Hunter";
+    E_enemy[E_enemy["BUTTER_FLY"] = 9] = "BUTTER_FLY";
+    E_enemy[E_enemy["YELLOW_SPIDER"] = 10] = "YELLOW_SPIDER";
+    E_enemy[E_enemy["ROBOT"] = 11] = "ROBOT";
+    E_enemy[E_enemy["EYES"] = 12] = "EYES";
 })(E_enemy || (E_enemy = {}));
 var E_projectile;
 (function (E_projectile) {

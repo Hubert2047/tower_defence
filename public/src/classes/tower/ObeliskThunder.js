@@ -3,7 +3,7 @@ import getBaseTowerProperties from '../../data/baseProperties/characters/index.j
 import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../enum/index.js';
 import Tower from './index.js';
 class ObeliskThunderTower extends Tower {
-    constructor({ position, offset = { x: 10, y: 55 }, damage = 3000, attackSpeed = 2, attackRange = 300, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile = null, }) {
+    constructor({ position, offset = { x: 10, y: 55 }, damage = 3000, attackSpeed = 2, attackRange = 300, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile, }) {
         const baseTowerProperties = getBaseTowerProperties(E_characters.OBELISK_THUNDER);
         super({
             name: 'Obelisk Thunder Tower',
@@ -46,13 +46,13 @@ class ObeliskThunderTower extends Tower {
             const projectileOptions = {
                 position: {
                     x: enemy.position.x + enemy.width / 2 - width / 2,
-                    y: enemy.position.y - enemy.height / 2,
+                    y: enemy.position.y + enemy.height / 2 - height / 2,
                 },
                 damage: this.damage,
                 enemy,
                 width,
                 height,
-                offset: { x: 30, y: 20 },
+                offset: { x: 0, y: 0 },
             };
             return new Thunder(projectileOptions);
         });

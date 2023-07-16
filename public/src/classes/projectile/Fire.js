@@ -2,7 +2,7 @@ import FireExplosion from '../../classes/explosionProjectile/Fire.js';
 import { E_angels, E_behaviors, E_projectile } from '../../enum/index.js';
 import Projectile from './index.js';
 export default class FireProjectile extends Projectile {
-    constructor({ position, enemy, offset = { x: 0, y: 0 }, width = 320, height = 200, moveSpeed = 1, damage = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, }) {
+    constructor({ position, enemy, offset = { x: 0, y: 0 }, width = 320, height = 200, moveSpeed = 3, damage = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, }) {
         const initFrames = {
             [E_behaviors.ATTACK]: {
                 [E_angels.ANGEL_0]: {
@@ -35,7 +35,7 @@ export default class FireProjectile extends Projectile {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
     }
     updatePosition() {
-        this.currentMove += 5;
+        this.currentMove += 6;
         this.position.x = this.targetEnemy.position.x + this.targetEnemy.width / 2;
         this.position.y = this.targetEnemy.position.y - this.targetEnemy.position.y / 4 + this.currentMove;
     }

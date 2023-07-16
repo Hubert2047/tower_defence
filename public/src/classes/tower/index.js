@@ -4,7 +4,7 @@ import { E_angels, E_behaviors, E_characterActions, E_projectile } from '../../e
 import { calAngleFromPointAToPointB, calculateDistanceTwoPoint, createFrames } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Tower extends Sprite {
-    constructor({ name, type, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, projectileType = E_projectile.FIRE, damage = 100, attackSpeed = 1, attackRange = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, attackTargetNums = 1, placementTile = null, }) {
+    constructor({ name, type, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, projectileType = E_projectile.FIRE, damage = 100, attackSpeed = 1, attackRange = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, attackTargetNums = 1, placementTile, }) {
         const frames = createFrames({ initFrames });
         super({ position, offset, width, height, frames, opacity });
         this.name = name;
@@ -14,7 +14,7 @@ export default class Tower extends Sprite {
         this.attackRange = attackRange;
         this.projectileType = projectileType;
         this.projectiles = [];
-        this.holdAttack = parseInt((200 / attackSpeed).toString());
+        this.holdAttack = parseInt((100 / attackSpeed).toString());
         this.countAttackTime = this.holdAttack;
         this.explosions = [];
         this.attackTargetNums = attackTargetNums;

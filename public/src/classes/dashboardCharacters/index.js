@@ -33,7 +33,7 @@ export default class DashboardCharacter extends Sprite {
         const characterOptions = {
             type,
             position,
-            offset: { x: baseCharacterProperties.width - 25, y: 25 },
+            offset: { x: baseCharacterProperties.width / 2, y: baseCharacterProperties.height / 2 },
             width: baseCharacterProperties.width,
             height: baseCharacterProperties.height,
             isDashboardShadow: true,

@@ -2,7 +2,7 @@ import getBasePlantProperties from '../../data/baseProperties/characters/index.j
 import { E_angels, E_behaviors, E_characterActions, E_characters, E_gems } from '../../enum/index.js';
 import Plant from './index.js';
 class AutumnTree extends Plant {
-    constructor({ position, offset = { x: 10, y: 54 }, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, fruitingDuration = 500, placementTile = null, }) {
+    constructor({ position, offset = { x: 10, y: 54 }, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, fruitingDuration = 500, placementTile, }) {
         const baseTowerProperties = getBasePlantProperties(E_characters.AUTUMN_TREE);
         super({
             name: 'Autumn TREE',

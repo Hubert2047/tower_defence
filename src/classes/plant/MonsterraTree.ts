@@ -11,7 +11,7 @@ export default class MonsterraTree extends Plant {
         angelKey = E_angels.ANGEL_0,
         opacity = 1,
         fruitingDuration = 500,
-        placementTile = null,
+        placementTile,
     }: I_plant) {
         const baseTowerProperties: I_characterProperties = getBasePlantProperties(E_characters.MONSTERRA_TREE)
         super({

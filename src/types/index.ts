@@ -36,7 +36,9 @@ type T_enemyInfo = {
     spaceMax: number
     health: number
     moveSpeed: number
+    attackSpeed: number
     coins: number
+    damage: number
 }
 type T_round = {
     roundName: string
@@ -108,7 +110,7 @@ type T_tower = {
     projectileType?: E_projectile
     opacity?: number
     attackTargetNums?: number
-    placementTile?: PlacementTile | null
+    placementTile: PlacementTile
 }
 type T_explosion = {
     name: string
@@ -223,7 +225,7 @@ type T_plant = {
     angelKey?: E_angels
     opacity?: number
     spawGemType: E_gems
-    placementTile?: PlacementTile | null
+    placementTile: PlacementTile
 }
 type T_text = {
     text: string
@@ -245,6 +247,7 @@ export {
     T_baseEnemyProperties,
     T_baseGateProperties,
     T_dashboardBorder,
+    T_dashboardCharacters,
     T_enemy,
     T_enemyInfo,
     T_explosion,
@@ -252,19 +255,18 @@ export {
     T_gameMapData,
     T_gate,
     T_gateInfo,
+    T_gemStartInfo,
     T_initDashboardCharacterInfo,
+    T_initDashboardPlantInfo,
     T_initFrame,
     T_initFramesDictionary,
+    T_plant,
     T_position,
     T_projectile,
     T_projectileInfo,
     T_round,
     T_sprite,
+    T_text,
     T_thunderProjectile,
     T_tower,
-    T_plant,
-    T_initDashboardPlantInfo,
-    T_dashboardCharacters,
-    T_gemStartInfo,
-    T_text,
 }

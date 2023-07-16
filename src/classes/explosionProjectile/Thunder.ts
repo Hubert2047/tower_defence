@@ -6,7 +6,7 @@ export default class ThunderExplosion extends ExplosionProjectile {
     name: string
     constructor({
         position,
-        offset = { x: 0, y: 0 },
+        offset = { x: -10, y: -10 },
         width = 140,
         height = 140,
         behaviorKey = E_behaviors.ATTACK,
@@ -18,7 +18,7 @@ export default class ThunderExplosion extends ExplosionProjectile {
                     imageSourceString: '../../../public/src/assets/images/explosions/thunder/thunder.png',
                     maxX: 4,
                     maxY: 1,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
             },
         }

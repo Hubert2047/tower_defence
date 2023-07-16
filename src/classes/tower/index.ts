@@ -24,7 +24,7 @@ export default class Tower extends Sprite implements I_character {
     public projectileType?: E_projectile
     public projectiles: Projectile[]
     public action: E_characterActions
-    public placementTile: PlacementTile | null
+    public placementTile: PlacementTile
     // public attacked: boolean
     public explosions: ExplosionProjectile[]
     constructor({
@@ -43,7 +43,7 @@ export default class Tower extends Sprite implements I_character {
         angelKey = E_angels.ANGEL_0,
         opacity = 1,
         attackTargetNums = 1,
-        placementTile = null,
+        placementTile,
     }: T_tower) {
         const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames })
         super({ position, offset, width, height, frames, opacity })
@@ -54,7 +54,7 @@ export default class Tower extends Sprite implements I_character {
         this.attackRange = attackRange
         this.projectileType = projectileType
         this.projectiles = []
-        this.holdAttack = parseInt((200 / attackSpeed).toString())
+        this.holdAttack = parseInt((100 / attackSpeed).toString())
         this.countAttackTime = this.holdAttack
         this.explosions = []
         this.attackTargetNums = attackTargetNums

@@ -18,7 +18,7 @@ export default class ObeliskThunderTower extends Tower {
         behaviorKey = E_behaviors.IDLE,
         angelKey = E_angels.ANGEL_0,
         opacity = 1,
-        placementTile = null,
+        placementTile,
     }: I_tower) {
         const baseTowerProperties: I_characterProperties = getBaseTowerProperties(E_characters.OBELISK_THUNDER)
 
@@ -69,13 +69,13 @@ export default class ObeliskThunderTower extends Tower {
             const projectileOptions = {
                 position: {
                     x: enemy.position.x + enemy.width / 2 - width / 2,
-                    y: enemy.position.y - enemy.height / 2,
+                    y: enemy.position.y + enemy.height / 2 - height / 2,
                 },
                 damage: this.damage,
                 enemy,
                 width,
                 height,
-                offset: { x: 30, y: 20 },
+                offset: { x: 0, y: 0 },
             }
             return new Thunder(projectileOptions)
         })
