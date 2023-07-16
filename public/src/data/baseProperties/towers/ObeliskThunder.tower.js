@@ -1,6 +1,6 @@
-import { E_angels, E_behaviors, E_tower } from '../../../enum/index.js';
+import { E_angels, E_behaviors, E_characters } from '../../../enum/index.js';
 const ObeliskThunderProperties = {
-    towerType: E_tower.OBELISK_THUNDER,
+    towerType: E_characters.OBELISK_THUNDER,
     width: 90,
     height: 128,
     initFrames: {

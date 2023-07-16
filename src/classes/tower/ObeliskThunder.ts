@@ -1,13 +1,14 @@
 import Thunder from '../../classes/projectile/Thunder.js'
-import getBaseTowerProperties from '../../data/baseProperties/towers/index.js'
-import { E_angels, E_behaviors, E_tower } from '../../enum/index.js'
-import { I_tower, I_towerProperties } from '../../types/interface.js'
+import getBaseTowerProperties from '../../data/baseProperties/characters/index.js'
+import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../enum/index.js'
+import { I_characterProperties, I_tower } from '../../types/interface.js'
 import Enemy from '../enemy/index.js'
 import Projectile from '../projectile/index.js'
 import Tower from './index.js'
 
 export default class ObeliskThunderTower extends Tower {
-    baseTowerProperties: I_towerProperties
+    baseTowerProperties: I_characterProperties
+    action: E_characterActions
     constructor({
         position,
         offset = { x: 10, y: 55 },
@@ -17,12 +18,13 @@ export default class ObeliskThunderTower extends Tower {
         behaviorKey = E_behaviors.IDLE,
         angelKey = E_angels.ANGEL_0,
         opacity = 1,
+        placementTile = null,
     }: I_tower) {
-        const baseTowerProperties: I_towerProperties = getBaseTowerProperties(E_tower.OBELISK_THUNDER)
+        const baseTowerProperties: I_characterProperties = getBaseTowerProperties(E_characters.OBELISK_THUNDER)
 
         super({
             name: 'Obelisk Thunder Tower',
-            towerType: E_tower.OBELISK_THUNDER,
+            type: E_characters.OBELISK_THUNDER,
             position,
             offset,
             width: baseTowerProperties.width,
@@ -35,8 +37,10 @@ export default class ObeliskThunderTower extends Tower {
             angelKey,
             opacity,
             attackTargetNums: 3,
+            placementTile,
         })
         this.baseTowerProperties = baseTowerProperties
+        this.action = E_characterActions.ATTACK
     }
     public static prices = 20
     public update({
@@ -71,7 +75,7 @@ export default class ObeliskThunderTower extends Tower {
                 enemy,
                 width,
                 height,
-                offset: { x: 20, y: 0 },
+                offset: { x: 30, y: 20 },
             }
             return new Thunder(projectileOptions)
         })

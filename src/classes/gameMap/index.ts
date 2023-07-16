@@ -1,35 +1,49 @@
+import Shovel from '../../classes/stuff/Shovel.js'
 import BloodMoon from '../../classes/tower/BloodMoon.js'
 import FlyingObelisk from '../../classes/tower/FlyingObelisk.js'
 import ObeliskThunder from '../../classes/tower/ObeliskThunder.js'
-import { GATE_POSITION_X, TILE_SIZE } from '../../constants/index.js'
-import context2D from '../../context2D/index.js'
+import {
+    BLUE_GEM_POSITION,
+    GATE_POSITION_X,
+    RED_GEM_POSITION,
+    TILE_SIZE,
+    YELLOW_GEM_POSITION,
+} from '../../constants/index.js'
+import context2D, { canvas } from '../../context2D/index.js'
 import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js'
 import gatesBaseProperties from '../../data/baseProperties/gates/index.js'
-import getTowerInitFrames from '../../data/baseProperties/towers/index.js'
-import { E_angels, E_behaviors, E_enemy, E_gate, E_tower } from '../../enum/index.js'
-import { createFrames, randomNumberInRange } from '../../helper/index.js'
+import { E_angels, E_behaviors, E_characterActions, E_characters, E_enemy, E_gate, E_gems } from '../../enum/index.js'
+import { createFrames, drawText, randomNumberInRange } from '../../helper/index.js'
 import {
     T_baseEnemyProperties,
     T_dashboardBorder,
+    T_dashboardCharacters,
     T_enemy,
     T_enemyInfo,
     T_gameMapData,
     T_gate,
     T_gateInfo,
-    T_initDashboardTowerInfo,
+    T_gemStartInfo,
+    T_initDashboardCharacterInfo,
     T_initFramesDictionary,
     T_position,
     T_round,
     T_sprite,
-    T_tower,
+    T_text,
 } from '../../types/index.js'
-import { I_tower, I_towerProperties } from '../../types/interface.js'
+import { I_character } from '../../types/interface.js'
 import Border from '../dashboardBorder/index.js'
+import DashboardCharacter from '../dashboardCharacters/index.js'
 import Enemy from '../enemy/index.js'
+import DestroyExplosion from '../explosionProjectile/Destroy.js'
+import ExplosionProjectile from '../explosionProjectile/index'
 import Gate from '../gate/index.js'
 import PlacementTile from '../placementTile/index.js'
+import AutumnTree from '../plant/AutumnTree.js'
+import GreenTree from '../plant/GreenTree.js'
+import Plant from '../plant/index.js'
+import MonsterraTree from '../plant/MonsterraTree.js'
 import Sprite from '../sprite/index.js'
-import DashboardTower from '../tower/dashboardTower.js'
 import Tower from '../tower/index.js'
 interface I_dashboardEnemiesInfo {
     enemyType: E_enemy
@@ -37,17 +51,23 @@ interface I_dashboardEnemiesInfo {
     dashboardEnemyBorder: Border
     remainEnemiesTotal: number
 }
-interface I_dashboardTowersInfo {
-    dashboardTower: DashboardTower
+interface I_dashboardCharactersInfo {
+    dashboardCharacter: DashboardCharacter
     border: Border
-    towerType: E_tower
+    type: E_characters
 }
-type T_text = {
-    text: string
-    position: T_position
-    fontSize?: number
-    color?: string
+type T_activeCharacterDestroyInfo = {
+    action: E_characterActions
+    activeCharacterDestroy: I_character
 }
+type T_gemsInfo = Record<
+    string,
+    {
+        icon: Sprite
+        value: number
+    }
+>
+
 export default class GameMap {
     private _currentEnemiesData: Enemy[]
     private rounds: T_round[]
@@ -55,26 +75,28 @@ export default class GameMap {
     private placementTiles: PlacementTile[]
     public backgroundImage: HTMLImageElement
     private towers: Tower[]
+    private plants: Plant[]
     private waypoints: T_position[]
-    public coins: number
+    public gemsInfo: T_gemsInfo
     public shootingAudio: HTMLElement | HTMLAudioElement | null
     private _mouseOverTile: PlacementTile | null
-    public mouseOverDashboardTower: DashboardTower | null
-    public activeDashboardTower: DashboardTower | null
-    public dashboardTowers: I_dashboardTowersInfo[]
+    public mouseOverDashboardCharacter: DashboardCharacter | null
+    public activeDashboardCharacter: DashboardCharacter | null
+    public dashboardCharacters: I_dashboardCharactersInfo[]
     private menu: Sprite
-    private coinsIcon: Sprite
     private gateInfor: T_gateInfo
     private deathEffectEnemies: Enemy[]
     private gate: Gate
+    private activeCharacterDestroyInfo: T_activeCharacterDestroyInfo | null
     private currentDashboardEnemiesInfo: I_dashboardEnemiesInfo[]
+    private gameExplosions: ExplosionProjectile[]
     constructor({
         rounds,
         placementTiles2D,
         waypoints,
         backgroundImage,
-        startCoins,
-        initDashboardTowerInfo,
+        startGems,
+        initDashboardCharacterInfo,
         gateInfor,
     }: T_gameMapData) {
         this._currentEnemiesData = []
@@ -85,202 +107,127 @@ export default class GameMap {
         this.placementTiles = this.getPlacementTiles(placementTiles2D)
         this.shootingAudio = document.getElementById('shooting')
         this.towers = []
-        this.coins = startCoins
+        this.plants = []
+        this.gemsInfo = this.createGemInfo(startGems)
         this.currentDashboardEnemiesInfo = []
         this.menu = this.createMenu()
-        this.coinsIcon = this.createCoinsIcon()
         this._mouseOverTile = null
-        this.mouseOverDashboardTower = null
-        this.activeDashboardTower = null
+        this.mouseOverDashboardCharacter = null
+        this.activeDashboardCharacter = null
         this.deathEffectEnemies = []
         this.gateInfor = gateInfor
-        this.dashboardTowers = this.createDashboardTowers(initDashboardTowerInfo)
+        this.activeCharacterDestroyInfo = null
+        this.dashboardCharacters = this.createDashboardCharacters(initDashboardCharacterInfo)
         this.spawingCurrentRoundEnemies()
         this.gate = this.createGate()
+        this.gameExplosions = []
     }
-    private createGate(): Gate {
-        const gateBaseProperties = gatesBaseProperties(E_gate.GIRL_HERO)
-        const gateOptions: T_gate = {
-            initFrames: gateBaseProperties.initFrames,
-            name: gateBaseProperties.name,
-            width: gateBaseProperties.width,
-            height: gateBaseProperties.height,
-            gateType: gateBaseProperties.gateType,
-            position: { x: 64 * 18, y: 64 * 5 },
-            offset: gateBaseProperties.offset,
-            attackSpeed: this.gateInfor.attackSpeed,
-            attackRange: this.gateInfor.attackRange,
-            damage: this.gateInfor.damage,
-            health: this.gateInfor.health,
-        }
-        return new Gate(gateOptions)
+    //get set place
+    public get mouseOverTile(): PlacementTile | null {
+        return this._mouseOverTile
     }
-    private createDashboardTowers(initDashboardTowerInfo: T_initDashboardTowerInfo[]): I_dashboardTowersInfo[] {
-        const dashboardTowers: I_dashboardTowersInfo[] = []
-        initDashboardTowerInfo.forEach((dashboardTower) => {
-            const baseTowerProperties: I_towerProperties = getTowerInitFrames(dashboardTower.towerType)
-            const towerOptions: T_tower = {
-                name: dashboardTower.name,
-                towerType: dashboardTower.towerType,
-                initFrames: baseTowerProperties.initFrames,
-                position: dashboardTower.position,
-                offset: dashboardTower.offset,
-                width: dashboardTower.width,
-                height: dashboardTower.height,
-            }
-            const borderOptions: T_dashboardBorder = {
-                name: dashboardTower.dashboardBorderInfo.name,
-                position: dashboardTower.dashboardBorderInfo.position,
-                initFrames: dashboardTower.dashboardBorderInfo.initFrames,
-                offset: dashboardTower.dashboardBorderInfo.offset,
-                width: dashboardTower.dashboardBorderInfo.width,
-                height: dashboardTower.dashboardBorderInfo.height,
-            }
-            const newDashboardTower = new DashboardTower(towerOptions)
-
-            const newBorder = new Border(borderOptions)
-            dashboardTowers.push({
-                dashboardTower: newDashboardTower,
-                border: newBorder,
-                towerType: dashboardTower.towerType,
-            })
-        })
-        return dashboardTowers
+    public get currentEnemiesData() {
+        return this._currentEnemiesData
     }
-
-    public updateMap(): [boolean, boolean] {
+    public get isDestroyStatus(): boolean {
+        return (
+            this.activeDashboardCharacter !== null &&
+            this.activeDashboardCharacter.action === E_characterActions.DESTROY
+        )
+    }
+    private get isThereObjectToDestroy(): boolean {
+        return this.towers.length > 0 || this.plants.length > 0
+    }
+    //update and draw function place
+    public updateMap(mouse: T_position): [boolean, boolean] {
         this.updateScreenGame()
         this.updateEnemies()
-        this.updatePlacementTiles()
+        this.updatePlacementTiles(mouse)
         this.updateTowers()
+        this.updatePlants()
         this.updateDashboardEnemies()
-        this.updateDashboardTowers()
-        this.drawCoinsAndGameHearts()
+        this.updateDashboardCharacters()
+        this.drawGemsAndMenu()
         this.updateGate()
         this.updateDashboardShadow()
+        this.updateGameExplosions()
         return this.getGameStatus()
     }
-    public updateDashboardShadow() {
-        if (this.activeDashboardTower?.dashboardShadow) {
-            this.activeDashboardTower.dashboardShadow.draw()
+    private updatePlants() {
+        this.plants.forEach((plant: Plant) => {
+            const gem = plant.update()
+            this.gemsInfo[gem.type].value += gem.value
+        })
+    }
+    private updateGameExplosions() {
+        for (let i = this.gameExplosions.length - 1; i >= 0; i--) {
+            const currentExplosion = this.gameExplosions[i]
+            currentExplosion.update()
+            if (currentExplosion.hasFinishedAnimation) {
+                this.gameExplosions.splice(i, 1)
+            }
         }
+    }
+    private updateDashboardShadow() {
+        const currentDashboardShadow = this.activeDashboardCharacter?.dashboardShadow
+        if (!currentDashboardShadow || this.mouseOverDashboardCharacter) {
+            if (canvas) canvas.style.cursor = 'pointer'
+            return
+        }
+        if (canvas) canvas.style.cursor = 'grab'
+        currentDashboardShadow.update()
     }
     public updateDashboardShadowPosition(mouse: T_position) {
-        if (this.activeDashboardTower?.dashboardShadow) {
-            this.activeDashboardTower.dashboardShadow.position = { x: mouse.x, y: mouse.y }
+        if (this.activeDashboardCharacter?.dashboardShadow) {
+            this.activeDashboardCharacter.dashboardShadow.position = {
+                x: mouse.x,
+                y: mouse.y,
+            }
         }
-    }
-    private getGameStatus(): [boolean, boolean] {
-        const isGameOver = this.gate.remainHealth === 0
-        const isVictory = this._currentEnemiesData.length <= 0 && this.currentRoundIndex >= this.rounds.length - 1
-        return [isGameOver, isVictory]
     }
     private updateGate() {
         if (this.gate) {
             this.gate.update({ enemies: this.currentEnemiesData })
         }
     }
-    private createMenu() {
-        const initFrames: T_initFramesDictionary = {
-            [E_behaviors.IDLE]: {
-                [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../public/src/assets/images/screen/layout_target.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-            },
-        }
-
-        const frames = createFrames({ initFrames })
-        const options: T_sprite = {
-            frames,
-            position: { x: 64 * 17, y: 64 * 1 },
-            offset: { x: 10, y: 26 },
-            height: 120,
-            width: 230,
-        }
-        return new Sprite(options)
-    }
-    private createCoinsIcon() {
-        const initFrames: T_initFramesDictionary = {
-            [E_behaviors.IDLE]: {
-                [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../public/src/assets/images/screen/coins.png',
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
-                },
-            },
-        }
-        const frames = createFrames({ initFrames })
-        const options: T_sprite = {
-            frames,
-            position: { x: 64 * 17, y: 64 * 1 },
-            offset: { x: 4, y: -18 },
-            height: 32,
-            width: 32,
-        }
-        return new Sprite(options)
-    }
-
-    private updateDashboardTowers(): void {
-        this.dashboardTowers.map((dashboardTowerInfo) => {
-            const coinsToBuildTower = this.coinsToBuildTower(dashboardTowerInfo.towerType)
-            const opacity = coinsToBuildTower && this.coins < coinsToBuildTower ? 0.4 : 1
-            dashboardTowerInfo.border.opacity = opacity
-            dashboardTowerInfo.border.update()
-            if (dashboardTowerInfo.dashboardTower === this.activeDashboardTower) {
-                dashboardTowerInfo.border.updateSelected()
+    private updateDashboardCharacters(): void {
+        this.dashboardCharacters.map((dashboardCharacterInfo) => {
+            const gemsToBuildCharacter = this.gemsToBuildCharacter(dashboardCharacterInfo.type)
+            let opacity = 1
+            const isThereNoObjectToDestroy =
+                dashboardCharacterInfo.dashboardCharacter.action === E_characterActions.DESTROY &&
+                !this.isThereObjectToDestroy
+            if (!this.hasEnoughGems(dashboardCharacterInfo.type) || isThereNoObjectToDestroy) {
+                opacity = 0.4
             }
-            dashboardTowerInfo.dashboardTower.opacity = opacity
-            dashboardTowerInfo.dashboardTower.draw()
-            if (coinsToBuildTower && context2D) {
-                const textString = coinsToBuildTower.toString()
+            dashboardCharacterInfo.border.opacity = opacity
+            dashboardCharacterInfo.border.update()
+            if (dashboardCharacterInfo.dashboardCharacter === this.activeDashboardCharacter) {
+                dashboardCharacterInfo.border.updateSelected()
+            }
+            dashboardCharacterInfo.dashboardCharacter.opacity = opacity
+            dashboardCharacterInfo.dashboardCharacter.update()
+            if (gemsToBuildCharacter !== undefined && context2D) {
+                const textString = gemsToBuildCharacter.toString()
                 const textWidth = context2D.measureText(textString).width
                 const textOptions: T_text = {
                     text: textString,
                     position: {
-                        x: dashboardTowerInfo.border.position.x + dashboardTowerInfo.border.width / 2 - textWidth / 2,
-                        y: dashboardTowerInfo.border.position.y - dashboardTowerInfo.border.height,
+                        x:
+                            dashboardCharacterInfo.border.position.x +
+                            dashboardCharacterInfo.border.width / 2 -
+                            textWidth / 2,
+                        y: dashboardCharacterInfo.border.position.y - dashboardCharacterInfo.border.height,
                     },
                     color: '#250806',
                     fontSize: 20,
                 }
-                this.drawText(textOptions)
+                drawText(textOptions)
             }
         })
     }
-    public get mouseOverTile(): PlacementTile | null {
-        return this._mouseOverTile
-    }
     private updateScreenGame(): void {
         this.createBackground()
-    }
-    private createBackground(): void {
-        if (context2D) context2D.drawImage(this.backgroundImage, 0, 0)
-    }
-    private drawCoinsAndGameHearts(): void {
-        this.menu.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
-        this.drawCoins()
-        // this.drawHearts()
-    }
-    private drawCoins() {
-        this.coinsIcon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
-        const textOptions: T_text = {
-            text: this.coins.toString(),
-            position: { x: this.coinsIcon.position.x + 46, y: this.coinsIcon.position.y - 26 },
-            color: 'white',
-            fontSize: 20,
-        }
-        this.drawText(textOptions)
-    }
-    private drawText({ text, position, color = 'black', fontSize = 16 }: T_text) {
-        if (context2D) {
-            context2D.font = `${fontSize}px Changa One`
-            context2D.fillStyle = color
-            context2D.fillText(text, position.x, position.y)
-        }
     }
     private updateDashboardEnemies(): void {
         this.currentDashboardEnemiesInfo.forEach((dashboardEnemyInfor, index) => {
@@ -300,23 +247,20 @@ export default class GameMap {
                 color: '#8B4513',
                 fontSize: 20,
             }
-            this.drawText(textOptions)
+            drawText(textOptions)
         })
     }
-    public get currentEnemiesData() {
-        return this._currentEnemiesData
-    }
-    public updatePlacementTiles(): void {
+    private updatePlacementTiles(mouse: T_position): void {
         this.placementTiles.forEach((placementTile) => {
-            placementTile.update(this.activeDashboardTower)
+            placementTile.update(this.activeDashboardCharacter, mouse)
         })
     }
-    public updateTowers(): void {
+    private updateTowers(): void {
         this.towers.forEach((tower: Tower) => {
             tower.update({ enemies: this.currentEnemiesData, shootingAudio: this.shootingAudio })
         })
     }
-    public updateEnemies(): void {
+    private updateEnemies(): void {
         if (this._currentEnemiesData.length <= 0) {
             if (this.currentRoundIndex < this.rounds.length - 1) {
                 this.currentRoundIndex++
@@ -342,7 +286,7 @@ export default class GameMap {
                 this.deathEffectEnemies.push(new Enemy(deathEnemyOptions))
                 this._currentEnemiesData.splice(i, 1)
                 this.subtractDashboardEnemies(currentEnemy)
-                this.coins += currentEnemy.coins
+                this.gemsInfo[E_gems.BLUE].value += currentEnemy.coins
                 continue
             }
             //enemy reached gate postion then start hit it
@@ -372,60 +316,156 @@ export default class GameMap {
             }
         }
     }
-    public subtractDashboardEnemies(subtractEnemy: Enemy): void {
-        this.currentDashboardEnemiesInfo.forEach((dashboardEnemy) => {
-            if (dashboardEnemy.enemyType === subtractEnemy.enemyType) {
-                dashboardEnemy.remainEnemiesTotal--
+    private drawGemsAndMenu(): void {
+        this.menu.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
+        this.drawGems()
+    }
+    private createGate(): Gate {
+        const gateBaseProperties = gatesBaseProperties(E_gate.GIRL_HERO)
+        const gateOptions: T_gate = {
+            initFrames: gateBaseProperties.initFrames,
+            name: gateBaseProperties.name,
+            width: gateBaseProperties.width,
+            height: gateBaseProperties.height,
+            gateType: gateBaseProperties.gateType,
+            position: { x: 64 * 18, y: 64 * 5 },
+            offset: gateBaseProperties.offset,
+            attackSpeed: this.gateInfor.attackSpeed,
+            attackRange: this.gateInfor.attackRange,
+            damage: this.gateInfor.damage,
+            health: this.gateInfor.health,
+        }
+        return new Gate(gateOptions)
+    }
+    private createDashboardCharacters(
+        initDashboardCharacterInfo: T_initDashboardCharacterInfo[]
+    ): I_dashboardCharactersInfo[] {
+        const dashboardCharacters: I_dashboardCharactersInfo[] = []
+        initDashboardCharacterInfo.forEach((dashboardCharacter) => {
+            const characterOptions: T_dashboardCharacters = {
+                type: dashboardCharacter.type,
+                position: dashboardCharacter.position,
+                offset: dashboardCharacter.offset,
+                width: dashboardCharacter.width,
+                height: dashboardCharacter.height,
             }
+            const borderOptions: T_dashboardBorder = {
+                name: dashboardCharacter.dashboardBorderInfo.name,
+                position: dashboardCharacter.dashboardBorderInfo.position,
+                initFrames: dashboardCharacter.dashboardBorderInfo.initFrames,
+                offset: dashboardCharacter.dashboardBorderInfo.offset,
+                width: dashboardCharacter.dashboardBorderInfo.width,
+                height: dashboardCharacter.dashboardBorderInfo.height,
+            }
+            const newDashboardCharacter: DashboardCharacter = new DashboardCharacter(characterOptions)
+
+            const newBorder: Border = new Border(borderOptions)
+            dashboardCharacters.push({
+                dashboardCharacter: newDashboardCharacter,
+                border: newBorder,
+                type: dashboardCharacter.type,
+            })
+        })
+        return dashboardCharacters
+    }
+    private createGemInfo(gems: T_gemStartInfo): T_gemsInfo {
+        const blueGemIcon = this.createGemIcon({
+            gemSourceImage: '../../public/src/assets/images/gems/blue.png',
+            offset: { x: 0, y: 0 },
+            position: BLUE_GEM_POSITION,
+        })
+        const redGemIcon = this.createGemIcon({
+            gemSourceImage: '../../public/src/assets/images/gems/red.png',
+            offset: { x: 0, y: 0 },
+            position: RED_GEM_POSITION,
+        })
+        const yellowGemIcon = this.createGemIcon({
+            gemSourceImage: '../../public/src/assets/images/gems/purple.png',
+            offset: { x: 0, y: 0 },
+            position: YELLOW_GEM_POSITION,
+        })
+        return {
+            [E_gems.BLUE]: { value: gems.blueGems, icon: blueGemIcon },
+            [E_gems.RED]: { value: gems.redGems, icon: redGemIcon },
+            [E_gems.PURPLE]: { value: gems.yellowGems, icon: yellowGemIcon },
+        }
+    }
+    private drawGems() {
+        const keys = Object.keys(this.gemsInfo)
+        keys.forEach((key) => {
+            this.gemsInfo[key].icon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
+            const textString = this.gemsInfo[key].value.toString()
+            const textOptions: T_text = {
+                text: textString,
+                position: {
+                    x: this.gemsInfo[key].icon.position.x + 50,
+                    y: this.gemsInfo[key].icon.position.y - 18,
+                },
+                color: 'white',
+                fontSize: 20,
+            }
+            drawText(textOptions)
         })
     }
-    public addTower(): void {
-        if (!this.mouseOverTile) return
-        if (!this.activeDashboardTower) return
-        const coinsToBuildTower = this.coinsToBuildTower(this.activeDashboardTower.towerType)
-        if (!coinsToBuildTower || this.coins < coinsToBuildTower) return
-        this.coins -= coinsToBuildTower
-        const towerOptions: I_tower = {
-            position: this.mouseOverTile.position,
+    //create function place
+    private createMenu() {
+        const initFrames: T_initFramesDictionary = {
+            [E_behaviors.IDLE]: {
+                [E_angels.ANGEL_0]: {
+                    imageSourceString: '../../public/src/assets/images/screen/layout_target.png',
+                    maxX: 1,
+                    maxY: 1,
+                    holdTime: 4,
+                },
+            },
         }
-        const tower: Tower = this.createTower({ towerOptions, towerType: this.activeDashboardTower.towerType })
-        this.towers.push(tower)
-        this.towers.sort((a, b) => a.position.y - b.position.y)
-        this.mouseOverTile.isOccupied = true
-        this.activeDashboardTower = null
+
+        const frames = createFrames({ initFrames })
+        const options: T_sprite = {
+            frames,
+            position: { x: 64 * 15, y: 64 * 1 },
+            offset: { x: 20, y: 26 },
+            height: 120,
+            width: 360,
+        }
+        return new Sprite(options)
     }
-    private createTower({ towerOptions, towerType }: { towerOptions: I_tower; towerType: E_tower }): Tower {
-        switch (towerType) {
-            case E_tower.BLOOD_MOON:
-                return new BloodMoon(towerOptions)
-            case E_tower.FLYING_OBELISK:
-                return new FlyingObelisk(towerOptions)
-            case E_tower.OBELISK_THUNDER:
-                return new ObeliskThunder(towerOptions)
+    private createGemIcon({
+        gemSourceImage,
+        offset,
+        position,
+    }: {
+        gemSourceImage: string
+        offset: T_position
+        position: T_position
+    }) {
+        const initFrames: T_initFramesDictionary = {
+            [E_behaviors.IDLE]: {
+                [E_angels.ANGEL_0]: {
+                    imageSourceString: gemSourceImage,
+                    maxX: 1,
+                    maxY: 1,
+                    holdTime: 4,
+                },
+            },
         }
-        return new BloodMoon(towerOptions)
+        const frames = createFrames({ initFrames })
+        const options: T_sprite = {
+            frames,
+            position: position,
+            offset,
+            height: 48,
+            width: 48,
+        }
+        return new Sprite(options)
     }
-    private coinsToBuildTower(towerType: E_tower): number | undefined {
-        switch (towerType) {
-            case E_tower.BLOOD_MOON:
-                return BloodMoon.prices
-            case E_tower.FLYING_OBELISK:
-                return FlyingObelisk.prices
-            case E_tower.OBELISK_THUNDER:
-                return ObeliskThunder.prices
-        }
+    private getGameStatus(): [boolean, boolean] {
+        const isGameOver = this.gate.remainHealth === 0
+        const isVictory = this._currentEnemiesData.length <= 0 && this.currentRoundIndex >= this.rounds.length - 1
+        return [isGameOver, isVictory]
     }
-    public hasEnoughCoins(towerType: E_tower): boolean {
-        switch (towerType) {
-            case E_tower.BLOOD_MOON:
-                return BloodMoon.prices >= this.coins
-            case E_tower.FLYING_OBELISK:
-                return FlyingObelisk.prices >= this.coins
-            case E_tower.OBELISK_THUNDER:
-                return ObeliskThunder.prices >= this.coins
-            default:
-                return false
-        }
+    private createBackground(): void {
+        if (context2D) context2D.drawImage(this.backgroundImage, 0, 0)
     }
     private spawingCurrentRoundEnemies(): void {
         if (this.rounds.length <= 0) {
@@ -496,20 +536,266 @@ export default class GameMap {
         }
         return new Enemy(enemyOptions)
     }
-    public checkMouseOverTile(): void {
-        if (!this.activeDashboardTower?.dashboardShadow) {
-            this._mouseOverTile = null
-        } else {
-            const dashboardShadow = this.activeDashboardTower.dashboardShadow
-            this._mouseOverTile =
-                this.placementTiles.find((tile) => tile.hasCollisionWithMouse(dashboardShadow)) ?? null
+    public handleCharacterAction(): void {
+        if (!this.activeDashboardCharacter) return
+        const isDestroyAction = this.activeDashboardCharacter.action === E_characterActions.DESTROY
+        if (!this.mouseOverTile || (!isDestroyAction && this.mouseOverTile.isOccupied)) return
+        const gemsToBuildCharacter = this.gemsToBuildCharacter(this.activeDashboardCharacter.type)
+        if (gemsToBuildCharacter === undefined || this.gemsInfo[E_gems.BLUE].value < gemsToBuildCharacter) return
+        const options = {
+            position: this.mouseOverTile.position,
+            placementTile: this.mouseOverTile,
+        }
+        let isActionSuccess = false
+        switch (this.activeDashboardCharacter.action) {
+            case E_characterActions.ATTACK:
+                isActionSuccess = this.handleBuildTowers({ options, type: this.activeDashboardCharacter.type })
+                break
+            case E_characterActions.PLANTED:
+                isActionSuccess = this.handleBuildPlants({ options, type: this.activeDashboardCharacter.type })
+                break
+            case E_characterActions.DESTROY:
+                this.handleDestroyStuff()
+                break
+        }
+        if (isActionSuccess) {
+            this.gemsInfo[E_gems.BLUE].value -= gemsToBuildCharacter
+            this.mouseOverTile.isOccupied = true
+        }
+        if (!this.activeDashboardCharacter || !this.hasEnoughGems(this.activeDashboardCharacter.type)) {
+            this.activeDashboardCharacter = null
+            if (canvas) canvas.style.cursor = 'pointer'
         }
     }
-    public checkMouseOverDashboardTower({ mouse }: { mouse: T_position }) {
-        this.mouseOverDashboardTower =
-            this.dashboardTowers.find((dashboardTowerInfo) =>
-                dashboardTowerInfo.dashboardTower.hasCollisionWithMouse(mouse)
-            )?.dashboardTower ?? null
+    private handleBuildTowers({
+        options,
+        type,
+    }: {
+        options: { position: T_position; placementTile: PlacementTile }
+        type: E_characters
+    }): boolean {
+        let isSuccess: boolean = true
+        switch (type) {
+            case E_characters.BLOOD_MOON:
+                this.towers.push(new BloodMoon(options))
+                break
+            case E_characters.FLYING_OBELISK:
+                this.towers.push(new FlyingObelisk(options))
+                break
+            case E_characters.OBELISK_THUNDER:
+                this.towers.push(new ObeliskThunder(options))
+                break
+            default:
+                isSuccess = false
+                break
+        }
+        if (isSuccess) this.towers.sort((a, b) => a.position.y - b.position.y)
+        return isSuccess
+    }
+    private handleBuildPlants({
+        options,
+        type,
+    }: {
+        options: { position: T_position; placementTile: PlacementTile }
+        type: E_characters
+    }): boolean {
+        let isSuccess: boolean = true
+        switch (type) {
+            case E_characters.GREEN_TREE:
+                this.plants.push(new GreenTree(options))
+                break
+            case E_characters.MONSTERRA_TREE:
+                this.plants.push(new MonsterraTree(options))
+                break
+            case E_characters.AUTUMN_TREE:
+                this.plants.push(new AutumnTree(options))
+                break
+            default:
+                isSuccess = false
+                break
+        }
+        if (isSuccess) this.plants.sort((a, b) => a.position.y - b.position.y)
+        return isSuccess
+    }
+    private handleDestroyStuff(): void {
+        if (!this.activeCharacterDestroyInfo) return
+        if (this.activeCharacterDestroyInfo.action === E_characterActions.ATTACK) {
+            for (let i = this.towers.length - 1; i >= 0; i--) {
+                let currentCharacter: I_character = this.towers[i]
+                if (currentCharacter === this.activeCharacterDestroyInfo.activeCharacterDestroy) {
+                    if (currentCharacter.placementTile) {
+                        currentCharacter.placementTile.isOccupied = false
+                    }
+                    const destroyExplosion = new DestroyExplosion({
+                        position: {
+                            x: currentCharacter.position.x + currentCharacter.width / 2,
+                            y: currentCharacter.position.y + currentCharacter.height,
+                        },
+                    })
+                    this.gameExplosions.push(destroyExplosion)
+                    this.towers.splice(i, 1)
+                }
+            }
+            return
+        }
+        if (this.activeCharacterDestroyInfo.action === E_characterActions.PLANTED) {
+            for (let i = this.plants.length - 1; i >= 0; i--) {
+                let currentCharacter: I_character = this.plants[i]
+                if (currentCharacter === this.activeCharacterDestroyInfo.activeCharacterDestroy) {
+                    if (currentCharacter.placementTile) {
+                        currentCharacter.placementTile.isOccupied = false
+                    }
+                    const destroyExplosion = new DestroyExplosion({
+                        position: {
+                            x: currentCharacter.position.x + currentCharacter.width / 2,
+                            y: currentCharacter.position.y + currentCharacter.height,
+                        },
+                    })
+                    this.gameExplosions.push(destroyExplosion)
+                    this.plants.splice(i, 1)
+                }
+            }
+            return
+        }
+    }
+    //check to do something function place
+    public checkHavestGems(mouse: T_position) {
+        this.plants.forEach((plant: Plant) => {
+            for (let i = plant.gems.length - 1; i >= 0; i--) {
+                const currentGem = plant.gems[i]
+                if (currentGem.hasCollision(mouse)) {
+                    currentGem.harvestGem()
+                }
+            }
+        })
+    }
+    public checkMouseOverTile(): void {
+        if (!this.activeDashboardCharacter?.dashboardShadow) {
+            this._mouseOverTile = null
+        } else {
+            const dashboardShadow = this.activeDashboardCharacter.dashboardShadow
+            this._mouseOverTile =
+                this.placementTiles.find((tile) => tile.hasCollision(dashboardShadow.position)) ?? null
+        }
+    }
+    public checkToHandleBuildCharacter(): void {
+        //click ouside can plant character and select character in dashboard
+        const isDestroyAction = this.mouseOverDashboardCharacter?.action === E_characterActions.DESTROY
+        if (
+            !this.mouseOverTile &&
+            !this.mouseOverDashboardCharacter &&
+            !isDestroyAction &&
+            !this.activeCharacterDestroyInfo
+        ) {
+            this.activeDashboardCharacter = null
+            if (canvas) canvas.style.cursor = 'pointer'
+            return
+        }
+        //click destroy shovel
+        if (isDestroyAction && !this.isThereObjectToDestroy) return
+        //click into dashboard character
+        if (
+            this.hasEnoughGems(this.mouseOverDashboardCharacter?.type) &&
+            this.activeDashboardCharacter !== this.mouseOverDashboardCharacter
+        ) {
+            this.activeDashboardCharacter = this.mouseOverDashboardCharacter
+            if (canvas) canvas.style.cursor = 'grab'
+            return
+        }
+        //just click outside and not destroying something
+        if (
+            !this.mouseOverTile &&
+            this.activeDashboardCharacter &&
+            !isDestroyAction &&
+            !this.activeCharacterDestroyInfo
+        ) {
+            this.activeDashboardCharacter = null
+            if (canvas) canvas.style.cursor = 'pointer'
+            return
+        }
+        //already selected character then we build character
+        if (this.mouseOverTile && this.activeDashboardCharacter) {
+            console.log('run in')
+            this.handleCharacterAction()
+        }
+    }
+
+    public checkMouseOverDashboardCharacters({ mouse }: { mouse: T_position }) {
+        this.mouseOverDashboardCharacter =
+            this.dashboardCharacters.find((dashboardCharacterInfo) =>
+                dashboardCharacterInfo.dashboardCharacter.hasCollisionWithMouse(mouse)
+            )?.dashboardCharacter ?? null
+    }
+    public checkDestroyCharacers(mouse: T_position) {
+        if (this.activeDashboardCharacter === null) return
+        const allCurrentCharacters: I_character[] = [...this.towers, ...this.plants]
+        this.activeCharacterDestroyInfo = this.handleFindDestroyCharacterInfo(allCurrentCharacters, mouse)
+    }
+    //calculate function place
+    private handleFindDestroyCharacterInfo(
+        characters: I_character[],
+        mouse: T_position
+    ): T_activeCharacterDestroyInfo | null {
+        let activeCharacterDestroyInfo: T_activeCharacterDestroyInfo | null = null
+        for (let i = 0; i < characters.length; i++) {
+            if (characters[i].hasCollision(mouse)) {
+                activeCharacterDestroyInfo = {
+                    action: characters[i].action,
+                    activeCharacterDestroy: characters[i],
+                }
+                characters[i].opacity = 0.4
+                break
+            } else {
+                characters[i].opacity = 1
+            }
+        }
+        return activeCharacterDestroyInfo
+    }
+    public hasEnoughGems(type: E_characters | undefined): boolean {
+        if (type === undefined) return false
+        switch (type) {
+            case E_characters.BLOOD_MOON:
+                return BloodMoon.prices <= this.gemsInfo[E_gems.BLUE].value
+            case E_characters.FLYING_OBELISK:
+                return FlyingObelisk.prices <= this.gemsInfo[E_gems.BLUE].value
+            case E_characters.OBELISK_THUNDER:
+                return ObeliskThunder.prices <= this.gemsInfo[E_gems.BLUE].value
+            case E_characters.GREEN_TREE:
+                return GreenTree.prices <= this.gemsInfo[E_gems.BLUE].value
+            case E_characters.MONSTERRA_TREE:
+                return MonsterraTree.prices <= this.gemsInfo[E_gems.BLUE].value
+            case E_characters.AUTUMN_TREE:
+                return AutumnTree.prices <= this.gemsInfo[E_gems.BLUE].value
+            case E_characters.SHOVEL:
+                return Shovel.prices <= this.gemsInfo[E_gems.BLUE].value
+            default:
+                return false
+        }
+    }
+    private gemsToBuildCharacter(type: E_characters): number | undefined {
+        switch (type) {
+            case E_characters.BLOOD_MOON:
+                return BloodMoon.prices
+            case E_characters.FLYING_OBELISK:
+                return FlyingObelisk.prices
+            case E_characters.OBELISK_THUNDER:
+                return ObeliskThunder.prices
+            case E_characters.GREEN_TREE:
+                return GreenTree.prices
+            case E_characters.MONSTERRA_TREE:
+                return MonsterraTree.prices
+            case E_characters.AUTUMN_TREE:
+                return AutumnTree.prices
+            case E_characters.SHOVEL:
+                return Shovel.prices
+        }
+    }
+    public subtractDashboardEnemies(subtractEnemy: Enemy): void {
+        this.currentDashboardEnemiesInfo.forEach((dashboardEnemy) => {
+            if (dashboardEnemy.enemyType === subtractEnemy.enemyType) {
+                dashboardEnemy.remainEnemiesTotal--
+            }
+        })
     }
     private getPlacementTiles(placementTiles2D: number[][]): PlacementTile[] {
         const placementTiles: PlacementTile[] = []

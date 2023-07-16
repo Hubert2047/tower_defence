@@ -1,6 +1,6 @@
-import { E_angels, E_behaviors, E_tower } from '../../../enum/index.js';
+import { E_angels, E_behaviors, E_characters } from '../../../enum/index.js';
 const HauntedTreeProperties = {
-    towerType: E_tower.HAUNTED_TREE,
+    towerType: E_characters.HAUNTED_TREE,
     initFrames: {
         [E_behaviors.ATTACK]: {
             [E_angels.ANGEL_0]: {

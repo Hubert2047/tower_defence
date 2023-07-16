@@ -1,10 +1,10 @@
-import getBaseTowerProperties from '../../data/baseProperties/towers/index.js';
+import getBaseTowerProperties from '../../data/baseProperties/characters/index.js';
 import Tower from './index.js';
 export default class DashboardTower extends Tower {
-    constructor({ name, towerType, position, offset, width, height, initFrames, attackSpeed, attackRange, damage, behaviorKey, angelKey, projectileType, isDashboardShadow, opacity = 1, }) {
+    constructor({ name, type, position, offset, width, height, initFrames, attackSpeed, attackRange, damage, behaviorKey, angelKey, projectileType, isDashboardShadow, opacity = 1, }) {
         super({
             name,
-            towerType,
+            type,
             position,
             offset,
             width,
@@ -21,17 +21,17 @@ export default class DashboardTower extends Tower {
         if (!isDashboardShadow) {
             this.dashboardShadow = this.createDashboardShadow({
                 name,
-                towerType,
+                type,
                 position,
                 initFrames,
             });
         }
     }
-    createDashboardShadow({ name, towerType, position, initFrames }) {
-        const baseTowerProperties = getBaseTowerProperties(towerType);
+    createDashboardShadow({ name, type, position, initFrames }) {
+        const baseTowerProperties = getBaseTowerProperties(type);
         const towerOptions = {
             name,
-            towerType,
+            type,
             position,
             offset: { x: baseTowerProperties.width - 25, y: 25 },
             width: baseTowerProperties.width,

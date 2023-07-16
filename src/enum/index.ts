@@ -8,12 +8,6 @@ enum E_enemy {
     TIDE_HUNTER,
     Hunter,
 }
-enum E_tower {
-    BLOOD_MOON = 1,
-    FLYING_OBELISK = 2,
-    HAUNTED_TREE = 3,
-    OBELISK_THUNDER = 4,
-}
 enum E_projectile {
     FIRE = 1,
     THUNDER = 2,
@@ -27,6 +21,7 @@ enum E_explosion {
     THUNDER,
     FIRE,
     NUCLEAR,
+    DESTROY,
 }
 enum E_gate {
     GIRL_HERO,
@@ -57,4 +52,35 @@ enum E_angels {
     ANGEL_315 = '315degree',
     ANGEL_337 = '337degree',
 }
-export { E_angels, E_behaviors, E_enemy, E_explosion, E_gameMap, E_gate, E_projectile, E_tower }
+enum E_characters {
+    GREEN_TREE = 1,
+    MONSTERRA_TREE = 2,
+    BLOOD_MOON = 3,
+    FLYING_OBELISK = 4,
+    HAUNTED_TREE = 5,
+    OBELISK_THUNDER = 6,
+    AUTUMN_TREE = 7,
+    SHOVEL = 8,
+}
+enum E_characterActions {
+    ATTACK = 'character attack',
+    PLANTED = 'character planted',
+    DESTROY = 'character destroy',
+}
+enum E_gems {
+    BLUE = 'blue',
+    RED = 'red',
+    PURPLE = 'purple',
+}
+export {
+    E_angels,
+    E_behaviors,
+    E_enemy,
+    E_characterActions,
+    E_explosion,
+    E_gameMap,
+    E_gate,
+    E_projectile,
+    E_characters,
+    E_gems,
+}

@@ -1,28 +1,52 @@
 import { TILE_SIZE } from '../../constants/index.js';
-import context2D from '../../context2D/index.js';
-export default class PlacementTile {
-    constructor({ position = { x: 0, y: 0 } }) {
+import { E_angels, E_behaviors, E_characterActions } from '../../enum/index.js';
+import { createFrames } from '../../helper/index.js';
+import Sprite from '../sprite/index.js';
+export default class PlacementTile extends Sprite {
+    constructor({ position = { x: 0, y: 0 }, behaviorKey = E_behaviors.IDLE, offset = { x: 0, y: 64 }, angelKey = E_angels.ANGEL_0, }) {
+        const initFrames = {
+            [E_behaviors.IDLE]: {
+                [E_angels.ANGEL_0]: {
+                    imageSourceString: '../../../public/src/assets/images/stuff/placement-tile.png',
+                    maxX: 1,
+                    maxY: 1,
+                    holdTime: 300000,
+                },
+            },
+        };
+        const frames = createFrames({ initFrames });
+        super({
+            position,
+            frames,
+            width: 64,
+            height: 64,
+            opacity: 1,
+            offset,
+        });
         this.position = position;
-        this.defaultColor = 'rgba(255,255,255,0.25)';
-        this.color = this.defaultColor;
+        this.behaviorKey = behaviorKey;
+        this.angelKey = angelKey;
         this.isOccupied = false;
     }
-    draw() {
-        if (context2D) {
-            context2D.fillStyle = this.color;
-            context2D.fillRect(this.position.x, this.position.y, TILE_SIZE, TILE_SIZE);
+    update(activeDashboardCharacter, mouse) {
+        const isDestroyAction = (activeDashboardCharacter === null || activeDashboardCharacter === void 0 ? void 0 : activeDashboardCharacter.action) === E_characterActions.DESTROY;
+        const isDestroy = isDestroyAction;
+        if (isDestroy && !this.isOccupied)
+            return;
+        if (!activeDashboardCharacter && !this.isOccupied)
+            return;
+        if (this.hasCollision(mouse) && activeDashboardCharacter && !this.isOccupied) {
+            this.opacity = 1;
         }
-    }
-    update(activeDashboardTower) {
-        if (activeDashboardTower && !this.isOccupied) {
-            this.draw();
-            this.color = this.defaultColor;
+        else {
+            this.opacity = 0.4;
         }
+        this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
     }
-    hasCollisionWithMouse(dashboardTowerShadow) {
-        return (this.position.x <= dashboardTowerShadow.position.x &&
-            dashboardTowerShadow.position.x <= this.position.x + TILE_SIZE &&
-            this.position.y <= dashboardTowerShadow.position.y &&
-            dashboardTowerShadow.position.y <= this.position.y + TILE_SIZE);
+    hasCollision(position) {
+        return (this.position.x <= position.x &&
+            position.x <= this.position.x + TILE_SIZE &&
+            this.position.y <= position.y &&
+            position.y <= this.position.y + TILE_SIZE);
     }
 }

@@ -1,5 +1,6 @@
 import Enemy from '../classes/enemy/index.js'
-import { E_angels, E_behaviors, E_tower } from '../enum/index.js'
+import PlacementTile from '../classes/placementTile/index.js'
+import { E_angels, E_behaviors, E_characterActions, E_characters, E_gems } from '../enum/index.js'
 import { T_initFramesDictionary, T_position } from '../types/index.js'
 interface I_projectile {
     position: T_position
@@ -21,6 +22,16 @@ interface I_tower {
     behaviorKey?: E_behaviors
     angelKey?: E_angels
     opacity?: number
+    placementTile?: PlacementTile | null
+}
+interface I_plant {
+    position: T_position
+    offset?: T_position
+    fruitingDuration?: number
+    behaviorKey?: E_behaviors
+    angelKey?: E_angels
+    opacity?: number
+    placementTile?: PlacementTile | null
 }
 interface I_explosion {
     position: T_position
@@ -31,10 +42,26 @@ interface I_explosion {
     behaviorKey?: E_behaviors
     angelKey?: E_angels
 }
-type I_towerProperties = {
-    towerType: E_tower
+interface I_characterProperties {
+    type: E_characters
+    initFrames: T_initFramesDictionary
+    width: number
+    height: number
+    action: E_characterActions
+}
+interface I_gemProperties {
+    type: E_gems
     initFrames: T_initFramesDictionary
     width: number
     height: number
 }
-export { I_explosion, I_towerProperties, I_projectile, I_tower }
+interface I_character {
+    opacity: number
+    action: E_characterActions
+    width: number
+    height: number
+    placementTile: PlacementTile | null
+    position: T_position
+    hasCollision(position: T_position): boolean
+}
+export { I_explosion, I_plant, I_characterProperties, I_gemProperties, I_projectile, I_tower, I_character }

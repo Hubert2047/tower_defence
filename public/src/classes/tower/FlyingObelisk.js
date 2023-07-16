@@ -1,13 +1,13 @@
-import getBaseTowerProperties from '../../data/baseProperties/towers/index.js';
-import { E_angels, E_behaviors, E_tower } from '../../enum/index.js';
+import getBaseTowerProperties from '../../data/baseProperties/characters/index.js';
+import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../enum/index.js';
 import { default as Fire } from '../projectile/Fire.js';
 import Tower from './index.js';
 class FlyingObelisk extends Tower {
-    constructor({ position, offset = { x: 10, y: 50 }, damage = 2000, attackSpeed = 4, attackRange = 300, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, }) {
-        const baseTowerProperties = getBaseTowerProperties(E_tower.FLYING_OBELISK);
+    constructor({ position, offset = { x: 10, y: 50 }, damage = 2000, attackSpeed = 4, attackRange = 300, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile = null, }) {
+        const baseTowerProperties = getBaseTowerProperties(E_characters.FLYING_OBELISK);
         super({
             name: 'Flying Obelisk Tower',
-            towerType: E_tower.FLYING_OBELISK,
+            type: E_characters.FLYING_OBELISK,
             position,
             offset,
             width: baseTowerProperties.width,
@@ -20,7 +20,9 @@ class FlyingObelisk extends Tower {
             angelKey,
             opacity,
             attackTargetNums: 1,
+            placementTile,
         });
+        this.action = E_characterActions.ATTACK;
     }
     createProjectiles(targetEnemis) {
         return targetEnemis.map((enemy) => {

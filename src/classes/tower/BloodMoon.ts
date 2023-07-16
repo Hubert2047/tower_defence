@@ -1,12 +1,13 @@
-import getBaseTowerProperties from '../../data/baseProperties/towers/index.js'
-import { E_angels, E_behaviors, E_tower } from '../../enum/index.js'
-import { I_tower, I_towerProperties } from '../../types/interface.js'
+import getBaseTowerProperties from '../../data/baseProperties/characters/index.js'
+import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../enum/index.js'
+import { I_characterProperties, I_tower } from '../../types/interface.js'
 import Enemy from '../enemy/index.js'
-import NuclearProjectile from '../projectile/Nuclear.js'
 import Projectile from '../projectile/index.js'
+import NuclearProjectile from '../projectile/Nuclear.js'
 import Tower from './index.js'
 
 export default class BloodMoonTower extends Tower {
+    action: E_characterActions
     constructor({
         position,
         offset = { x: 10, y: 60 },
@@ -16,11 +17,12 @@ export default class BloodMoonTower extends Tower {
         behaviorKey = E_behaviors.ATTACK,
         angelKey = E_angels.ANGEL_0,
         opacity = 1,
+        placementTile = null,
     }: I_tower) {
-        const baseTowerProperties: I_towerProperties = getBaseTowerProperties(E_tower.BLOOD_MOON)
+        const baseTowerProperties: I_characterProperties = getBaseTowerProperties(E_characters.BLOOD_MOON)
         super({
             name: 'Blood Moon Tower',
-            towerType: E_tower.BLOOD_MOON,
+            type: E_characters.BLOOD_MOON,
             position,
             offset,
             width: baseTowerProperties.width,
@@ -32,7 +34,9 @@ export default class BloodMoonTower extends Tower {
             behaviorKey,
             angelKey,
             opacity,
+            placementTile,
         })
+        this.action = E_characterActions.ATTACK
     }
     public static prices = 10
     public createProjectiles(targetEnemies: Enemy[]): Projectile[] {

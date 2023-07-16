@@ -1,16 +1,18 @@
 import FireProjectile from '../../classes/projectile/Fire.js'
 import context2D from '../../context2D/index.js'
-import { E_angels, E_behaviors, E_projectile, E_tower } from '../../enum/index.js'
+import { E_angels, E_behaviors, E_characterActions, E_characters, E_projectile } from '../../enum/index.js'
 import { calAngleFromPointAToPointB, calculateDistanceTwoPoint, createFrames } from '../../helper/index.js'
 import { T_frame, T_position, T_tower } from '../../types/index.js'
-import { I_projectile } from '../../types/interface.js'
+import { I_character, I_projectile } from '../../types/interface.js'
 import Enemy from '../enemy/index.js'
 import ExplosionProjectile from '../explosionProjectile/index.js'
+import PlacementTile from '../placementTile/index.js'
 import Projectile from '../projectile/index.js'
 import Sprite from '../sprite/index.js'
-export default class Tower extends Sprite {
+
+export default class Tower extends Sprite implements I_character {
     public name: string
-    public towerType: E_tower
+    public type: E_characters
     public attackSpeed: number
     public attackRange: number
     public damage: number
@@ -21,11 +23,13 @@ export default class Tower extends Sprite {
     public attackTargetNums: number
     public projectileType?: E_projectile
     public projectiles: Projectile[]
+    public action: E_characterActions
+    public placementTile: PlacementTile | null
     // public attacked: boolean
     public explosions: ExplosionProjectile[]
     constructor({
         name,
-        towerType,
+        type,
         position,
         offset = { x: 0, y: 0 },
         width = 124,
@@ -39,22 +43,25 @@ export default class Tower extends Sprite {
         angelKey = E_angels.ANGEL_0,
         opacity = 1,
         attackTargetNums = 1,
+        placementTile = null,
     }: T_tower) {
         const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames })
         super({ position, offset, width, height, frames, opacity })
         this.name = name
-        this.towerType = towerType
+        this.type = type
         this.damage = damage
         this.attackSpeed = attackSpeed
         this.attackRange = attackRange
         this.projectileType = projectileType
         this.projectiles = []
-        this.countAttackTime = 0
         this.holdAttack = parseInt((200 / attackSpeed).toString())
+        this.countAttackTime = this.holdAttack
         this.explosions = []
         this.attackTargetNums = attackTargetNums
         this.behaviorKey = behaviorKey
         this.angelKey = angelKey
+        this.action = E_characterActions.ATTACK
+        this.placementTile = placementTile
         // this.attacked = false
     }
     public draw(): void {
@@ -98,14 +105,13 @@ export default class Tower extends Sprite {
             this.explosions[i].update()
             if (currentExplosion.hasFinishedAnimation) {
                 if (shootingAudio && shootingAudio instanceof HTMLAudioElement && shootingAudio.paused) {
-                    shootingAudio.play()
+                    // shootingAudio.play()
                 }
                 this.explosions.splice(i, 1)
             }
         }
     }
     private attackEnemies(enemies: Enemy[]): void {
-        // if (this.attacked) return
         if (this.countAttackTime < this.holdAttack) {
             this.countAttackTime++
             return
@@ -133,7 +139,6 @@ export default class Tower extends Sprite {
         this.angelKey = this.getAngleKeyByTwoPoint(centerLeftTowerPosition, centerRightTargetEnemyPosition)
         const newProjectiles: Projectile[] = this.createProjectiles(targetEnemies)
         this.projectiles = [...this.projectiles, ...newProjectiles]
-        // this.attacked = true
     }
     public createProjectiles(targetEnemies: Enemy[]): Projectile[] {
         return targetEnemies.map((enemy) => {
@@ -161,12 +166,12 @@ export default class Tower extends Sprite {
         })
         return enemiesInRange.sort((a, b) => b.position.x - a.position.x)
     }
-    public hasCollisionWithMouse(mouse: T_position): boolean {
+    public hasCollision(position: T_position): boolean {
         return (
-            this.position.x + this.offset.x <= mouse.x &&
-            mouse.x <= this.position.x + this.width - this.offset.x &&
-            this.position.y - this.height + this.offset.y <= mouse.y &&
-            mouse.y <= this.position.y + this.height - 3 * this.offset.y
+            this.position.x + this.offset.x <= position.x &&
+            position.x <= this.position.x + this.width &&
+            this.position.y <= position.y &&
+            position.y <= this.position.y + this.height - this.offset.y
         )
     }
 

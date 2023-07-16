@@ -1,25 +1,27 @@
 import FireProjectile from '../../classes/projectile/Fire.js';
 import context2D from '../../context2D/index.js';
-import { E_angels, E_behaviors, E_projectile } from '../../enum/index.js';
+import { E_angels, E_behaviors, E_characterActions, E_projectile } from '../../enum/index.js';
 import { calAngleFromPointAToPointB, calculateDistanceTwoPoint, createFrames } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Tower extends Sprite {
-    constructor({ name, towerType, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, projectileType = E_projectile.FIRE, damage = 100, attackSpeed = 1, attackRange = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, attackTargetNums = 1, }) {
+    constructor({ name, type, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, projectileType = E_projectile.FIRE, damage = 100, attackSpeed = 1, attackRange = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, attackTargetNums = 1, placementTile = null, }) {
         const frames = createFrames({ initFrames });
         super({ position, offset, width, height, frames, opacity });
         this.name = name;
-        this.towerType = towerType;
+        this.type = type;
         this.damage = damage;
         this.attackSpeed = attackSpeed;
         this.attackRange = attackRange;
         this.projectileType = projectileType;
         this.projectiles = [];
-        this.countAttackTime = 0;
         this.holdAttack = parseInt((200 / attackSpeed).toString());
+        this.countAttackTime = this.holdAttack;
         this.explosions = [];
         this.attackTargetNums = attackTargetNums;
         this.behaviorKey = behaviorKey;
         this.angelKey = angelKey;
+        this.action = E_characterActions.ATTACK;
+        this.placementTile = placementTile;
         // this.attacked = false
     }
     draw() {
@@ -57,14 +59,13 @@ export default class Tower extends Sprite {
             this.explosions[i].update();
             if (currentExplosion.hasFinishedAnimation) {
                 if (shootingAudio && shootingAudio instanceof HTMLAudioElement && shootingAudio.paused) {
-                    shootingAudio.play();
+                    // shootingAudio.play()
                 }
                 this.explosions.splice(i, 1);
             }
         }
     }
     attackEnemies(enemies) {
-        // if (this.attacked) return
         if (this.countAttackTime < this.holdAttack) {
             this.countAttackTime++;
             return;
@@ -93,7 +94,6 @@ export default class Tower extends Sprite {
         this.angelKey = this.getAngleKeyByTwoPoint(centerLeftTowerPosition, centerRightTargetEnemyPosition);
         const newProjectiles = this.createProjectiles(targetEnemies);
         this.projectiles = [...this.projectiles, ...newProjectiles];
-        // this.attacked = true
     }
     createProjectiles(targetEnemies) {
         return targetEnemies.map((enemy) => {
@@ -121,11 +121,11 @@ export default class Tower extends Sprite {
         });
         return enemiesInRange.sort((a, b) => b.position.x - a.position.x);
     }
-    hasCollisionWithMouse(mouse) {
-        return (this.position.x + this.offset.x <= mouse.x &&
-            mouse.x <= this.position.x + this.width - this.offset.x &&
-            this.position.y - this.height + this.offset.y <= mouse.y &&
-            mouse.y <= this.position.y + this.height - 3 * this.offset.y);
+    hasCollision(position) {
+        return (this.position.x + this.offset.x <= position.x &&
+            position.x <= this.position.x + this.width &&
+            this.position.y <= position.y &&
+            position.y <= this.position.y + this.height - this.offset.y);
     }
     getAngleKeyByTwoPoint(pointA, pointB) {
         const angel = calAngleFromPointAToPointB(pointA, pointB);

@@ -1,13 +1,13 @@
 import Thunder from '../../classes/projectile/Thunder.js';
-import getBaseTowerProperties from '../../data/baseProperties/towers/index.js';
-import { E_angels, E_behaviors, E_tower } from '../../enum/index.js';
+import getBaseTowerProperties from '../../data/baseProperties/characters/index.js';
+import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../enum/index.js';
 import Tower from './index.js';
 class ObeliskThunderTower extends Tower {
-    constructor({ position, offset = { x: 10, y: 55 }, damage = 3000, attackSpeed = 2, attackRange = 300, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, }) {
-        const baseTowerProperties = getBaseTowerProperties(E_tower.OBELISK_THUNDER);
+    constructor({ position, offset = { x: 10, y: 55 }, damage = 3000, attackSpeed = 2, attackRange = 300, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile = null, }) {
+        const baseTowerProperties = getBaseTowerProperties(E_characters.OBELISK_THUNDER);
         super({
             name: 'Obelisk Thunder Tower',
-            towerType: E_tower.OBELISK_THUNDER,
+            type: E_characters.OBELISK_THUNDER,
             position,
             offset,
             width: baseTowerProperties.width,
@@ -20,8 +20,10 @@ class ObeliskThunderTower extends Tower {
             angelKey,
             opacity,
             attackTargetNums: 3,
+            placementTile,
         });
         this.baseTowerProperties = baseTowerProperties;
+        this.action = E_characterActions.ATTACK;
     }
     update({ enemies, shootingAudio, }) {
         super.update({
@@ -50,7 +52,7 @@ class ObeliskThunderTower extends Tower {
                 enemy,
                 width,
                 height,
-                offset: { x: 20, y: 0 },
+                offset: { x: 30, y: 20 },
             };
             return new Thunder(projectileOptions);
         });

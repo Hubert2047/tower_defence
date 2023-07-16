@@ -1,6 +1,6 @@
 import { I_explosion } from 'src/types/interface.js'
-import ThunderExplosion from '../../classes/explosionProjectile/Thunder.js'
 import ExplosionProjectile from '../../classes/explosionProjectile/index.js'
+import ThunderExplosion from '../../classes/explosionProjectile/Thunder.js'
 import { E_angels, E_behaviors } from '../../enum/index.js'
 import {
     calculateDistanceTwoPoint,
@@ -49,7 +49,6 @@ export default class Projectile extends Sprite {
             y: this.targetEnemy.position.y - 2 * this.targetEnemy.offset.y,
         }
         this.angelKey = getAngleKeyByTwoPoint(this.position, realPosi)
-        console.log('run in')
     }
     public updatePosition(): void {
         this.updateVelocity()

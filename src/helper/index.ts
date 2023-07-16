@@ -3,7 +3,7 @@ import { BASE_HEALTH } from '../constants/index.js'
 import context2D from '../context2D/index.js'
 import gameData from '../data/gameMaps/index.js'
 import { E_angels, E_gameMap } from '../enum/index.js'
-import { T_frame, T_gameMapData, T_initFrame, T_initFramesDictionary, T_position } from '../types/index.js'
+import { T_frame, T_gameMapData, T_initFrame, T_initFramesDictionary, T_position, T_text } from '../types/index.js'
 
 function calculateDistanceTwoPoint(pointA: T_position, pointB: T_position): number {
     const dx: number = pointA.x - pointB.x
@@ -40,6 +40,13 @@ interface healthBarOptions {
     height: number
     borderRadius: number
     strokeStyle: string
+}
+function drawText({ text, position, color = 'black', fontSize = 16 }: T_text) {
+    if (context2D) {
+        context2D.font = `${fontSize}px Changa One`
+        context2D.fillStyle = color
+        context2D.fillText(text, position.x, position.y)
+    }
 }
 function drawRemainHealthBar({
     sprite,
@@ -293,8 +300,8 @@ function getGameMapData(gameMapType: E_gameMap): T_gameMapData | undefined {
             placementTiles2D: deepClone(data.placementTiles2D),
             backgroundImage: data.backgroundImage,
             waypoints: deepClone(data.waypoints),
-            startCoins: data.startCoins,
-            initDashboardTowerInfo: deepClone(data.initDashboardTowerInfo),
+            startGems: deepClone(data.startGems),
+            initDashboardCharacterInfo: deepClone(data.initDashboardCharacterInfo),
             gateInfor: data.gateInfor,
         }
     }
@@ -328,4 +335,5 @@ export {
     getVectorNomalized,
     randomNumberInRange,
     updateHealthBars,
+    drawText,
 }

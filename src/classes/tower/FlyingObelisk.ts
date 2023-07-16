@@ -1,10 +1,11 @@
-import getBaseTowerProperties from '../../data/baseProperties/towers/index.js'
-import { E_angels, E_behaviors, E_tower } from '../../enum/index.js'
-import { I_tower, I_towerProperties } from '../../types/interface.js'
+import getBaseTowerProperties from '../../data/baseProperties/characters/index.js'
+import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../enum/index.js'
+import { I_characterProperties, I_tower } from '../../types/interface.js'
 import Enemy from '../enemy/index.js'
 import { default as Fire, default as Projectile } from '../projectile/Fire.js'
 import Tower from './index.js'
 export default class FlyingObelisk extends Tower {
+    action: E_characterActions
     constructor({
         position,
         offset = { x: 10, y: 50 },
@@ -14,11 +15,12 @@ export default class FlyingObelisk extends Tower {
         behaviorKey = E_behaviors.IDLE,
         angelKey = E_angels.ANGEL_0,
         opacity = 1,
+        placementTile = null,
     }: I_tower) {
-        const baseTowerProperties: I_towerProperties = getBaseTowerProperties(E_tower.FLYING_OBELISK)
+        const baseTowerProperties: I_characterProperties = getBaseTowerProperties(E_characters.FLYING_OBELISK)
         super({
             name: 'Flying Obelisk Tower',
-            towerType: E_tower.FLYING_OBELISK,
+            type: E_characters.FLYING_OBELISK,
             position,
             offset,
             width: baseTowerProperties.width,
@@ -31,7 +33,9 @@ export default class FlyingObelisk extends Tower {
             angelKey,
             opacity,
             attackTargetNums: 1,
+            placementTile,
         })
+        this.action = E_characterActions.ATTACK
     }
     public static prices = 10
     public createProjectiles(targetEnemis: Enemy[]): Projectile[] {

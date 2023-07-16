@@ -155,7 +155,7 @@ export default class ThunderProjectile extends Projectile {
             },
             width,
             height,
-            offset: { x: 10, y: -50 },
+            offset: { x: 20, y: -50 },
         }
         return new ThunderExplosion(explosionOptions)
     }

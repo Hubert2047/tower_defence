@@ -1,37 +1,68 @@
 import { TILE_SIZE } from '../../constants/index.js'
-import context2D from '../../context2D/index.js'
-import { T_position } from '../../types/index.js'
-import DashboardTower from '../tower/dashboardTower.js'
-import Tower from '../tower/index.js'
-export default class PlacementTile {
+import { E_angels, E_behaviors, E_characterActions } from '../../enum/index.js'
+import { createFrames } from '../../helper/index.js'
+import { T_frame, T_position } from '../../types/index.js'
+import DashboardCharacter from '../dashboardCharacters/index.js'
+import Sprite from '../sprite/index.js'
+type T_placement = {
+    position: T_position
+    behaviorKey?: E_behaviors
+    angelKey?: E_angels
+    offset?: T_position
+}
+export default class PlacementTile extends Sprite {
     public position: T_position
-    private defaultColor: string
-    private color: string
+    behaviorKey: E_behaviors
+    angelKey: E_angels
     public isOccupied: boolean
-    constructor({ position = { x: 0, y: 0 } }: { position: T_position }) {
+    constructor({
+        position = { x: 0, y: 0 },
+        behaviorKey = E_behaviors.IDLE,
+        offset = { x: 0, y: 64 },
+        angelKey = E_angels.ANGEL_0,
+    }: T_placement) {
+        const initFrames = {
+            [E_behaviors.IDLE]: {
+                [E_angels.ANGEL_0]: {
+                    imageSourceString: '../../../public/src/assets/images/stuff/placement-tile.png',
+                    maxX: 1,
+                    maxY: 1,
+                    holdTime: 300000,
+                },
+            },
+        }
+        const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames })
+        super({
+            position,
+            frames,
+            width: 64,
+            height: 64,
+            opacity: 1,
+            offset,
+        })
         this.position = position
-        this.defaultColor = 'rgba(255,255,255,0.25)'
-        this.color = this.defaultColor
+        this.behaviorKey = behaviorKey
+        this.angelKey = angelKey
         this.isOccupied = false
     }
-    private draw(): void {
-        if (context2D) {
-            context2D.fillStyle = this.color
-            context2D.fillRect(this.position.x, this.position.y, TILE_SIZE, TILE_SIZE)
+    public update(activeDashboardCharacter: DashboardCharacter | null, mouse: T_position): void {
+        const isDestroyAction = activeDashboardCharacter?.action === E_characterActions.DESTROY
+        const isDestroy = isDestroyAction
+        if (isDestroy && !this.isOccupied) return
+        if (!activeDashboardCharacter && !this.isOccupied) return
+        if (this.hasCollision(mouse) && activeDashboardCharacter && !this.isOccupied) {
+            this.opacity = 1
+        } else {
+            this.opacity = 0.4
         }
+        this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
     }
-    public update(activeDashboardTower: Tower | null): void {
-        if (activeDashboardTower && !this.isOccupied) {
-            this.draw()
-            this.color = this.defaultColor
-        }
-    }
-    public hasCollisionWithMouse(dashboardTowerShadow: DashboardTower): boolean {
+    public hasCollision(position: T_position): boolean {
         return (
-            this.position.x <= dashboardTowerShadow.position.x &&
-            dashboardTowerShadow.position.x <= this.position.x + TILE_SIZE &&
-            this.position.y <= dashboardTowerShadow.position.y &&
-            dashboardTowerShadow.position.y <= this.position.y + TILE_SIZE
+            this.position.x <= position.x &&
+            position.x <= this.position.x + TILE_SIZE &&
+            this.position.y <= position.y &&
+            position.y <= this.position.y + TILE_SIZE
         )
     }
 }

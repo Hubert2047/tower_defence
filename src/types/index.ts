@@ -1,5 +1,15 @@
 import Enemy from '../classes/enemy/index.js'
-import { E_angels, E_behaviors, E_enemy, E_explosion, E_gate, E_projectile, E_tower } from '../enum/index.js'
+import PlacementTile from '../classes/placementTile/index.js'
+import {
+    E_angels,
+    E_behaviors,
+    E_characters,
+    E_enemy,
+    E_explosion,
+    E_gate,
+    E_gems,
+    E_projectile,
+} from '../enum/index.js'
 
 type T_position = {
     x: number
@@ -32,14 +42,15 @@ type T_round = {
     roundName: string
     enemies: T_enemyInfo[]
 }
+type T_gemStartInfo = { blueGems: number; redGems: number; yellowGems: number }
 type T_gameMapData = {
     rounds: T_round[]
     placementTiles2D: number[][]
     backgroundImage: HTMLImageElement
-    startCoins: number
     waypoints: T_position[]
-    initDashboardTowerInfo: T_initDashboardTowerInfo[]
+    initDashboardCharacterInfo: T_initDashboardCharacterInfo[]
     gateInfor: T_gateInfo
+    startGems: T_gemStartInfo
 }
 type T_gateInfo = { health: number; damage: number; attackRange: number; attackSpeed: number }
 type T_enemy = {
@@ -83,7 +94,7 @@ type T_baseEnemyProperties = {
 }
 type T_tower = {
     name: string
-    towerType: E_tower
+    type: E_characters
     position: T_position
     offset?: T_position
     width?: number
@@ -97,6 +108,7 @@ type T_tower = {
     projectileType?: E_projectile
     opacity?: number
     attackTargetNums?: number
+    placementTile?: PlacementTile | null
 }
 type T_explosion = {
     name: string
@@ -169,9 +181,18 @@ type T_gate = {
     behaviorKey?: E_behaviors
     angelKey?: E_angels
 }
-type T_initDashboardTowerInfo = {
+type T_initDashboardCharacterInfo = {
     name: string
-    towerType: E_tower
+    type: E_characters
+    position: T_position
+    offset: T_position
+    width: number
+    height: number
+    dashboardBorderInfo: T_dashboardBorder
+}
+type T_initDashboardPlantInfo = {
+    name: string
+    type: E_characters
     position: T_position
     offset: T_position
     width: number
@@ -189,6 +210,37 @@ type T_thunderProjectile = {
     behaviorKey?: E_behaviors
     angelKey?: E_angels
 }
+type T_plant = {
+    name: string
+    type: E_characters
+    position: T_position
+    offset?: T_position
+    width?: number
+    height?: number
+    fruitingDuration?: number
+    initFrames: T_initFramesDictionary
+    behaviorKey?: E_behaviors
+    angelKey?: E_angels
+    opacity?: number
+    spawGemType: E_gems
+    placementTile?: PlacementTile | null
+}
+type T_text = {
+    text: string
+    position: T_position
+    fontSize?: number
+    color?: string
+}
+type T_dashboardCharacters = {
+    type: E_characters
+    position: T_position
+    offset?: T_position
+    width?: number
+    height?: number
+    behaviorKey?: E_behaviors
+    angelKey?: E_angels
+    opacity?: number
+}
 export {
     T_baseEnemyProperties,
     T_baseGateProperties,
@@ -200,7 +252,7 @@ export {
     T_gameMapData,
     T_gate,
     T_gateInfo,
-    T_initDashboardTowerInfo,
+    T_initDashboardCharacterInfo,
     T_initFrame,
     T_initFramesDictionary,
     T_position,
@@ -210,4 +262,9 @@ export {
     T_sprite,
     T_thunderProjectile,
     T_tower,
+    T_plant,
+    T_initDashboardPlantInfo,
+    T_dashboardCharacters,
+    T_gemStartInfo,
+    T_text,
 }

@@ -19,7 +19,7 @@ function newGame() {
 }
 function startGame({ gameMap, mouse }) {
     resetCanvas();
-    const [isGameOver, isVictory] = gameMap.updateMap();
+    const [isGameOver, isVictory] = gameMap.updateMap(mouse);
     if (isGameOver) {
         handleFinishedGame({ text: 'Game Over' });
         return;
@@ -45,27 +45,16 @@ function handleAddEventGame({ gameMap, mouse }) {
     function handleEventMousemove(event) {
         mouse.x = event.offsetX;
         mouse.y = event.offsetY;
+        if (gameMap.isDestroyStatus) {
+            gameMap.checkDestroyCharacers(mouse);
+        }
         gameMap.checkMouseOverTile();
-        gameMap.checkMouseOverDashboardTower({ mouse });
+        gameMap.checkMouseOverDashboardCharacters({ mouse });
         gameMap.updateDashboardShadowPosition(mouse);
     }
     function handleEventClick() {
-        if (!gameMap.mouseOverTile && !gameMap.mouseOverDashboardTower) {
-            gameMap.activeDashboardTower = null;
-            return;
-        }
-        if (gameMap.mouseOverDashboardTower) {
-            if (!gameMap.hasEnoughCoins(gameMap.mouseOverDashboardTower.towerType))
-                gameMap.activeDashboardTower = gameMap.mouseOverDashboardTower;
-            return;
-        }
-        if (!gameMap.mouseOverTile && gameMap.activeDashboardTower) {
-            gameMap.activeDashboardTower = null;
-            return;
-        }
-        if (gameMap.mouseOverTile && gameMap.activeDashboardTower) {
-            gameMap.addTower();
-        }
+        gameMap.checkHavestGems(mouse);
+        gameMap.checkToHandleBuildCharacter();
     }
 }
 function handleFinishedGame({ text }) {

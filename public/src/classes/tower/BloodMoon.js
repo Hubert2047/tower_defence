@@ -1,13 +1,13 @@
-import getBaseTowerProperties from '../../data/baseProperties/towers/index.js';
-import { E_angels, E_behaviors, E_tower } from '../../enum/index.js';
+import getBaseTowerProperties from '../../data/baseProperties/characters/index.js';
+import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../enum/index.js';
 import NuclearProjectile from '../projectile/Nuclear.js';
 import Tower from './index.js';
 class BloodMoonTower extends Tower {
-    constructor({ position, offset = { x: 10, y: 60 }, damage = 1000, attackSpeed = 5, attackRange = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, }) {
-        const baseTowerProperties = getBaseTowerProperties(E_tower.BLOOD_MOON);
+    constructor({ position, offset = { x: 10, y: 60 }, damage = 1000, attackSpeed = 5, attackRange = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile = null, }) {
+        const baseTowerProperties = getBaseTowerProperties(E_characters.BLOOD_MOON);
         super({
             name: 'Blood Moon Tower',
-            towerType: E_tower.BLOOD_MOON,
+            type: E_characters.BLOOD_MOON,
             position,
             offset,
             width: baseTowerProperties.width,
@@ -19,7 +19,9 @@ class BloodMoonTower extends Tower {
             behaviorKey,
             angelKey,
             opacity,
+            placementTile,
         });
+        this.action = E_characterActions.ATTACK;
     }
     createProjectiles(targetEnemies) {
         return targetEnemies.map((enemy) => {

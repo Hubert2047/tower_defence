@@ -1,6 +1,6 @@
-import { E_angels, E_behaviors, E_tower } from '../../../enum/index.js';
+import { E_angels, E_behaviors, E_characters } from '../../../enum/index.js';
 const FlyingObeliskProperties = {
-    towerType: E_tower.FLYING_OBELISK,
+    towerType: E_characters.FLYING_OBELISK,
     width: 100,
     height: 128,
     initFrames: {

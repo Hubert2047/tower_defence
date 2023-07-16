@@ -9,13 +9,6 @@ var E_enemy;
     E_enemy[E_enemy["TIDE_HUNTER"] = 7] = "TIDE_HUNTER";
     E_enemy[E_enemy["Hunter"] = 8] = "Hunter";
 })(E_enemy || (E_enemy = {}));
-var E_tower;
-(function (E_tower) {
-    E_tower[E_tower["BLOOD_MOON"] = 1] = "BLOOD_MOON";
-    E_tower[E_tower["FLYING_OBELISK"] = 2] = "FLYING_OBELISK";
-    E_tower[E_tower["HAUNTED_TREE"] = 3] = "HAUNTED_TREE";
-    E_tower[E_tower["OBELISK_THUNDER"] = 4] = "OBELISK_THUNDER";
-})(E_tower || (E_tower = {}));
 var E_projectile;
 (function (E_projectile) {
     E_projectile[E_projectile["FIRE"] = 1] = "FIRE";
@@ -32,6 +25,7 @@ var E_explosion;
     E_explosion[E_explosion["THUNDER"] = 1] = "THUNDER";
     E_explosion[E_explosion["FIRE"] = 2] = "FIRE";
     E_explosion[E_explosion["NUCLEAR"] = 3] = "NUCLEAR";
+    E_explosion[E_explosion["DESTROY"] = 4] = "DESTROY";
 })(E_explosion || (E_explosion = {}));
 var E_gate;
 (function (E_gate) {
@@ -65,4 +59,27 @@ var E_angels;
     E_angels["ANGEL_315"] = "315degree";
     E_angels["ANGEL_337"] = "337degree";
 })(E_angels || (E_angels = {}));
-export { E_angels, E_behaviors, E_enemy, E_explosion, E_gameMap, E_gate, E_projectile, E_tower };
+var E_characters;
+(function (E_characters) {
+    E_characters[E_characters["GREEN_TREE"] = 1] = "GREEN_TREE";
+    E_characters[E_characters["MONSTERRA_TREE"] = 2] = "MONSTERRA_TREE";
+    E_characters[E_characters["BLOOD_MOON"] = 3] = "BLOOD_MOON";
+    E_characters[E_characters["FLYING_OBELISK"] = 4] = "FLYING_OBELISK";
+    E_characters[E_characters["HAUNTED_TREE"] = 5] = "HAUNTED_TREE";
+    E_characters[E_characters["OBELISK_THUNDER"] = 6] = "OBELISK_THUNDER";
+    E_characters[E_characters["AUTUMN_TREE"] = 7] = "AUTUMN_TREE";
+    E_characters[E_characters["SHOVEL"] = 8] = "SHOVEL";
+})(E_characters || (E_characters = {}));
+var E_characterActions;
+(function (E_characterActions) {
+    E_characterActions["ATTACK"] = "character attack";
+    E_characterActions["PLANTED"] = "character planted";
+    E_characterActions["DESTROY"] = "character destroy";
+})(E_characterActions || (E_characterActions = {}));
+var E_gems;
+(function (E_gems) {
+    E_gems["BLUE"] = "blue";
+    E_gems["RED"] = "red";
+    E_gems["PURPLE"] = "purple";
+})(E_gems || (E_gems = {}));
+export { E_angels, E_behaviors, E_enemy, E_characterActions, E_explosion, E_gameMap, E_gate, E_projectile, E_characters, E_gems, };

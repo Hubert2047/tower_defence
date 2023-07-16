@@ -1,6 +1,6 @@
-import { E_angels, E_behaviors, E_tower } from '../../../enum/index.js';
+import { E_angels, E_behaviors, E_characters } from '../../../enum/index.js';
 const BloodMoonProperties = {
-    towerType: E_tower.BLOOD_MOON,
+    towerType: E_characters.BLOOD_MOON,
     width: 90,
     height: 128,
     initFrames: {

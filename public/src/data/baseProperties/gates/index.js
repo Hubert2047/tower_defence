@@ -9,7 +9,7 @@ const gatesBaseProperties = new Map([
             offset: { x: 75, y: 70 },
             width: 250,
             height: 301,
-            attackSpeed: 6,
+            attackSpeed: 15,
             health: 5000000000,
             attackRange: 800,
             damage: 0,

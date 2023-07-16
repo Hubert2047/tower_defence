@@ -12,5 +12,5 @@ function resetCanvas() {
         context.clearRect(0, 0, canvas.width, canvas.height)
     }
 }
-export { resetCanvas }
+export { resetCanvas, canvas }
 export default context

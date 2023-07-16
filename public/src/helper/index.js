@@ -33,6 +33,13 @@ function updateHealthBars({ sprite, health, remainHealth }) {
         drawRemainHealthBar({ sprite, drawOption, fullHealthWidth, remainHealthWidth, fillStyle: 'green' });
     }
 }
+function drawText({ text, position, color = 'black', fontSize = 16 }) {
+    if (context2D) {
+        context2D.font = `${fontSize}px Changa One`;
+        context2D.fillStyle = color;
+        context2D.fillText(text, position.x, position.y);
+    }
+}
 function drawRemainHealthBar({ sprite, remainHealthWidth, fullHealthWidth, drawOption, fillStyle, }) {
     if (context2D) {
         const center = (sprite.width - 2 * sprite.offset.x - fullHealthWidth) / 2;
@@ -214,8 +221,8 @@ function getGameMapData(gameMapType) {
             placementTiles2D: deepClone(data.placementTiles2D),
             backgroundImage: data.backgroundImage,
             waypoints: deepClone(data.waypoints),
-            startCoins: data.startCoins,
-            initDashboardTowerInfo: deepClone(data.initDashboardTowerInfo),
+            startGems: deepClone(data.startGems),
+            initDashboardCharacterInfo: deepClone(data.initDashboardCharacterInfo),
             gateInfor: data.gateInfor,
         };
     }
@@ -236,4 +243,4 @@ function deepClone(data) {
 function randomNumberInRange(min, max) {
     return Math.random() * (max - min) + min;
 }
-export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createFrames, createImage, deepClone, getAngleKeyByTwoPoint, getGameMapData, getVectorNomalized, randomNumberInRange, updateHealthBars, };
+export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createFrames, createImage, deepClone, getAngleKeyByTwoPoint, getGameMapData, getVectorNomalized, randomNumberInRange, updateHealthBars, drawText, };
