@@ -134,12 +134,14 @@ export default class ThunderProjectile extends Projectile {
         const height = 140;
         let explosionOptions = {
             position: {
-                x: this.position.x + this.width / 2 - width / 2,
-                y: this.position.y + this.height,
+                x: this.targetEnemy.position.x +
+                    (this.targetEnemy.width - 2 * this.targetEnemy.offset.x) / 2 -
+                    (this.width - 2 * this.offset.x) / 2,
+                y: this.targetEnemy.position.y,
             },
             width,
             height,
-            offset: { x: 20, y: -50 },
+            offset: { x: 100, y: 10 },
         };
         return new ThunderExplosion(explosionOptions);
     }

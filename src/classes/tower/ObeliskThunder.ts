@@ -65,17 +65,18 @@ export default class ObeliskThunderTower extends Tower {
     public createProjectiles(targetEnemies: Enemy[]): Projectile[] {
         const width = 80
         const height = 130
+        const offset = { x: 50, y: -20 }
         return targetEnemies.map((enemy) => {
             const projectileOptions = {
                 position: {
-                    x: enemy.position.x + enemy.width / 2 - width / 2,
-                    y: enemy.position.y - enemy.height / 2,
+                    x: enemy.position.x + (enemy.width - 2 * enemy.offset.x) / 2 - (width - 2 * offset.x) / 2,
+                    y: enemy.position.y,
                 },
                 damage: this.damage,
                 enemy,
                 width,
                 height,
-                offset: { x: 30, y: 20 },
+                offset,
             }
             return new Thunder(projectileOptions)
         })
