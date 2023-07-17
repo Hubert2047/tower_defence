@@ -63,7 +63,7 @@ export default class DashboardCharacter extends Sprite {
     update(): void {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
     }
-    public hasCollisionWithMouse(mouse: T_position): boolean {
+    public hasCollision(mouse: T_position): boolean {
         return (
             this.position.x + this.offset.x <= mouse.x &&
             mouse.x <= this.position.x + this.width - this.offset.x &&

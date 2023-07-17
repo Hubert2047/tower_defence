@@ -57,7 +57,7 @@ export default class Gate extends Sprite {
         behaviorKey = E_behaviors.IDLE,
         angelKey = E_angels.ANGEL_270,
     }: T_gate) {
-        const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames, moveSpeed: attackSpeed })
+        const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames, speed: attackSpeed })
         super({ position, offset, width, height, frames })
         this.name = name
         this.gateType = gateType

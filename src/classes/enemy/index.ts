@@ -1,5 +1,11 @@
 import { E_angels, E_behaviors, E_enemy } from '../../enum/index.js'
-import { createFrames, getAngleKeyByTwoPoint, getVectorNomalized, updateHealthBars } from '../../helper/index.js'
+import {
+    calculateHoldTime,
+    createFrames,
+    getAngleKeyByTwoPoint,
+    getVectorNomalized,
+    updateHealthBars,
+} from '../../helper/index.js'
 import { T_enemy, T_frame, T_initFramesDictionary, T_position } from '../../types/index.js'
 import Gate from '../gate/index.js'
 import Sprite from '../sprite/index.js'
@@ -45,7 +51,7 @@ export default class Enemy extends Sprite {
         angelKey = E_angels.ANGEL_90,
         behaviorKey = E_behaviors.RUN,
     }: T_enemy) {
-        const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames, moveSpeed })
+        const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames, speed: moveSpeed })
         super({
             position,
             offset,
@@ -99,9 +105,22 @@ export default class Enemy extends Sprite {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
     }
     public updateEnemyAttackGate({ gate }: { gate: Gate | null }) {
+        this.behaviorKey = E_behaviors.ATTACK
+        this.updateHoldTime(this.attackSpeed)
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
         updateHealthBars({ sprite: this, health: this.health, remainHealth: this.remainHealth })
         if (gate) this.attackGate(gate)
+    }
+    private updateHoldTime(speed: number) {
+        const currentBehavior = this.frames.get(this.behaviorKey)
+        if (!currentBehavior) return
+        const currentFrame = currentBehavior.get(this.angelKey)
+        if (!currentFrame) return
+        currentFrame.holdTime = calculateHoldTime({
+            maxX: currentFrame.maxX,
+            maxY: currentFrame.maxY,
+            speed,
+        })
     }
     private updateFrameKeys(waypoints: T_position[]) {
         this.angelKey = getAngleKeyByTwoPoint(this.position, waypoints[this.currentWayPointIndex])

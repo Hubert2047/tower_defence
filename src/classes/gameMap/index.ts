@@ -312,7 +312,6 @@ export default class GameMap {
             }
             //enemy reached gate postion then start hit it
             if (currentEnemy.position.x >= GATE_POSITION_X) {
-                currentEnemy.behaviorKey = E_behaviors.ATTACK
                 currentEnemy.updateEnemyAttackGate({ gate: this.gate })
                 continue
             }
@@ -745,7 +744,6 @@ export default class GameMap {
         if (!this.activeDashboardCharacter?.dashboardShadow) {
             this._mouseOverTile = null
         } else {
-            const dashboardShadow = this.activeDashboardCharacter.dashboardShadow
             this._mouseOverTile = this.placementTiles.find((tile) => tile.hasCollision(this.mousePosition)) ?? null
         }
     }
@@ -793,19 +791,19 @@ export default class GameMap {
     public checkMouseOverDashboardCharacters() {
         this.mouseOverDashboardCharacter =
             this.dashboardCharacters.find((dashboardCharacterInfo) =>
-                dashboardCharacterInfo.dashboardCharacter.hasCollisionWithMouse(this.mousePosition)
+                dashboardCharacterInfo.dashboardCharacter.hasCollision(this.mousePosition)
             )?.dashboardCharacter ?? null
     }
     public checkMouseOverCharacter() {
         if (this.activeDashboardCharacter === null) return
         const allCurrentCharacters: I_character[] = [...this.towers, ...this.plants]
-        this.activeMouseOverCharacterInfo = this.handleFindDestroyCharacterInfo(
+        this.activeMouseOverCharacterInfo = this.handleFindMouseOverCharacterInfo(
             allCurrentCharacters,
             this.mousePosition
         )
     }
     //calculate function place
-    private handleFindDestroyCharacterInfo(
+    private handleFindMouseOverCharacterInfo(
         characters: I_character[],
         mouse: T_position
     ): T_activeCharacterDestroyInfo | null {

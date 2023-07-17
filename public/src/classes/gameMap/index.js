@@ -224,7 +224,6 @@ export default class GameMap {
             }
             //enemy reached gate postion then start hit it
             if (currentEnemy.position.x >= GATE_POSITION_X) {
-                currentEnemy.behaviorKey = E_behaviors.ATTACK;
                 currentEnemy.updateEnemyAttackGate({ gate: this.gate });
                 continue;
             }
@@ -637,7 +636,6 @@ export default class GameMap {
             this._mouseOverTile = null;
         }
         else {
-            const dashboardShadow = this.activeDashboardCharacter.dashboardShadow;
             this._mouseOverTile = (_b = this.placementTiles.find((tile) => tile.hasCollision(this.mousePosition))) !== null && _b !== void 0 ? _b : null;
         }
     }
@@ -683,16 +681,16 @@ export default class GameMap {
     checkMouseOverDashboardCharacters() {
         var _a, _b;
         this.mouseOverDashboardCharacter =
-            (_b = (_a = this.dashboardCharacters.find((dashboardCharacterInfo) => dashboardCharacterInfo.dashboardCharacter.hasCollisionWithMouse(this.mousePosition))) === null || _a === void 0 ? void 0 : _a.dashboardCharacter) !== null && _b !== void 0 ? _b : null;
+            (_b = (_a = this.dashboardCharacters.find((dashboardCharacterInfo) => dashboardCharacterInfo.dashboardCharacter.hasCollision(this.mousePosition))) === null || _a === void 0 ? void 0 : _a.dashboardCharacter) !== null && _b !== void 0 ? _b : null;
     }
     checkMouseOverCharacter() {
         if (this.activeDashboardCharacter === null)
             return;
         const allCurrentCharacters = [...this.towers, ...this.plants];
-        this.activeMouseOverCharacterInfo = this.handleFindDestroyCharacterInfo(allCurrentCharacters, this.mousePosition);
+        this.activeMouseOverCharacterInfo = this.handleFindMouseOverCharacterInfo(allCurrentCharacters, this.mousePosition);
     }
     //calculate function place
-    handleFindDestroyCharacterInfo(characters, mouse) {
+    handleFindMouseOverCharacterInfo(characters, mouse) {
         var _a;
         let activeMouseOverCharacterInfo = null;
         for (let i = 0; i < characters.length; i++) {

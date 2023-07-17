@@ -1,4 +1,4 @@
-import { BASE_HEALTH } from '../constants/index.js';
+import { BASE_HEALTH, FPS } from '../constants/index.js';
 import context2D from '../context2D/index.js';
 import gameData from '../data/gameMaps/index.js';
 import { E_angels } from '../enum/index.js';
@@ -12,8 +12,8 @@ function calFullHealthWidth(health) {
     const width = (health * 6) / BASE_HEALTH;
     return width > 80 ? 80 : width;
 }
-function calculateHoldTime({ maxX, maxY, moveSpeed }) {
-    const holdTime = parseInt(((maxX * maxY) / 2 / moveSpeed).toString());
+function calculateHoldTime({ maxX, maxY, speed }) {
+    const holdTime = Math.round(FPS / ((speed / 10) * maxX * maxY));
     return holdTime <= 1 ? 1 : holdTime;
 }
 function updateHealthBars({ sprite, health, remainHealth }) {
@@ -160,7 +160,7 @@ function createImage(sourceString) {
     image.src = sourceString;
     return image;
 }
-function createFrames({ initFrames, moveSpeed, }) {
+function createFrames({ initFrames, speed, }) {
     const frames = new Map();
     const behaviorKeys = Object.keys(initFrames);
     for (let behaviorKey of behaviorKeys) {
@@ -171,9 +171,7 @@ function createFrames({ initFrames, moveSpeed, }) {
             const image = createImage(currentInitFrame.imageSourceString);
             const maxX = currentInitFrame.maxX;
             const maxY = currentInitFrame.maxY;
-            const holdTime = moveSpeed
-                ? calculateHoldTime({ maxX, maxY, moveSpeed })
-                : currentInitFrame.holdTime;
+            const holdTime = speed ? calculateHoldTime({ maxX, maxY, speed }) : currentInitFrame.holdTime;
             currentFrame.set(angelKey, { image, maxX, maxY, holdTime });
         }
         frames.set(behaviorKey, currentFrame);
@@ -243,4 +241,4 @@ function deepClone(data) {
 function randomNumberInRange(min, max) {
     return Math.random() * (max - min) + min;
 }
-export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createFrames, createImage, deepClone, getAngleKeyByTwoPoint, getGameMapData, getVectorNomalized, randomNumberInRange, updateHealthBars, drawText, };
+export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createFrames, createImage, deepClone, drawText, getAngleKeyByTwoPoint, getGameMapData, getVectorNomalized, randomNumberInRange, updateHealthBars, };
