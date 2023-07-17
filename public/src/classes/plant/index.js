@@ -4,7 +4,7 @@ import { createFrames } from '../../helper/index.js';
 import Gem from '../gems/index.js';
 import Sprite from '../sprite/index.js';
 export default class Plant extends Sprite {
-    constructor({ position, width, height, fruitingDuration = 10, initFrames, offset = { x: 0, y: 0 }, type, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, spawGemType, opacity = 1, placementTile = null, }) {
+    constructor({ position, width, height, fruitingDuration = 10, initFrames, offset = { x: 0, y: 0 }, type, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, spawGemType, opacity = 1, placementTile, }) {
         const frames = createFrames({ initFrames });
         super({ position, frames, width, height, offset, opacity });
         this.angelKey = angelKey;

@@ -52,7 +52,7 @@ export default class DashboardCharacter extends Sprite {
         const characterOptions: T_dashboardCharacters & { isDashboardShadow: boolean } = {
             type,
             position,
-            offset: { x: baseCharacterProperties.width - 25, y: 25 },
+            offset: { x: baseCharacterProperties.width / 2, y: baseCharacterProperties.height / 2 },
             width: baseCharacterProperties.width,
             height: baseCharacterProperties.height,
             isDashboardShadow: true,
@@ -63,7 +63,7 @@ export default class DashboardCharacter extends Sprite {
     update(): void {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
     }
-    public hasCollisionWithMouse(mouse: T_position): boolean {
+    public hasCollision(mouse: T_position): boolean {
         return (
             this.position.x + this.offset.x <= mouse.x &&
             mouse.x <= this.position.x + this.width - this.offset.x &&

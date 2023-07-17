@@ -22,7 +22,7 @@ interface I_tower {
     behaviorKey?: E_behaviors
     angelKey?: E_angels
     opacity?: number
-    placementTile?: PlacementTile | null
+    placementTile: PlacementTile
 }
 interface I_plant {
     position: T_position
@@ -31,7 +31,7 @@ interface I_plant {
     behaviorKey?: E_behaviors
     angelKey?: E_angels
     opacity?: number
-    placementTile?: PlacementTile | null
+    placementTile: PlacementTile
 }
 interface I_explosion {
     position: T_position
@@ -60,8 +60,8 @@ interface I_character {
     action: E_characterActions
     width: number
     height: number
-    placementTile: PlacementTile | null
+    placementTile: PlacementTile
     position: T_position
     hasCollision(position: T_position): boolean
 }
-export { I_explosion, I_plant, I_characterProperties, I_gemProperties, I_projectile, I_tower, I_character }
+export { I_character, I_characterProperties, I_explosion, I_gemProperties, I_plant, I_projectile, I_tower }

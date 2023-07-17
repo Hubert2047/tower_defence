@@ -17,7 +17,7 @@ export default class Plant extends Sprite implements I_character {
     type: E_characters
     spawGemType: E_gems
     action: E_characterActions
-    public placementTile: PlacementTile | null
+    public placementTile: PlacementTile
 
     constructor({
         position,
@@ -31,7 +31,7 @@ export default class Plant extends Sprite implements I_character {
         angelKey = E_angels.ANGEL_0,
         spawGemType,
         opacity = 1,
-        placementTile = null,
+        placementTile,
     }: T_plant) {
         const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames })
         super({ position, frames, width, height, offset, opacity })

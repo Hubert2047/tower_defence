@@ -1,9 +1,9 @@
 import { E_angels, E_behaviors } from '../../enum/index.js';
-import { createFrames, getAngleKeyByTwoPoint, getVectorNomalized, updateHealthBars } from '../../helper/index.js';
+import { calculateHoldTime, createFrames, getAngleKeyByTwoPoint, getVectorNomalized, updateHealthBars, } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Enemy extends Sprite {
     constructor({ name, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, coins = 1, moveSpeed = 1, health = 1000, damage = 100, attackRange = 200, attackSpeed = 5, enemyType, angelKey = E_angels.ANGEL_90, behaviorKey = E_behaviors.RUN, }) {
-        const frames = createFrames({ initFrames, moveSpeed });
+        const frames = createFrames({ initFrames, speed: moveSpeed });
         super({
             position,
             offset,
@@ -58,10 +58,25 @@ export default class Enemy extends Sprite {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
     }
     updateEnemyAttackGate({ gate }) {
+        this.behaviorKey = E_behaviors.ATTACK;
+        this.updateHoldTime(this.attackSpeed);
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
         updateHealthBars({ sprite: this, health: this.health, remainHealth: this.remainHealth });
         if (gate)
             this.attackGate(gate);
+    }
+    updateHoldTime(speed) {
+        const currentBehavior = this.frames.get(this.behaviorKey);
+        if (!currentBehavior)
+            return;
+        const currentFrame = currentBehavior.get(this.angelKey);
+        if (!currentFrame)
+            return;
+        currentFrame.holdTime = calculateHoldTime({
+            maxX: currentFrame.maxX,
+            maxY: currentFrame.maxY,
+            speed,
+        });
     }
     updateFrameKeys(waypoints) {
         this.angelKey = getAngleKeyByTwoPoint(this.position, waypoints[this.currentWayPointIndex]);

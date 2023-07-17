@@ -13,7 +13,7 @@ export default class NuclearProjectile extends Projectile {
         offset = { x: 0, y: 0 },
         width = 40,
         height = 40,
-        moveSpeed = 5,
+        moveSpeed = 20,
         damage = 300,
         behaviorKey = E_behaviors.ATTACK,
         angelKey = E_angels.ANGEL_0,

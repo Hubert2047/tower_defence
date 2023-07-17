@@ -33,7 +33,7 @@ export default class DashboardCharacter extends Sprite {
         const characterOptions = {
             type,
             position,
-            offset: { x: baseCharacterProperties.width - 25, y: 25 },
+            offset: { x: baseCharacterProperties.width / 2, y: baseCharacterProperties.height / 2 },
             width: baseCharacterProperties.width,
             height: baseCharacterProperties.height,
             isDashboardShadow: true,
@@ -44,7 +44,7 @@ export default class DashboardCharacter extends Sprite {
     update() {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
     }
-    hasCollisionWithMouse(mouse) {
+    hasCollision(mouse) {
         return (this.position.x + this.offset.x <= mouse.x &&
             mouse.x <= this.position.x + this.width - this.offset.x &&
             this.position.y - this.height + this.offset.y <= mouse.y &&

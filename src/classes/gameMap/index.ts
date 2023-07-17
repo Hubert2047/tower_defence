@@ -9,7 +9,7 @@ import {
     TILE_SIZE,
     YELLOW_GEM_POSITION,
 } from '../../constants/index.js'
-import context2D, { canvas } from '../../context2D/index.js'
+import context2D, { canvas, resetCanvas } from '../../context2D/index.js'
 import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js'
 import gatesBaseProperties from '../../data/baseProperties/gates/index.js'
 import { E_angels, E_behaviors, E_characterActions, E_characters, E_enemy, E_gate, E_gems } from '../../enum/index.js'
@@ -58,7 +58,7 @@ interface I_dashboardCharactersInfo {
 }
 type T_activeCharacterDestroyInfo = {
     action: E_characterActions
-    activeCharacterDestroy: I_character
+    activeMouseOverCharacter: I_character
 }
 type T_gemsInfo = Record<
     string,
@@ -67,7 +67,12 @@ type T_gemsInfo = Record<
         value: number
     }
 >
-
+type T_baseIncreasedStrengthEnemies = {
+    health: number
+    damage: number
+    moveSpeed: number
+    attackSpeed: number
+}
 export default class GameMap {
     private _currentEnemiesData: Enemy[]
     private rounds: T_round[]
@@ -84,12 +89,16 @@ export default class GameMap {
     public activeDashboardCharacter: DashboardCharacter | null
     public dashboardCharacters: I_dashboardCharactersInfo[]
     private menu: Sprite
+    private displayRound: Sprite
     private gateInfor: T_gateInfo
     private deathEffectEnemies: Enemy[]
     private gate: Gate
-    private activeCharacterDestroyInfo: T_activeCharacterDestroyInfo | null
+    private activeMouseOverCharacterInfo: T_activeCharacterDestroyInfo | null
     private currentDashboardEnemiesInfo: I_dashboardEnemiesInfo[]
     private gameExplosions: ExplosionProjectile[]
+    private currentRound: number
+    private baseIncreasedStrengthEnemies: T_baseIncreasedStrengthEnemies
+    private mousePosition: T_position
     constructor({
         rounds,
         placementTiles2D,
@@ -111,16 +120,26 @@ export default class GameMap {
         this.gemsInfo = this.createGemInfo(startGems)
         this.currentDashboardEnemiesInfo = []
         this.menu = this.createMenu()
+        this.displayRound = this.createDisplayRound()
         this._mouseOverTile = null
         this.mouseOverDashboardCharacter = null
         this.activeDashboardCharacter = null
         this.deathEffectEnemies = []
         this.gateInfor = gateInfor
-        this.activeCharacterDestroyInfo = null
+        this.activeMouseOverCharacterInfo = null
         this.dashboardCharacters = this.createDashboardCharacters(initDashboardCharacterInfo)
-        this.spawingCurrentRoundEnemies()
         this.gate = this.createGate()
         this.gameExplosions = []
+        this.currentRound = 1
+        this.baseIncreasedStrengthEnemies = {
+            health: 500,
+            damage: 100,
+            moveSpeed: 0.05,
+            attackSpeed: 0.05,
+        }
+        this.spawingCurrentRoundEnemies()
+        this.mousePosition = { x: 0, y: 0 }
+        this.handleAddEventGame()
     }
     //get set place
     public get mouseOverTile(): PlacementTile | null {
@@ -139,12 +158,13 @@ export default class GameMap {
         return this.towers.length > 0 || this.plants.length > 0
     }
     //update and draw function place
-    public updateMap(mouse: T_position): [boolean, boolean] {
+    public updateMap(): [boolean, boolean] {
+        resetCanvas()
         this.updateScreenGame()
-        this.updateEnemies()
-        this.updatePlacementTiles(mouse)
-        this.updateTowers()
+        this.updatePlacementTiles()
         this.updatePlants()
+        this.updateTowers()
+        this.updateEnemies()
         this.updateDashboardEnemies()
         this.updateDashboardCharacters()
         this.drawGemsAndMenu()
@@ -177,11 +197,11 @@ export default class GameMap {
         if (canvas) canvas.style.cursor = 'grab'
         currentDashboardShadow.update()
     }
-    public updateDashboardShadowPosition(mouse: T_position) {
+    public updateDashboardShadowPosition() {
         if (this.activeDashboardCharacter?.dashboardShadow) {
             this.activeDashboardCharacter.dashboardShadow.position = {
-                x: mouse.x,
-                y: mouse.y,
+                x: this.mousePosition.x,
+                y: this.mousePosition.y - this.activeDashboardCharacter.dashboardShadow.offset.y / 2,
             }
         }
     }
@@ -250,9 +270,9 @@ export default class GameMap {
             drawText(textOptions)
         })
     }
-    private updatePlacementTiles(mouse: T_position): void {
+    private updatePlacementTiles(): void {
         this.placementTiles.forEach((placementTile) => {
-            placementTile.update(this.activeDashboardCharacter, mouse)
+            placementTile.update(this.activeDashboardCharacter, this.mousePosition)
         })
     }
     private updateTowers(): void {
@@ -262,10 +282,11 @@ export default class GameMap {
     }
     private updateEnemies(): void {
         if (this._currentEnemiesData.length <= 0) {
-            if (this.currentRoundIndex < this.rounds.length - 1) {
-                this.currentRoundIndex++
-                this.spawingCurrentRoundEnemies()
-            }
+            // if (this.currentRoundIndex < this.rounds.length - 1) {
+            this.currentRound++
+            // this.currentRoundIndex++
+            this.spawingCurrentRoundEnemies()
+            // }
         }
         for (let i = this._currentEnemiesData.length - 1; i >= 0; i--) {
             const currentEnemy: Enemy = this._currentEnemiesData[i]
@@ -291,7 +312,6 @@ export default class GameMap {
             }
             //enemy reached gate postion then start hit it
             if (currentEnemy.position.x >= GATE_POSITION_X) {
-                currentEnemy.behaviorKey = E_behaviors.ATTACK
                 currentEnemy.updateEnemyAttackGate({ gate: this.gate })
                 continue
             }
@@ -319,6 +339,22 @@ export default class GameMap {
     private drawGemsAndMenu(): void {
         this.menu.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
         this.drawGems()
+        this.drawDisplayRound()
+    }
+    private drawDisplayRound() {
+        this.displayRound.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
+        const textString = `Round  ${this.currentRound.toString()}`
+        const textWidth = context2D?.measureText(textString).width ?? 10
+
+        drawText({
+            text: textString,
+            color: 'white',
+            fontSize: 14,
+            position: {
+                x: this.displayRound.position.x + this.displayRound.width / 2 - textWidth / 3,
+                y: this.displayRound.position.y - this.displayRound.height / 2 + 4,
+            },
+        })
     }
     private createGate(): Gate {
         const gateBaseProperties = gatesBaseProperties(E_gate.GIRL_HERO)
@@ -430,6 +466,28 @@ export default class GameMap {
         }
         return new Sprite(options)
     }
+    private createDisplayRound() {
+        const initFrames: T_initFramesDictionary = {
+            [E_behaviors.IDLE]: {
+                [E_angels.ANGEL_0]: {
+                    imageSourceString: '../../public/src/assets/images/stuff/display-round.png',
+                    maxX: 1,
+                    maxY: 1,
+                    holdTime: 4,
+                },
+            },
+        }
+
+        const frames = createFrames({ initFrames })
+        const options: T_sprite = {
+            frames,
+            position: { x: 64 * 9, y: 64 * 1 },
+            offset: { x: 0, y: 0 },
+            height: 64,
+            width: 128,
+        }
+        return new Sprite(options)
+    }
     private createGemIcon({
         gemSourceImage,
         offset,
@@ -461,19 +519,27 @@ export default class GameMap {
     }
     private getGameStatus(): [boolean, boolean] {
         const isGameOver = this.gate.remainHealth === 0
-        const isVictory = this._currentEnemiesData.length <= 0 && this.currentRoundIndex >= this.rounds.length - 1
-        return [isGameOver, isVictory]
+        // const isVictory = this._currentEnemiesData.length <= 0 && this.currentRoundIndex >= this.rounds.length - 1
+        // return [isGameOver, isVictory]
+        return [isGameOver, false]
     }
     private createBackground(): void {
         if (context2D) context2D.drawImage(this.backgroundImage, 0, 0)
+    }
+    private shuffleArray(array: T_enemyInfo[]) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1))
+            ;[array[i], array[j]] = [array[j], array[i]]
+        }
     }
     private spawingCurrentRoundEnemies(): void {
         if (this.rounds.length <= 0) {
             this._currentEnemiesData = []
         }
         this.currentDashboardEnemiesInfo = []
-        const currentRound: T_round = this.rounds[this.currentRoundIndex]
-        currentRound.enemies.forEach((enemyInfo: T_enemyInfo, index: number) => {
+        const currentRound: T_round = this.rounds[0]
+        this.shuffleArray(currentRound.enemies)
+        currentRound.enemies.slice(0, 8).forEach((enemyInfo: T_enemyInfo, index: number) => {
             const baseEnemyProperty: T_baseEnemyProperties | undefined = getBaseEnemyProperties(enemyInfo.enemyType)
             if (baseEnemyProperty) {
                 //create dashboard enemies and its border
@@ -486,15 +552,18 @@ export default class GameMap {
                     width: baseEnemyProperty.dashboardBorderInfo.width,
                     height: baseEnemyProperty.dashboardBorderInfo.height,
                 }
+                const minEnemies = 1 + this.currentRound > 15 ? 15 : 1 + this.currentRound
+                const maxEnemies = this.currentRound * 1 + 10 > 30 ? 30 : this.currentRound * 1 + 10
+                const enemies = parseInt(randomNumberInRange(minEnemies, maxEnemies).toString())
                 const dashboardEnemyBorder = new Border(dashboardEnemyBorderOptions)
                 this.currentDashboardEnemiesInfo.push({
                     enemyType: enemyInfo.enemyType,
                     dashboardEnemy,
                     dashboardEnemyBorder,
-                    remainEnemiesTotal: enemyInfo.amount,
+                    remainEnemiesTotal: enemies,
                 })
                 //create battle enemies
-                for (let i = 0; i < enemyInfo.amount; i++) {
+                for (let i = 0; i < enemies; i++) {
                     const battleEnemy = this.createBattleEnemy(enemyInfo, baseEnemyProperty, i)
                     this._currentEnemiesData.push(battleEnemy)
                 }
@@ -513,9 +582,11 @@ export default class GameMap {
             initFrames: baseEnemyProperty.initFrames,
             width: baseEnemyProperty.width,
             height: baseEnemyProperty.height,
-            moveSpeed: enemyInfo.moveSpeed,
+            moveSpeed: enemyInfo.moveSpeed + this.baseIncreasedStrengthEnemies.moveSpeed * this.currentRound,
+            attackSpeed: enemyInfo.attackSpeed + this.baseIncreasedStrengthEnemies.attackSpeed * this.currentRound,
+            damage: enemyInfo.damage + this.baseIncreasedStrengthEnemies.damage * this.currentRound,
             coins: enemyInfo.coins,
-            health: enemyInfo.health,
+            health: enemyInfo.health + this.baseIncreasedStrengthEnemies.health * this.currentRound,
         }
         return new Enemy(battleEnemyOptions)
     }
@@ -618,18 +689,18 @@ export default class GameMap {
         return isSuccess
     }
     private handleDestroyStuff(): void {
-        if (!this.activeCharacterDestroyInfo) return
-        if (this.activeCharacterDestroyInfo.action === E_characterActions.ATTACK) {
+        if (!this.activeMouseOverCharacterInfo) return
+        if (this.activeMouseOverCharacterInfo.action === E_characterActions.ATTACK) {
             for (let i = this.towers.length - 1; i >= 0; i--) {
                 let currentCharacter: I_character = this.towers[i]
-                if (currentCharacter === this.activeCharacterDestroyInfo.activeCharacterDestroy) {
+                if (currentCharacter === this.activeMouseOverCharacterInfo.activeMouseOverCharacter) {
                     if (currentCharacter.placementTile) {
                         currentCharacter.placementTile.isOccupied = false
                     }
                     const destroyExplosion = new DestroyExplosion({
                         position: {
                             x: currentCharacter.position.x + currentCharacter.width / 2,
-                            y: currentCharacter.position.y + currentCharacter.height,
+                            y: currentCharacter.position.y + currentCharacter.height / 2,
                         },
                     })
                     this.gameExplosions.push(destroyExplosion)
@@ -638,10 +709,10 @@ export default class GameMap {
             }
             return
         }
-        if (this.activeCharacterDestroyInfo.action === E_characterActions.PLANTED) {
+        if (this.activeMouseOverCharacterInfo.action === E_characterActions.PLANTED) {
             for (let i = this.plants.length - 1; i >= 0; i--) {
                 let currentCharacter: I_character = this.plants[i]
-                if (currentCharacter === this.activeCharacterDestroyInfo.activeCharacterDestroy) {
+                if (currentCharacter === this.activeMouseOverCharacterInfo.activeMouseOverCharacter) {
                     if (currentCharacter.placementTile) {
                         currentCharacter.placementTile.isOccupied = false
                     }
@@ -659,11 +730,11 @@ export default class GameMap {
         }
     }
     //check to do something function place
-    public checkHavestGems(mouse: T_position) {
+    public checkHavestGems() {
         this.plants.forEach((plant: Plant) => {
             for (let i = plant.gems.length - 1; i >= 0; i--) {
                 const currentGem = plant.gems[i]
-                if (currentGem.hasCollision(mouse)) {
+                if (currentGem.hasCollision(this.mousePosition)) {
                     currentGem.harvestGem()
                 }
             }
@@ -673,9 +744,7 @@ export default class GameMap {
         if (!this.activeDashboardCharacter?.dashboardShadow) {
             this._mouseOverTile = null
         } else {
-            const dashboardShadow = this.activeDashboardCharacter.dashboardShadow
-            this._mouseOverTile =
-                this.placementTiles.find((tile) => tile.hasCollision(dashboardShadow.position)) ?? null
+            this._mouseOverTile = this.placementTiles.find((tile) => tile.hasCollision(this.mousePosition)) ?? null
         }
     }
     public checkToHandleBuildCharacter(): void {
@@ -685,7 +754,7 @@ export default class GameMap {
             !this.mouseOverTile &&
             !this.mouseOverDashboardCharacter &&
             !isDestroyAction &&
-            !this.activeCharacterDestroyInfo
+            !this.activeMouseOverCharacterInfo
         ) {
             this.activeDashboardCharacter = null
             if (canvas) canvas.style.cursor = 'pointer'
@@ -707,7 +776,7 @@ export default class GameMap {
             !this.mouseOverTile &&
             this.activeDashboardCharacter &&
             !isDestroyAction &&
-            !this.activeCharacterDestroyInfo
+            !this.activeMouseOverCharacterInfo
         ) {
             this.activeDashboardCharacter = null
             if (canvas) canvas.style.cursor = 'pointer'
@@ -715,41 +784,44 @@ export default class GameMap {
         }
         //already selected character then we build character
         if (this.mouseOverTile && this.activeDashboardCharacter) {
-            console.log('run in')
             this.handleCharacterAction()
         }
     }
 
-    public checkMouseOverDashboardCharacters({ mouse }: { mouse: T_position }) {
+    public checkMouseOverDashboardCharacters() {
         this.mouseOverDashboardCharacter =
             this.dashboardCharacters.find((dashboardCharacterInfo) =>
-                dashboardCharacterInfo.dashboardCharacter.hasCollisionWithMouse(mouse)
+                dashboardCharacterInfo.dashboardCharacter.hasCollision(this.mousePosition)
             )?.dashboardCharacter ?? null
     }
-    public checkDestroyCharacers(mouse: T_position) {
+    public checkMouseOverCharacter() {
         if (this.activeDashboardCharacter === null) return
         const allCurrentCharacters: I_character[] = [...this.towers, ...this.plants]
-        this.activeCharacterDestroyInfo = this.handleFindDestroyCharacterInfo(allCurrentCharacters, mouse)
+        this.activeMouseOverCharacterInfo = this.handleFindMouseOverCharacterInfo(
+            allCurrentCharacters,
+            this.mousePosition
+        )
     }
     //calculate function place
-    private handleFindDestroyCharacterInfo(
+    private handleFindMouseOverCharacterInfo(
         characters: I_character[],
         mouse: T_position
     ): T_activeCharacterDestroyInfo | null {
-        let activeCharacterDestroyInfo: T_activeCharacterDestroyInfo | null = null
+        let activeMouseOverCharacterInfo: T_activeCharacterDestroyInfo | null = null
         for (let i = 0; i < characters.length; i++) {
-            if (characters[i].hasCollision(mouse)) {
-                activeCharacterDestroyInfo = {
+            if (characters[i].placementTile.hasCollision(mouse)) {
+                activeMouseOverCharacterInfo = {
                     action: characters[i].action,
-                    activeCharacterDestroy: characters[i],
+                    activeMouseOverCharacter: characters[i],
                 }
-                characters[i].opacity = 0.4
-                break
+                if (this.activeDashboardCharacter?.action === E_characterActions.DESTROY) {
+                    characters[i].opacity = 0.4
+                }
             } else {
                 characters[i].opacity = 1
             }
         }
-        return activeCharacterDestroyInfo
+        return activeMouseOverCharacterInfo
     }
     public hasEnoughGems(type: E_characters | undefined): boolean {
         if (type === undefined) return false
@@ -807,5 +879,21 @@ export default class GameMap {
             })
         })
         return placementTiles
+    }
+    handleAddEventGame() {
+        if (canvas) {
+            canvas.addEventListener('mousemove', (event) => {
+                this.mousePosition.x = event.offsetX
+                this.mousePosition.y = event.offsetY
+                this.checkMouseOverCharacter()
+                this.checkMouseOverTile()
+                this.checkMouseOverDashboardCharacters()
+                this.updateDashboardShadowPosition()
+            })
+            canvas.addEventListener('click', () => {
+                this.checkHavestGems()
+                this.checkToHandleBuildCharacter()
+            })
+        }
     }
 }

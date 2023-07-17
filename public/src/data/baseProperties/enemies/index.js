@@ -3,11 +3,15 @@ import { deepClone } from '../../../helper/index.js';
 import Bear from './Bear.js';
 import BlueBroodMother from './BlueBroodMother.js';
 import BroodMother from './BroodMother.js';
+import ButterFly from './ButterFly.js';
 import Dragon from './Dragon.js';
+import Eyes from './Eyes.js';
 import Fox from './Fox.js';
-import NagaSiren from './NagaSiren.js';
-import TideHunter from './TideHunter.js';
 import Hunter from './Hunter.js';
+import NagaSiren from './NagaSiren.js';
+import Robot from './Robot.js';
+import TideHunter from './TideHunter.js';
+import YellowSpider from './YellowSpider.js';
 const enemiesBaseProperty = new Map([
     [E_enemy.BEAR, Bear],
     [E_enemy.FOX, Fox],
@@ -17,6 +21,10 @@ const enemiesBaseProperty = new Map([
     [E_enemy.Blue_Brood_Mother, BlueBroodMother],
     [E_enemy.TIDE_HUNTER, TideHunter],
     [E_enemy.Hunter, Hunter],
+    [E_enemy.BUTTER_FLY, ButterFly],
+    [E_enemy.YELLOW_SPIDER, YellowSpider],
+    [E_enemy.ROBOT, Robot],
+    [E_enemy.EYES, Eyes],
 ]);
 function getBaseEnemyProperties(enemyType) {
     if (enemiesBaseProperty.has(enemyType))

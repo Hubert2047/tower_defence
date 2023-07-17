@@ -7,6 +7,10 @@ enum E_enemy {
     Blue_Brood_Mother = 6,
     TIDE_HUNTER,
     Hunter,
+    BUTTER_FLY,
+    YELLOW_SPIDER,
+    ROBOT,
+    EYES,
 }
 enum E_projectile {
     FIRE = 1,

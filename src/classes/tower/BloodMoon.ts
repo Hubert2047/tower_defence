@@ -12,12 +12,12 @@ export default class BloodMoonTower extends Tower {
         position,
         offset = { x: 10, y: 60 },
         damage = 1000,
-        attackSpeed = 5,
+        attackSpeed = 4,
         attackRange = 300,
         behaviorKey = E_behaviors.ATTACK,
         angelKey = E_angels.ANGEL_0,
         opacity = 1,
-        placementTile = null,
+        placementTile,
     }: I_tower) {
         const baseTowerProperties: I_characterProperties = getBaseTowerProperties(E_characters.BLOOD_MOON)
         super({

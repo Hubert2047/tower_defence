@@ -7,7 +7,7 @@ import Projectile from '../projectile/index.js';
 import Sprite from '../sprite/index.js';
 export default class Gate extends Sprite {
     constructor({ name, gateType, position, initFrames, offset = { x: 0, y: 0 }, width = 128, height = 128, health = 10000, damage = 2000, attackRange = 300, attackSpeed = 5, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_270, }) {
-        const frames = createFrames({ initFrames, moveSpeed: attackSpeed });
+        const frames = createFrames({ initFrames, speed: attackSpeed });
         super({ position, offset, width, height, frames });
         this.name = name;
         this.gateType = gateType;

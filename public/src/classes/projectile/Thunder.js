@@ -1,108 +1,118 @@
-import ThunderExplosion from '../../classes/explosionProjectile/Thunder.js';
-import { E_angels, E_behaviors, E_projectile } from '../../enum/index.js';
-import Projectile from './index.js';
+import ThunderExplosion from '../../classes/explosionProjectile/Thunder.js'
+import { E_angels, E_behaviors, E_projectile } from '../../enum/index.js'
+import Projectile from './index.js'
 export default class ThunderProjectile extends Projectile {
-    constructor({ position, enemy, offset = { x: 0, y: 0 }, width = 80, height = 130, moveSpeed = 4, damage = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, }) {
+    constructor({
+        position,
+        enemy,
+        offset = { x: 0, y: 0 },
+        width = 80,
+        height = 130,
+        moveSpeed = 4,
+        damage = 300,
+        behaviorKey = E_behaviors.ATTACK,
+        angelKey = E_angels.ANGEL_0,
+    }) {
         const initFrames = {
             [E_behaviors.ATTACK]: {
                 [E_angels.ANGEL_0]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
                 [E_angels.ANGEL_22]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
                 [E_angels.ANGEL_45]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
                 [E_angels.ANGEL_67]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
                 [E_angels.ANGEL_90]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
                 [E_angels.ANGEL_112]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
                 [E_angels.ANGEL_135]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
                 [E_angels.ANGEL_157]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
                 [E_angels.ANGEL_180]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
                 [E_angels.ANGEL_202]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
                 [E_angels.ANGEL_225]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
                 [E_angels.ANGEL_247]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
                 [E_angels.ANGEL_270]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
                 [E_angels.ANGEL_292]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
                 [E_angels.ANGEL_315]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
                 [E_angels.ANGEL_337]: {
                     imageSourceString: '../../../public/src/assets/images/projectiles/thunder/thunder-2.png',
                     maxX: 3,
                     maxY: 2,
-                    holdTime: 4,
+                    holdTime: 2,
                 },
             },
-        };
+        }
         super({
             name: 'Thunder',
             projectileType: E_projectile.THUNDER,
@@ -116,33 +126,37 @@ export default class ThunderProjectile extends Projectile {
             damage,
             behaviorKey,
             angelKey,
-        });
-        this.name = 'Thunder';
+        })
+        this.name = 'Thunder'
     }
     update() {
-        this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
+        this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
     }
     get canHitEnemy() {
-        const currentProjectileFrame = this.currentFrame;
-        if (!currentProjectileFrame)
-            return true;
-        return (this.cropPosition.x === currentProjectileFrame.maxX - 1 &&
-            this.cropPosition.y === currentProjectileFrame.maxY - 1);
+        const currentProjectileFrame = this.currentFrame
+        if (!currentProjectileFrame) return true
+        return (
+            this.cropPosition.x === currentProjectileFrame.maxX - 1 &&
+            this.cropPosition.y === currentProjectileFrame.maxY - 1
+        )
     }
     createExplosion() {
-        const width = 140;
-        const height = 140;
+        const width = 140
+        const height = 140
         let explosionOptions = {
+            // position: {
+            //     x: this.position.x + this.width / 2 - width / 2,
+            //     y: this.position.y + this.height,
+            // },
             position: {
-                x: this.targetEnemy.position.x +
-                    (this.targetEnemy.width - 2 * this.targetEnemy.offset.x) / 2 -
-                    (this.width - 2 * this.offset.x) / 2,
-                y: this.targetEnemy.position.y,
+                x: this.targetEnemy.position.x + this.targetEnemy.width / 2 - width / 2,
+                y: this.targetEnemy.position.y + this.targetEnemy.height / 2 - height / 2,
             },
             width,
             height,
-            offset: { x: 100, y: 10 },
-        };
-        return new ThunderExplosion(explosionOptions);
+            // offset: { x: 10, y: -10 },
+            offset: { x: 0, y: 20 },
+        }
+        return new ThunderExplosion(explosionOptions)
     }
 }

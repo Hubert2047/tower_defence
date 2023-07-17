@@ -18,7 +18,7 @@ export default class ObeliskThunderTower extends Tower {
         behaviorKey = E_behaviors.IDLE,
         angelKey = E_angels.ANGEL_0,
         opacity = 1,
-        placementTile = null,
+        placementTile,
     }: I_tower) {
         const baseTowerProperties: I_characterProperties = getBaseTowerProperties(E_characters.OBELISK_THUNDER)
 
