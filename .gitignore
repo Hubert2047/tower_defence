@@ -1,0 +1,17 @@
+# Ignore JavaScript files
+*.js
+
+# Ignore JavaScript map files (if applicable)
+*.js.map
+
+# Ignore JavaScript declaration files (if applicable)
+*.d.ts
+
+# Ignore JavaScript source maps (if applicable)
+*.js.map
+
+# Ignore JavaScript test files (if applicable)
+*.test.js
+
+# Ignore JavaScript test map files (if applicable)
+*.test.js.map
