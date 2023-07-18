@@ -23,6 +23,7 @@ export default class Plant extends Sprite implements I_character {
     public beingDestroyed: boolean
     public destroyExplosion: DestroyExplosion
     public spawGemPerTime: number
+    public levelUpIcon: Sprite
     constructor({
         position,
         width,
@@ -54,14 +55,18 @@ export default class Plant extends Sprite implements I_character {
         this.role = E_characterRoles.PLANTED
         this.beingDestroyed = false
         this.destroyExplosion = this.createDestroyExplosion()
+        this.levelUpIcon = this.createLeveUpIcon()
     }
-    update(): { type: E_gems; value: number } | null {
+    update(isDisplayLevelUp: boolean): { type: E_gems; value: number } | null {
         if (this.beingDestroyed) {
             this.destroyExplosion.update()
             return null
         } else {
             this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
             this.spawningGems()
+            if (isDisplayLevelUp) {
+                this.levelUpIcon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
+            }
             return this.getGems()
         }
     }

@@ -22,8 +22,9 @@ export default class Plant extends Sprite {
         this.role = E_characterRoles.PLANTED;
         this.beingDestroyed = false;
         this.destroyExplosion = this.createDestroyExplosion();
+        this.levelUpIcon = this.createLeveUpIcon();
     }
-    update() {
+    update(isDisplayLevelUp) {
         if (this.beingDestroyed) {
             this.destroyExplosion.update();
             return null;
@@ -31,6 +32,9 @@ export default class Plant extends Sprite {
         else {
             this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
             this.spawningGems();
+            if (isDisplayLevelUp) {
+                this.levelUpIcon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 });
+            }
             return this.getGems();
         }
     }

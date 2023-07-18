@@ -79,14 +79,17 @@ export default class GameMap {
         return this.getGameStatus();
     }
     updatePlants() {
+        var _a;
         for (let i = this.plants.length - 1; i >= 0; i--) {
             const currentPlan = this.plants[i];
+            const isDisplayLevelUp = ((_a = this.activeMouseOverCharacterInfo) === null || _a === void 0 ? void 0 : _a.activeMouseOverCharacter) === currentPlan &&
+                this.activeDashboardCharacter === null;
             if (currentPlan.isAlreadyDestroyed) {
                 this.plants.slice(i, 1);
                 currentPlan.placementTile.isOccupied = false;
                 continue;
             }
-            const gem = currentPlan.update();
+            const gem = currentPlan.update(isDisplayLevelUp);
             if (gem) {
                 this.gemsInfo[gem.type].value += gem.value;
             }
@@ -208,6 +211,8 @@ export default class GameMap {
                 this.gemsInfo[E_gems.BLUE].value += currentEnemy.coins;
             }
         }
+    }
+    drawGemsAndMenu() {
         this.menu.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 });
         this.drawGems();
         this.drawDisplayRound();
@@ -498,7 +503,7 @@ export default class GameMap {
         }
     }
     handleBuildTowers({ options, type, }) {
-        let isSuccess = false;
+        let isSuccess = true;
         switch (type) {
             case E_characters.BLOOD_MOON:
                 this.towers.push(new BloodMoon(options));

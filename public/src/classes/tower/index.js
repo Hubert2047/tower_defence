@@ -19,14 +19,18 @@ export default class Tower extends Sprite {
         this.angelKey = angelKey;
         this.role = E_characterRoles.ATTACK;
         this.placementTile = placementTile;
+        this.levelUpIcon = this.createLeveUpIcon();
+        this.destroyExplosion = this.createDestroyExplosion();
+        this.beingDestroyed = false;
     }
-    draw() {
+    get isAlreadyDestroyed() {
+        return this.destroyExplosion.hasFinishedAnimation && this.beingDestroyed;
+    }
+    drawAttackRangeCicle() {
         if (context2D) {
             context2D.beginPath();
             context2D.arc(this.placementTile.position.x + 32, this.placementTile.position.y + 32, this.data.attackRange, 0, 2 * Math.PI);
             context2D.fillStyle = 'rgba(225,225,225,0.15)';
-            context2D.arc(this.position.x + this.offset.x, this.position.y, this.data.attackRange, 0, 2 * Math.PI);
-            context2D.fillStyle = 'rgba(225,225,225,0.1)';
             context2D.fill();
         }
     }
@@ -56,9 +60,13 @@ export default class Tower extends Sprite {
             this.destroyExplosion.update();
         }
         else {
-            this.draw();
+            this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
             this.attackEnemies(enemies);
             this.updateProjectile(shootingAudio);
+            if (isDisplayAttackRangeCircle) {
+                this.drawAttackRangeCicle();
+                this.levelUpIcon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 });
+            }
         }
     }
     updateProjectile(shootingAudio) {

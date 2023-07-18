@@ -2,7 +2,7 @@ import { E_angels, E_behaviors, E_characterRoles, E_characters } from '../../../
 const GreenTreeProperties = {
     type: E_characters.GREEN_TREE,
     width: 90,
-    height: 140,
+    height: 100,
     role: E_characterRoles.PLANTED,
     initFrames: {
         [E_behaviors.IDLE]: {

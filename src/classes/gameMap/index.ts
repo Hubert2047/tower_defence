@@ -157,12 +157,15 @@ export default class GameMap {
     private updatePlants() {
         for (let i = this.plants.length - 1; i >= 0; i--) {
             const currentPlan: Plant = this.plants[i]
+            const isDisplayLevelUp =
+                this.activeMouseOverCharacterInfo?.activeMouseOverCharacter === currentPlan &&
+                this.activeDashboardCharacter === null
             if (currentPlan.isAlreadyDestroyed) {
                 this.plants.slice(i, 1)
                 currentPlan.placementTile.isOccupied = false
                 continue
             }
-            const gem = currentPlan.update()
+            const gem = currentPlan.update(isDisplayLevelUp)
             if (gem) {
                 this.gemsInfo[gem.type].value += gem.value
             }
@@ -284,6 +287,8 @@ export default class GameMap {
                 this.gemsInfo[E_gems.BLUE].value += currentEnemy.coins
             }
         }
+    }
+    private drawGemsAndMenu(): void {
         this.menu.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
         this.drawGems()
         this.drawDisplayRound()
@@ -592,7 +597,7 @@ export default class GameMap {
         options: { position: T_position; placementTile: PlacementTile }
         type: E_characters
     }): boolean {
-        let isSuccess: boolean = false
+        let isSuccess: boolean = true
         switch (type) {
             case E_characters.BLOOD_MOON:
                 this.towers.push(new BloodMoon(options))

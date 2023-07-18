@@ -32,6 +32,7 @@ export default class Tower extends Sprite implements I_character {
     private destroyExplosion: ExplosionProjectile
     public beingDestroyed: boolean
     public data: T_towerData
+    private levelUpIcon: Sprite
     constructor({
         name,
         type,
@@ -63,8 +64,14 @@ export default class Tower extends Sprite implements I_character {
         this.angelKey = angelKey
         this.role = E_characterRoles.ATTACK
         this.placementTile = placementTile
+        this.levelUpIcon = this.createLeveUpIcon()
+        this.destroyExplosion = this.createDestroyExplosion()
+        this.beingDestroyed = false
     }
-    public draw(): void {
+    public get isAlreadyDestroyed(): boolean {
+        return this.destroyExplosion.hasFinishedAnimation && this.beingDestroyed
+    }
+    public drawAttackRangeCicle(): void {
         if (context2D) {
             context2D.beginPath()
             context2D.arc(
@@ -75,8 +82,6 @@ export default class Tower extends Sprite implements I_character {
                 2 * Math.PI
             )
             context2D.fillStyle = 'rgba(225,225,225,0.15)'
-            context2D.arc(this.position.x + this.offset.x, this.position.y, this.data.attackRange, 0, 2 * Math.PI)
-            context2D.fillStyle = 'rgba(225,225,225,0.1)'
             context2D.fill()
         }
     }
@@ -91,7 +96,6 @@ export default class Tower extends Sprite implements I_character {
                 },
             },
         }
-
         const frames = createFrames({ initFrames })
         const options: T_sprite = {
             frames,
@@ -114,9 +118,13 @@ export default class Tower extends Sprite implements I_character {
         if (this.beingDestroyed) {
             this.destroyExplosion.update()
         } else {
-            this.draw()
+            this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
             this.attackEnemies(enemies)
             this.updateProjectile(shootingAudio)
+            if (isDisplayAttackRangeCircle) {
+                this.drawAttackRangeCicle()
+                this.levelUpIcon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
+            }
         }
     }
     private updateProjectile(shootingAudio: HTMLAudioElement | HTMLElement | null) {
