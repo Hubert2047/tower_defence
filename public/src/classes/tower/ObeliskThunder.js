@@ -1,9 +1,16 @@
 import Thunder from '../../classes/projectile/Thunder.js';
 import getBaseTowerProperties from '../../data/baseProperties/characters/index.js';
+<<<<<<< HEAD
 import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../enum/index.js';
 import Tower from './index.js';
 class ObeliskThunderTower extends Tower {
     constructor({ position, offset = { x: 10, y: 55 }, damage = 3000, attackSpeed = 40, attackRange = 300, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile, }) {
+=======
+import { E_angels, E_behaviors, E_characters } from '../../enum/index.js';
+import Tower from './index.js';
+class ObeliskThunderTower extends Tower {
+    constructor({ position, offset = { x: 10, y: 55 }, damage = 3000, attackSpeed = 2, attackRange = 300, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile, }) {
+>>>>>>> 521296cf130c5ee307184f5805f09658ea35947e
         const baseTowerProperties = getBaseTowerProperties(E_characters.OBELISK_THUNDER);
         super({
             name: 'Obelisk Thunder Tower',
@@ -19,10 +26,11 @@ class ObeliskThunderTower extends Tower {
             behaviorKey,
             angelKey,
             opacity,
-            attackTargetNums: 3,
+            multipleTarget: 3,
             placementTile,
         });
         this.baseTowerProperties = baseTowerProperties;
+<<<<<<< HEAD
         this.action = E_characterActions.ATTACK;
     }
     update({ enemies, shootingAudio, isDisplayAttackRangeCircle, }) {
@@ -30,6 +38,13 @@ class ObeliskThunderTower extends Tower {
             enemies,
             shootingAudio,
             isDisplayAttackRangeCircle,
+=======
+    }
+    update({ enemies, shootingAudio, }) {
+        super.update({
+            enemies,
+            shootingAudio,
+>>>>>>> 521296cf130c5ee307184f5805f09658ea35947e
         });
         if (this.behaviorKey === E_behaviors.ATTACK) {
             this.width = this.baseTowerProperties.width;
@@ -50,7 +65,7 @@ class ObeliskThunderTower extends Tower {
                     x: enemy.position.x + (enemy.width - 2 * enemy.offset.x) / 2 - (width - 2 * offset.x) / 2,
                     y: enemy.position.y,
                 },
-                damage: this.damage,
+                damage: this.data.damage,
                 enemy,
                 width,
                 height,

@@ -1,28 +1,33 @@
+import DestroyExplosion from '../../classes/explosionProjectile/Destroy.js';
 import FireProjectile from '../../classes/projectile/Fire.js';
 import context2D from '../../context2D/index.js';
-import { E_angels, E_behaviors, E_characterActions, E_projectile } from '../../enum/index.js';
+import { E_angels, E_behaviors, E_characterRoles, E_projectile } from '../../enum/index.js';
 import { calAngleFromPointAToPointB, calculateDistanceTwoPoint, createFrames } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Tower extends Sprite {
-    constructor({ name, type, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, projectileType = E_projectile.FIRE, damage = 100, attackSpeed = 1, attackRange = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, attackTargetNums = 1, placementTile, }) {
+    constructor({ name, type, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, damage = 100, attackSpeed = 1, attackRange = 300, multipleTarget = 1, projectileType = E_projectile.FIRE, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile, }) {
         const frames = createFrames({ initFrames });
         super({ position, offset, width, height, frames, opacity });
         this.name = name;
         this.type = type;
-        this.damage = damage;
-        this.attackSpeed = attackSpeed;
-        this.attackRange = attackRange;
-        this.projectileType = projectileType;
+        this.data = { damage, attackSpeed, attackRange, multipleTarget, projectileType };
         this.projectiles = [];
         this.holdAttack = parseInt((1000 / attackSpeed).toString());
         this.countAttackTime = this.holdAttack;
         this.explosions = [];
-        this.attackTargetNums = attackTargetNums;
         this.behaviorKey = behaviorKey;
         this.angelKey = angelKey;
-        this.action = E_characterActions.ATTACK;
+        this.role = E_characterRoles.ATTACK;
         this.placementTile = placementTile;
+<<<<<<< HEAD
         this.levelUp = this.createLeveUpIcon();
+=======
+        this.destroyExplosion = this.createDestroyExplosion();
+        this.beingDestroyed = false;
+    }
+    get isAlreadyDestroyed() {
+        return this.destroyExplosion.hasFinishedAnimation && this.beingDestroyed;
+>>>>>>> 521296cf130c5ee307184f5805f09658ea35947e
     }
     draw() {
         super.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
@@ -30,6 +35,7 @@ export default class Tower extends Sprite {
     drawAttackRangeCicle() {
         if (context2D) {
             context2D.beginPath();
+<<<<<<< HEAD
             context2D.arc(this.placementTile.position.x + 32, this.placementTile.position.y + 32, this.attackRange, 0, 2 * Math.PI);
             context2D.fillStyle = 'rgba(225,225,225,0.15)';
             context2D.fill();
@@ -63,6 +69,21 @@ export default class Tower extends Sprite {
         if (isDisplayAttackRangeCircle) {
             this.drawAttackRangeCicle();
             this.levelUp.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 });
+=======
+            context2D.arc(this.position.x + this.offset.x, this.position.y, this.data.attackRange, 0, 2 * Math.PI);
+            context2D.fillStyle = 'rgba(225,225,225,0.1)';
+            context2D.fill();
+        }
+    }
+    update({ enemies, shootingAudio, }) {
+        if (this.beingDestroyed) {
+            this.destroyExplosion.update();
+        }
+        else {
+            this.draw();
+            this.attackEnemies(enemies);
+            this.updateProjectile(shootingAudio);
+>>>>>>> 521296cf130c5ee307184f5805f09658ea35947e
         }
     }
     updateProjectile(shootingAudio) {
@@ -89,6 +110,14 @@ export default class Tower extends Sprite {
             }
         }
     }
+    createDestroyExplosion() {
+        return new DestroyExplosion({
+            position: {
+                x: this.position.x + this.width / 2,
+                y: this.position.y + this.height,
+            },
+        });
+    }
     attackEnemies(enemies) {
         if (this.countAttackTime < this.holdAttack) {
             this.countAttackTime++;
@@ -106,7 +135,7 @@ export default class Tower extends Sprite {
             return;
         }
         this.behaviorKey = E_behaviors.ATTACK;
-        const targetEnemies = enemiesInRange.slice(0, this.attackTargetNums);
+        const targetEnemies = enemiesInRange.slice(0, this.data.multipleTarget);
         const centerRightTargetEnemyPosition = {
             x: targetEnemies[0].position.x + targetEnemies[0].width - targetEnemies[0].offset.x,
             y: targetEnemies[0].position.y - targetEnemies[0].height / 2,
@@ -126,9 +155,9 @@ export default class Tower extends Sprite {
                     x: this.position.x - this.width + 1.5 * this.offset.x,
                     y: this.position.y - this.height + 1.8 * this.offset.y,
                 },
-                damage: this.damage,
+                damage: this.data.damage,
                 enemy,
-                moveSpeed: 5,
+                moveSpeed: 30,
                 offset: { x: 0, y: 0 },
             };
             return new FireProjectile(projectileOptions);
@@ -139,7 +168,7 @@ export default class Tower extends Sprite {
         currentEnemies.forEach((enemy) => {
             const realPostion = { x: this.position.x + this.offset.x, y: this.position.y };
             const distance = calculateDistanceTwoPoint(enemy.position, realPostion);
-            if (distance <= this.attackRange) {
+            if (distance <= this.data.attackRange) {
                 enemiesInRange.push(enemy);
             }
         });

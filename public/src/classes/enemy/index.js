@@ -1,3 +1,4 @@
+import { GATE_POSITION_X } from '../../constants/index.js';
 import { E_angels, E_behaviors } from '../../enum/index.js';
 import { calculateHoldTime, createFrames, getAngleKeyByTwoPoint, getVectorNomalized, updateHealthBars, } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
@@ -28,6 +29,7 @@ export default class Enemy extends Sprite {
         this.angelKey = angelKey;
         this.countAttackTime = 0;
         this.holdAttack = parseInt((200 / attackSpeed).toString());
+        this.deadEffectEnemy = this.createDeathEffecEnemy();
     }
     set remainHealth(remainHealth) {
         if (remainHealth <= 0) {
@@ -40,11 +42,19 @@ export default class Enemy extends Sprite {
     get remainHealth() {
         return this._remainHealth;
     }
-    update(waypoints) {
-        this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
-        this.updateFrameKeys(waypoints);
-        this.updatePosition(waypoints);
-        updateHealthBars({ sprite: this, health: this.health, remainHealth: this.remainHealth });
+    update(waypoints, gate) {
+        if (this.remainHealth <= 0) {
+            this.updateDeathEffect();
+        }
+        else if (this.position.x >= GATE_POSITION_X) {
+            this.updateEnemyAttackGate({ gate });
+        }
+        else {
+            this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
+            this.updateFrameKeys(waypoints);
+            this.updatePosition(waypoints);
+            updateHealthBars({ sprite: this, health: this.health, remainHealth: this.remainHealth });
+        }
     }
     attackGate(gate) {
         if (this.countAttackTime < this.holdAttack) {
@@ -54,8 +64,23 @@ export default class Enemy extends Sprite {
         this.countAttackTime = 0;
         gate.getHit(this.damage);
     }
+    createDeathEffecEnemy() {
+        const deathEnemyOptions = {
+            name: this.name,
+            position: this.position,
+            enemyType: this.enemyType,
+            initFrames: this.initFrames,
+            offset: this.offset,
+            width: this.width,
+            height: this.height,
+            moveSpeed: this.moveSpeed,
+            angelKey: this.angelKey,
+            behaviorKey: E_behaviors.DEATH,
+        };
+        return new Enemy(deathEnemyOptions);
+    }
     updateDeathEffect() {
-        this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
+        this.deadEffectEnemy.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
     }
     updateEnemyAttackGate({ gate }) {
         this.behaviorKey = E_behaviors.ATTACK;
@@ -77,6 +102,15 @@ export default class Enemy extends Sprite {
             maxY: currentFrame.maxY,
             speed,
         });
+    }
+    get isAlreadyDead() {
+        const currentDeathEffectEnemyFrame = this.deadEffectEnemy.currentFrame;
+        if (!currentDeathEffectEnemyFrame) {
+            return true;
+        }
+        const isFinishedOneTimeAnimation = this.deadEffectEnemy.cropPosition.x === currentDeathEffectEnemyFrame.maxX - 1 &&
+            this.deadEffectEnemy.cropPosition.y === currentDeathEffectEnemyFrame.maxY - 1;
+        return isFinishedOneTimeAnimation && this.remainHealth <= 0;
     }
     updateFrameKeys(waypoints) {
         this.angelKey = getAngleKeyByTwoPoint(this.position, waypoints[this.currentWayPointIndex]);

@@ -2,8 +2,16 @@ import Sprite from '../classes/sprite/index.js'
 import { BASE_HEALTH, FPS } from '../constants/index.js'
 import context2D from '../context2D/index.js'
 import gameData from '../data/gameMaps/index.js'
-import { E_angels, E_gameMap } from '../enum/index.js'
-import { T_frame, T_gameMapData, T_initFrame, T_initFramesDictionary, T_position, T_text } from '../types/index.js'
+import { E_angels, E_behaviors, E_gameMap } from '../enum/index.js'
+import {
+    T_frame,
+    T_gameMapData,
+    T_initFrame,
+    T_initFramesDictionary,
+    T_position,
+    T_sprite,
+    T_text,
+} from '../types/index.js'
 
 function calculateDistanceTwoPoint(pointA: T_position, pointB: T_position): number {
     const dx: number = pointA.x - pointB.x
@@ -34,6 +42,31 @@ function updateHealthBars({ sprite, health, remainHealth }: { sprite: Sprite; he
     } else {
         drawRemainHealthBar({ sprite, drawOption, fullHealthWidth, remainHealthWidth, fillStyle: 'green' })
     }
+}
+function createCoinIcon({
+    position,
+    offset,
+    height,
+    width,
+}: {
+    position: T_position
+    offset: T_position
+    height: number
+    width: number
+}) {
+    const initFrames: T_initFramesDictionary = {
+        [E_behaviors.IDLE]: {
+            [E_angels.ANGEL_0]: {
+                imageSourceString: '../../public/src/assets/images/stuff/coins.png',
+                maxX: 4,
+                maxY: 2,
+                holdTime: 4,
+            },
+        },
+    }
+    const frames = createFrames({ initFrames })
+    const options: T_sprite = { frames, position, offset, height, width }
+    return new Sprite(options)
 }
 interface healthBarOptions {
     lineWidth: number

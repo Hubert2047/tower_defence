@@ -1,5 +1,5 @@
 import { TILE_SIZE } from '../../constants/index.js'
-import { E_angels, E_behaviors, E_characterActions } from '../../enum/index.js'
+import { E_angels, E_behaviors, E_characterRoles } from '../../enum/index.js'
 import { createFrames } from '../../helper/index.js'
 import { T_frame, T_position } from '../../types/index.js'
 import DashboardCharacter from '../dashboardCharacters/index.js'
@@ -46,7 +46,7 @@ export default class PlacementTile extends Sprite {
         this.isOccupied = false
     }
     public update(activeDashboardCharacter: DashboardCharacter | null, mouse: T_position): void {
-        const isDestroyAction = activeDashboardCharacter?.action === E_characterActions.DESTROY
+        const isDestroyAction = activeDashboardCharacter?.role === E_characterRoles.DESTROY
         const isDestroy = isDestroyAction
         if (isDestroy && !this.isOccupied) return
         if (!activeDashboardCharacter && !this.isOccupied) return

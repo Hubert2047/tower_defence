@@ -1,9 +1,9 @@
-import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../../enum/index.js';
+import { E_angels, E_behaviors, E_characterRoles, E_characters } from '../../../enum/index.js';
 const FlyingObeliskProperties = {
     type: E_characters.FLYING_OBELISK,
     width: 100,
     height: 128,
-    action: E_characterActions.ATTACK,
+    role: E_characterRoles.ATTACK,
     initFrames: {
         [E_behaviors.ATTACK]: {
             [E_angels.ANGEL_0]: {

@@ -1,6 +1,6 @@
 import Thunder from '../../classes/projectile/Thunder.js'
 import getBaseTowerProperties from '../../data/baseProperties/characters/index.js'
-import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../enum/index.js'
+import { E_angels, E_behaviors, E_characters } from '../../enum/index.js'
 import { I_characterProperties, I_tower } from '../../types/interface.js'
 import Enemy from '../enemy/index.js'
 import Projectile from '../projectile/index.js'
@@ -8,7 +8,6 @@ import Tower from './index.js'
 
 export default class ObeliskThunderTower extends Tower {
     baseTowerProperties: I_characterProperties
-    action: E_characterActions
     constructor({
         position,
         offset = { x: 10, y: 55 },
@@ -36,11 +35,10 @@ export default class ObeliskThunderTower extends Tower {
             behaviorKey,
             angelKey,
             opacity,
-            attackTargetNums: 3,
+            multipleTarget: 3,
             placementTile,
         })
         this.baseTowerProperties = baseTowerProperties
-        this.action = E_characterActions.ATTACK
     }
     public static prices = 20
     public update({
@@ -75,7 +73,7 @@ export default class ObeliskThunderTower extends Tower {
                     x: enemy.position.x + (enemy.width - 2 * enemy.offset.x) / 2 - (width - 2 * offset.x) / 2,
                     y: enemy.position.y,
                 },
-                damage: this.damage,
+                damage: this.data.damage,
                 enemy,
                 width,
                 height,

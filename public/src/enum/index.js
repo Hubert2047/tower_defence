@@ -74,16 +74,16 @@ var E_characters;
     E_characters[E_characters["AUTUMN_TREE"] = 7] = "AUTUMN_TREE";
     E_characters[E_characters["SHOVEL"] = 8] = "SHOVEL";
 })(E_characters || (E_characters = {}));
-var E_characterActions;
-(function (E_characterActions) {
-    E_characterActions["ATTACK"] = "character attack";
-    E_characterActions["PLANTED"] = "character planted";
-    E_characterActions["DESTROY"] = "character destroy";
-})(E_characterActions || (E_characterActions = {}));
+var E_characterRoles;
+(function (E_characterRoles) {
+    E_characterRoles["ATTACK"] = "attack";
+    E_characterRoles["PLANTED"] = "planted";
+    E_characterRoles["DESTROY"] = "destroy";
+})(E_characterRoles || (E_characterRoles = {}));
 var E_gems;
 (function (E_gems) {
     E_gems["BLUE"] = "blue";
     E_gems["RED"] = "red";
     E_gems["PURPLE"] = "purple";
 })(E_gems || (E_gems = {}));
-export { E_angels, E_behaviors, E_enemy, E_characterActions, E_explosion, E_gameMap, E_gate, E_projectile, E_characters, E_gems, };
+export { E_angels, E_behaviors, E_enemy, E_characterRoles, E_explosion, E_gameMap, E_gate, E_projectile, E_characters, E_gems, };

@@ -1,7 +1,8 @@
+import Sprite from '../classes/sprite/index.js';
 import { BASE_HEALTH, FPS } from '../constants/index.js';
 import context2D from '../context2D/index.js';
 import gameData from '../data/gameMaps/index.js';
-import { E_angels } from '../enum/index.js';
+import { E_angels, E_behaviors } from '../enum/index.js';
 function calculateDistanceTwoPoint(pointA, pointB) {
     const dx = pointA.x - pointB.x;
     const dy = pointA.y - pointB.y;
@@ -32,6 +33,21 @@ function updateHealthBars({ sprite, health, remainHealth }) {
     else {
         drawRemainHealthBar({ sprite, drawOption, fullHealthWidth, remainHealthWidth, fillStyle: 'green' });
     }
+}
+function createCoinIcon({ position, offset, height, width, }) {
+    const initFrames = {
+        [E_behaviors.IDLE]: {
+            [E_angels.ANGEL_0]: {
+                imageSourceString: '../../public/src/assets/images/stuff/coins.png',
+                maxX: 4,
+                maxY: 2,
+                holdTime: 4,
+            },
+        },
+    };
+    const frames = createFrames({ initFrames });
+    const options = { frames, position, offset, height, width };
+    return new Sprite(options);
 }
 function drawText({ text, position, color = 'black', fontSize = 16 }) {
     if (context2D) {

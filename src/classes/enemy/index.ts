@@ -1,3 +1,4 @@
+import { GATE_POSITION_X } from '../../constants/index.js'
 import { E_angels, E_behaviors, E_enemy } from '../../enum/index.js'
 import {
     calculateHoldTime,
@@ -9,12 +10,6 @@ import {
 import { T_enemy, T_frame, T_initFramesDictionary, T_position } from '../../types/index.js'
 import Gate from '../gate/index.js'
 import Sprite from '../sprite/index.js'
-interface healthBar {
-    lineWidth: number
-    height: number
-    borderRadius: number
-    strokeStyle: string
-}
 export default class Enemy extends Sprite {
     public name: string
     public enemyType: E_enemy
@@ -33,6 +28,7 @@ export default class Enemy extends Sprite {
     public attackSpeed: number
     public countAttackTime: number
     public holdAttack: number
+    public deadEffectEnemy: Enemy
 
     constructor({
         name,
@@ -76,6 +72,7 @@ export default class Enemy extends Sprite {
         this.angelKey = angelKey
         this.countAttackTime = 0
         this.holdAttack = parseInt((200 / attackSpeed).toString())
+        this.deadEffectEnemy = this.createDeathEffecEnemy()
     }
     set remainHealth(remainHealth: number) {
         if (remainHealth <= 0) {
@@ -87,11 +84,17 @@ export default class Enemy extends Sprite {
     get remainHealth() {
         return this._remainHealth
     }
-    public update(waypoints: T_position[]): void {
-        this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
-        this.updateFrameKeys(waypoints)
-        this.updatePosition(waypoints)
-        updateHealthBars({ sprite: this, health: this.health, remainHealth: this.remainHealth })
+    public update(waypoints: T_position[], gate: Gate): void {
+        if (this.remainHealth <= 0) {
+            this.updateDeathEffect()
+        } else if (this.position.x >= GATE_POSITION_X) {
+            this.updateEnemyAttackGate({ gate })
+        } else {
+            this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
+            this.updateFrameKeys(waypoints)
+            this.updatePosition(waypoints)
+            updateHealthBars({ sprite: this, health: this.health, remainHealth: this.remainHealth })
+        }
     }
     private attackGate(gate: Gate): void {
         if (this.countAttackTime < this.holdAttack) {
@@ -101,8 +104,23 @@ export default class Enemy extends Sprite {
         this.countAttackTime = 0
         gate.getHit(this.damage)
     }
+    private createDeathEffecEnemy() {
+        const deathEnemyOptions: T_enemy = {
+            name: this.name,
+            position: this.position,
+            enemyType: this.enemyType,
+            initFrames: this.initFrames,
+            offset: this.offset,
+            width: this.width,
+            height: this.height,
+            moveSpeed: this.moveSpeed,
+            angelKey: this.angelKey,
+            behaviorKey: E_behaviors.DEATH,
+        }
+        return new Enemy(deathEnemyOptions)
+    }
     public updateDeathEffect() {
-        this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
+        this.deadEffectEnemy.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
     }
     public updateEnemyAttackGate({ gate }: { gate: Gate | null }) {
         this.behaviorKey = E_behaviors.ATTACK
@@ -121,6 +139,17 @@ export default class Enemy extends Sprite {
             maxY: currentFrame.maxY,
             speed,
         })
+    }
+    public get isAlreadyDead() {
+        const currentDeathEffectEnemyFrame = this.deadEffectEnemy.currentFrame
+        if (!currentDeathEffectEnemyFrame) {
+            return true
+        }
+        const isFinishedOneTimeAnimation: boolean =
+            this.deadEffectEnemy.cropPosition.x === currentDeathEffectEnemyFrame.maxX - 1 &&
+            this.deadEffectEnemy.cropPosition.y === currentDeathEffectEnemyFrame.maxY - 1
+
+        return isFinishedOneTimeAnimation && this.remainHealth <= 0
     }
     private updateFrameKeys(waypoints: T_position[]) {
         this.angelKey = getAngleKeyByTwoPoint(this.position, waypoints[this.currentWayPointIndex])

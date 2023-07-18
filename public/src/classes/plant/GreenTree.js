@@ -1,8 +1,12 @@
 import getBasePlantProperties from '../../data/baseProperties/characters/index.js';
-import { E_angels, E_behaviors, E_characterActions, E_characters, E_gems } from '../../enum/index.js';
+import { E_angels, E_behaviors, E_characters, E_gems } from '../../enum/index.js';
 import Plant from './index.js';
 class GreenTree extends Plant {
+<<<<<<< HEAD
     constructor({ position, offset = { x: 10, y: 65 }, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, fruitingDuration = 500, placementTile, }) {
+=======
+    constructor({ position, offset = { x: 10, y: 80 }, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, fruitingDuration = 500, placementTile, spawGemPerTime = 2, }) {
+>>>>>>> 521296cf130c5ee307184f5805f09658ea35947e
         const baseTowerProperties = getBasePlantProperties(E_characters.GREEN_TREE);
         super({
             name: 'GREEN TREE',
@@ -18,8 +22,8 @@ class GreenTree extends Plant {
             opacity,
             spawGemType: E_gems.BLUE,
             placementTile,
+            spawGemPerTime,
         });
-        this.action = E_characterActions.PLANTED;
     }
 }
 GreenTree.prices = 10;

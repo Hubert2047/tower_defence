@@ -1,5 +1,5 @@
 import getBaseTowerProperties from '../../data/baseProperties/characters/index.js';
-import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../enum/index.js';
+import { E_angels, E_behaviors, E_characters, E_projectile } from '../../enum/index.js';
 import { default as Fire } from '../projectile/Fire.js';
 import Tower from './index.js';
 class FlyingObelisk extends Tower {
@@ -19,24 +19,31 @@ class FlyingObelisk extends Tower {
             behaviorKey,
             angelKey,
             opacity,
-            attackTargetNums: 1,
+            multipleTarget: 1,
             placementTile,
         });
-        this.action = E_characterActions.ATTACK;
     }
-    createProjectiles(targetEnemis) {
-        return targetEnemis.map((enemy) => {
+    createProjectiles(targetEnemies) {
+        return targetEnemies.map((enemy) => {
             const projectileOptions = {
                 position: {
                     x: enemy.position.x + enemy.width / 2,
                     y: enemy.position.y,
                 },
-                damage: this.damage,
+                damage: this.data.damage,
                 enemy,
                 offset: { x: 220, y: 0 },
             };
-            return new Fire(projectileOptions);
+            return this.createProjectile(projectileOptions, this.data.projectileType);
         });
+    }
+    createProjectile(projectileOptions, type) {
+        switch (type) {
+            case E_projectile.FIRE:
+                return new Fire(projectileOptions);
+            default:
+                return new Fire(projectileOptions);
+        }
     }
 }
 FlyingObelisk.prices = 10;
