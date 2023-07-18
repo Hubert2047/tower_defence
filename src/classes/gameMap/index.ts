@@ -159,12 +159,14 @@ export default class GameMap {
     private updatePlants() {
         for (let i = this.plants.length - 1; i >= 0; i--) {
             const currentPlan: Plant = this.plants[i]
+            if (currentPlan.isAlreadyDestroyed) {
+                this.plants.slice(i, 1)
+                currentPlan.placementTile.isOccupied = false
+                continue
+            }
             const gem = currentPlan.update()
             if (gem) {
                 this.gemsInfo[gem.type].value += gem.value
-            }
-            if (currentPlan.isAlreadyDestroyed) {
-                this.plants.slice(i, 1)
             }
         }
     }
@@ -216,7 +218,9 @@ export default class GameMap {
     private updateDashboardCharacter(dashboardCharacterInfo: I_dashboardCharactersInfo, opacity: number) {
         dashboardCharacterInfo.dashboardCharacter.opacity = opacity
         const isDisplayDashboardShadow =
-            dashboardCharacterInfo.dashboardCharacter && this.mouseOverDashboardCharacter === null
+            this.activeDashboardCharacter !== null &&
+            this.mouseOverDashboardCharacter === null &&
+            this.activeDashboardCharacter === dashboardCharacterInfo.dashboardCharacter
         dashboardCharacterInfo.dashboardCharacter.update({ isDisplayDashboardShadow, mouse: this.mousePosition })
     }
     private updateScreenGame(): void {
@@ -252,10 +256,12 @@ export default class GameMap {
     private updateTowers(): void {
         for (let i = this.towers.length - 1; i >= 0; i--) {
             const currentTower = this.towers[i]
-            currentTower.update({ enemies: this.currentEnemiesData, shootingAudio: this.shootingAudio })
             if (currentTower.isAlreadyDestroyed) {
+                currentTower.placementTile.isOccupied = false
                 this.towers.splice(i, 1)
+                continue
             }
+            currentTower.update({ enemies: this.currentEnemiesData, shootingAudio: this.shootingAudio })
         }
     }
     private updateEnemies(): void {
@@ -635,9 +641,6 @@ export default class GameMap {
         for (let i = this.allCharacters.length - 1; i >= 0; i--) {
             let currentCharacter: I_character = this.allCharacters[i]
             if (currentCharacter === this.activeMouseOverCharacterInfo.activeMouseOverCharacter) {
-                if (currentCharacter.placementTile) {
-                    currentCharacter.placementTile.isOccupied = false
-                }
                 currentCharacter.beingDestroyed = true
             }
         }

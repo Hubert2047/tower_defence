@@ -72,6 +72,7 @@ type T_enemy = {
     damage?: number
     attackRange?: number
     attackSpeed?: number
+    haveCreateDeadEffect?: boolean
 }
 type T_dashboardBorder = {
     name: string

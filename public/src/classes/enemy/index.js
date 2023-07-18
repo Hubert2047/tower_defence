@@ -1,9 +1,10 @@
 import { GATE_POSITION_X } from '../../constants/index.js';
 import { E_angels, E_behaviors } from '../../enum/index.js';
-import { calculateHoldTime, createFrames, getAngleKeyByTwoPoint, getVectorNomalized, updateHealthBars, } from '../../helper/index.js';
+import { calculateHoldTime, createFrames, getAngleKeyByTwoPoint, getVectorNomalized, shouldEventOccur, updateHealthBars, } from '../../helper/index.js';
+import Chest from '../chest/index.js';
 import Sprite from '../sprite/index.js';
 export default class Enemy extends Sprite {
-    constructor({ name, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, coins = 1, moveSpeed = 1, health = 1000, damage = 100, attackRange = 200, attackSpeed = 5, enemyType, angelKey = E_angels.ANGEL_90, behaviorKey = E_behaviors.RUN, }) {
+    constructor({ name, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, coins = 1, moveSpeed = 1, health = 1000, damage = 100, attackRange = 200, attackSpeed = 5, enemyType, angelKey = E_angels.ANGEL_90, behaviorKey = E_behaviors.RUN, haveCreateDeadEffect = true, }) {
         const frames = createFrames({ initFrames, speed: moveSpeed });
         super({
             position,
@@ -28,8 +29,13 @@ export default class Enemy extends Sprite {
         this.behaviorKey = behaviorKey;
         this.angelKey = angelKey;
         this.countAttackTime = 0;
+        if (haveCreateDeadEffect) {
+            this.deadEffectEnemy = this.createDeathEffecEnemy();
+        }
+        this.hasCheckChest = false;
+        this.chest = new Chest({ position });
         this.holdAttack = parseInt((200 / attackSpeed).toString());
-        this.deadEffectEnemy = this.createDeathEffecEnemy();
+        this.hasDropChest = false;
     }
     set remainHealth(remainHealth) {
         if (remainHealth <= 0) {
@@ -45,6 +51,7 @@ export default class Enemy extends Sprite {
     update(waypoints, gate) {
         if (this.remainHealth <= 0) {
             this.updateDeathEffect();
+            this.renderChest();
         }
         else if (this.position.x >= GATE_POSITION_X) {
             this.updateEnemyAttackGate({ gate });
@@ -76,11 +83,26 @@ export default class Enemy extends Sprite {
             moveSpeed: this.moveSpeed,
             angelKey: this.angelKey,
             behaviorKey: E_behaviors.DEATH,
+            haveCreateDeadEffect: false,
         };
         return new Enemy(deathEnemyOptions);
     }
     updateDeathEffect() {
+        if (!this.deadEffectEnemy)
+            return;
         this.deadEffectEnemy.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
+    }
+    renderChest() {
+        var _a;
+        if (!this.hasCheckChest) {
+            this.hasDropChest = shouldEventOccur(30);
+            this.hasCheckChest = true;
+        }
+        if (!this.hasDropChest) {
+            this.chest = null;
+            return;
+        }
+        (_a = this.chest) === null || _a === void 0 ? void 0 : _a.update();
     }
     updateEnemyAttackGate({ gate }) {
         this.behaviorKey = E_behaviors.ATTACK;
@@ -104,13 +126,17 @@ export default class Enemy extends Sprite {
         });
     }
     get isAlreadyDead() {
-        const currentDeathEffectEnemyFrame = this.deadEffectEnemy.currentFrame;
-        if (!currentDeathEffectEnemyFrame) {
+        if (this._remainHealth > 0)
+            return false;
+        if (!this.deadEffectEnemy)
             return true;
-        }
-        const isFinishedOneTimeAnimation = this.deadEffectEnemy.cropPosition.x === currentDeathEffectEnemyFrame.maxX - 1 &&
+        const currentDeathEffectEnemyFrame = this.deadEffectEnemy.currentFrame;
+        if (!currentDeathEffectEnemyFrame)
+            return true;
+        const isDeathEffecFinishedOneTimeAnimation = this.deadEffectEnemy.cropPosition.x === currentDeathEffectEnemyFrame.maxX - 1 &&
             this.deadEffectEnemy.cropPosition.y === currentDeathEffectEnemyFrame.maxY - 1;
-        return isFinishedOneTimeAnimation && this.remainHealth <= 0;
+        const isChestOk = this.chest === null || this.chest.isReadyToFakeOut;
+        return isDeathEffecFinishedOneTimeAnimation && isChestOk;
     }
     updateFrameKeys(waypoints) {
         this.angelKey = getAngleKeyByTwoPoint(this.position, waypoints[this.currentWayPointIndex]);

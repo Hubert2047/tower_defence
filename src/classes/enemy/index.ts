@@ -5,9 +5,11 @@ import {
     createFrames,
     getAngleKeyByTwoPoint,
     getVectorNomalized,
+    shouldEventOccur,
     updateHealthBars,
 } from '../../helper/index.js'
 import { T_enemy, T_frame, T_initFramesDictionary, T_position } from '../../types/index.js'
+import Chest from '../chest/index.js'
 import Gate from '../gate/index.js'
 import Sprite from '../sprite/index.js'
 export default class Enemy extends Sprite {
@@ -28,8 +30,10 @@ export default class Enemy extends Sprite {
     public attackSpeed: number
     public countAttackTime: number
     public holdAttack: number
-    public deadEffectEnemy: Enemy
-
+    public deadEffectEnemy: Enemy | undefined
+    private chest: Chest | null
+    private hasCheckChest: boolean
+    private hasDropChest: boolean
     constructor({
         name,
         position,
@@ -46,6 +50,7 @@ export default class Enemy extends Sprite {
         enemyType,
         angelKey = E_angels.ANGEL_90,
         behaviorKey = E_behaviors.RUN,
+        haveCreateDeadEffect = true,
     }: T_enemy) {
         const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames, speed: moveSpeed })
         super({
@@ -71,8 +76,13 @@ export default class Enemy extends Sprite {
         this.behaviorKey = behaviorKey
         this.angelKey = angelKey
         this.countAttackTime = 0
+        if (haveCreateDeadEffect) {
+            this.deadEffectEnemy = this.createDeathEffecEnemy()
+        }
+        this.hasCheckChest = false
+        this.chest = new Chest({ position })
         this.holdAttack = parseInt((200 / attackSpeed).toString())
-        this.deadEffectEnemy = this.createDeathEffecEnemy()
+        this.hasDropChest = false
     }
     set remainHealth(remainHealth: number) {
         if (remainHealth <= 0) {
@@ -87,6 +97,7 @@ export default class Enemy extends Sprite {
     public update(waypoints: T_position[], gate: Gate): void {
         if (this.remainHealth <= 0) {
             this.updateDeathEffect()
+            this.renderChest()
         } else if (this.position.x >= GATE_POSITION_X) {
             this.updateEnemyAttackGate({ gate })
         } else {
@@ -116,11 +127,24 @@ export default class Enemy extends Sprite {
             moveSpeed: this.moveSpeed,
             angelKey: this.angelKey,
             behaviorKey: E_behaviors.DEATH,
+            haveCreateDeadEffect: false,
         }
         return new Enemy(deathEnemyOptions)
     }
     public updateDeathEffect() {
+        if (!this.deadEffectEnemy) return
         this.deadEffectEnemy.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
+    }
+    public renderChest() {
+        if (!this.hasCheckChest) {
+            this.hasDropChest = shouldEventOccur(30)
+            this.hasCheckChest = true
+        }
+        if (!this.hasDropChest) {
+            this.chest = null
+            return
+        }
+        this.chest?.update()
     }
     public updateEnemyAttackGate({ gate }: { gate: Gate | null }) {
         this.behaviorKey = E_behaviors.ATTACK
@@ -141,15 +165,15 @@ export default class Enemy extends Sprite {
         })
     }
     public get isAlreadyDead() {
+        if (this._remainHealth > 0) return false
+        if (!this.deadEffectEnemy) return true
         const currentDeathEffectEnemyFrame = this.deadEffectEnemy.currentFrame
-        if (!currentDeathEffectEnemyFrame) {
-            return true
-        }
-        const isFinishedOneTimeAnimation: boolean =
+        if (!currentDeathEffectEnemyFrame) return true
+        const isDeathEffecFinishedOneTimeAnimation: boolean =
             this.deadEffectEnemy.cropPosition.x === currentDeathEffectEnemyFrame.maxX - 1 &&
             this.deadEffectEnemy.cropPosition.y === currentDeathEffectEnemyFrame.maxY - 1
-
-        return isFinishedOneTimeAnimation && this.remainHealth <= 0
+        const isChestOk = this.chest === null || this.chest.isReadyToFakeOut
+        return isDeathEffecFinishedOneTimeAnimation && isChestOk
     }
     private updateFrameKeys(waypoints: T_position[]) {
         this.angelKey = getAngleKeyByTwoPoint(this.position, waypoints[this.currentWayPointIndex])

@@ -35,14 +35,14 @@ export default class DashboardCharacter extends Sprite {
             frames,
             opacity,
         })
+        this.baseCharacterProperties = baseCharacterProperties
         if (!isDashboardShadow) {
             this.dashboardShadow = this.createDashboardShadow({
                 type,
-                position,
+                position: { x: position.x, y: position.y },
             })
         }
         this.type = type
-        this.baseCharacterProperties = baseCharacterProperties
         this.angelKey = angelKey
         this.behaviorKey = behaviorKey
         this.role = this.getCharacterRole(type)

@@ -81,12 +81,14 @@ export default class GameMap {
     updatePlants() {
         for (let i = this.plants.length - 1; i >= 0; i--) {
             const currentPlan = this.plants[i];
+            if (currentPlan.isAlreadyDestroyed) {
+                this.plants.slice(i, 1);
+                currentPlan.placementTile.isOccupied = false;
+                continue;
+            }
             const gem = currentPlan.update();
             if (gem) {
                 this.gemsInfo[gem.type].value += gem.value;
-            }
-            if (currentPlan.isAlreadyDestroyed) {
-                this.plants.slice(i, 1);
             }
         }
     }
@@ -138,7 +140,9 @@ export default class GameMap {
     }
     updateDashboardCharacter(dashboardCharacterInfo, opacity) {
         dashboardCharacterInfo.dashboardCharacter.opacity = opacity;
-        const isDisplayDashboardShadow = dashboardCharacterInfo.dashboardCharacter && this.mouseOverDashboardCharacter === null;
+        const isDisplayDashboardShadow = this.activeDashboardCharacter !== null &&
+            this.mouseOverDashboardCharacter === null &&
+            this.activeDashboardCharacter === dashboardCharacterInfo.dashboardCharacter;
         dashboardCharacterInfo.dashboardCharacter.update({ isDisplayDashboardShadow, mouse: this.mousePosition });
     }
     updateScreenGame() {
@@ -174,10 +178,12 @@ export default class GameMap {
     updateTowers() {
         for (let i = this.towers.length - 1; i >= 0; i--) {
             const currentTower = this.towers[i];
-            currentTower.update({ enemies: this.currentEnemiesData, shootingAudio: this.shootingAudio });
             if (currentTower.isAlreadyDestroyed) {
+                currentTower.placementTile.isOccupied = false;
                 this.towers.splice(i, 1);
+                continue;
             }
+            currentTower.update({ enemies: this.currentEnemiesData, shootingAudio: this.shootingAudio });
         }
     }
     updateEnemies() {
@@ -533,9 +539,6 @@ export default class GameMap {
         for (let i = this.allCharacters.length - 1; i >= 0; i--) {
             let currentCharacter = this.allCharacters[i];
             if (currentCharacter === this.activeMouseOverCharacterInfo.activeMouseOverCharacter) {
-                if (currentCharacter.placementTile) {
-                    currentCharacter.placementTile.isOccupied = false;
-                }
                 currentCharacter.beingDestroyed = true;
             }
         }

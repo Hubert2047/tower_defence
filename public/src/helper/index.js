@@ -38,7 +38,7 @@ function createCoinIcon({ position, offset, height, width, }) {
     const initFrames = {
         [E_behaviors.IDLE]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../public/src/assets/images/stuff/coins.png',
+                imageSourceString: '../../public/src/assets/images/stuff/chest/coins.png',
                 maxX: 4,
                 maxY: 2,
                 holdTime: 4,
@@ -46,14 +46,23 @@ function createCoinIcon({ position, offset, height, width, }) {
         },
     };
     const frames = createFrames({ initFrames });
-    const options = { frames, position, offset, height, width };
-    return new Sprite(options);
+    return new Sprite({ frames, position, offset, height, width });
 }
 function drawText({ text, position, color = 'black', fontSize = 16 }) {
     if (context2D) {
         context2D.font = `${fontSize}px Changa One`;
         context2D.fillStyle = color;
         context2D.fillText(text, position.x, position.y);
+    }
+}
+function shouldEventOccur(percentage) {
+    const normalizedPercentage = percentage / 100;
+    const random = Math.random();
+    if (random < normalizedPercentage) {
+        return true;
+    }
+    else {
+        return false;
     }
 }
 function drawRemainHealthBar({ sprite, remainHealthWidth, fullHealthWidth, drawOption, fillStyle, }) {
@@ -257,4 +266,4 @@ function deepClone(data) {
 function randomNumberInRange(min, max) {
     return Math.random() * (max - min) + min;
 }
-export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createFrames, createImage, deepClone, drawText, getAngleKeyByTwoPoint, getGameMapData, getVectorNomalized, randomNumberInRange, updateHealthBars, };
+export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createFrames, createImage, deepClone, drawText, getAngleKeyByTwoPoint, getGameMapData, getVectorNomalized, randomNumberInRange, shouldEventOccur, updateHealthBars, createCoinIcon, };

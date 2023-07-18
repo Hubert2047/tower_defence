@@ -31,7 +31,7 @@ export default class ExplosionProjectile extends Sprite {
     }
     get hasFinishedAnimation() {
         const currentExplosionFrame = this.currentFrame
-        if (!currentExplosionFrame) return true
+        if (!currentExplosionFrame) return false
         return (
             this.cropPosition.x === currentExplosionFrame.maxX - 1 &&
             this.cropPosition.y === currentExplosionFrame.maxY - 1

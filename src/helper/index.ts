@@ -3,15 +3,7 @@ import { BASE_HEALTH, FPS } from '../constants/index.js'
 import context2D from '../context2D/index.js'
 import gameData from '../data/gameMaps/index.js'
 import { E_angels, E_behaviors, E_gameMap } from '../enum/index.js'
-import {
-    T_frame,
-    T_gameMapData,
-    T_initFrame,
-    T_initFramesDictionary,
-    T_position,
-    T_sprite,
-    T_text,
-} from '../types/index.js'
+import { T_frame, T_gameMapData, T_initFrame, T_initFramesDictionary, T_position, T_text } from '../types/index.js'
 
 function calculateDistanceTwoPoint(pointA: T_position, pointB: T_position): number {
     const dx: number = pointA.x - pointB.x
@@ -57,7 +49,7 @@ function createCoinIcon({
     const initFrames: T_initFramesDictionary = {
         [E_behaviors.IDLE]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../public/src/assets/images/stuff/coins.png',
+                imageSourceString: '../../public/src/assets/images/stuff/chest/coins.png',
                 maxX: 4,
                 maxY: 2,
                 holdTime: 4,
@@ -65,8 +57,7 @@ function createCoinIcon({
         },
     }
     const frames = createFrames({ initFrames })
-    const options: T_sprite = { frames, position, offset, height, width }
-    return new Sprite(options)
+    return new Sprite({ frames, position, offset, height, width })
 }
 interface healthBarOptions {
     lineWidth: number
@@ -79,6 +70,15 @@ function drawText({ text, position, color = 'black', fontSize = 16 }: T_text) {
         context2D.font = `${fontSize}px Changa One`
         context2D.fillStyle = color
         context2D.fillText(text, position.x, position.y)
+    }
+}
+function shouldEventOccur(percentage: number): boolean {
+    const normalizedPercentage = percentage / 100
+    const random = Math.random()
+    if (random < normalizedPercentage) {
+        return true
+    } else {
+        return false
     }
 }
 function drawRemainHealthBar({
@@ -366,5 +366,7 @@ export {
     getGameMapData,
     getVectorNomalized,
     randomNumberInRange,
+    shouldEventOccur,
     updateHealthBars,
+    createCoinIcon,
 }

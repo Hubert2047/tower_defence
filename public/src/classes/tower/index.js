@@ -128,7 +128,7 @@ export default class Tower extends Sprite {
         currentEnemies.forEach((enemy) => {
             const realPostion = { x: this.position.x + this.offset.x, y: this.position.y };
             const distance = calculateDistanceTwoPoint(enemy.position, realPostion);
-            if (distance <= this.data.attackRange) {
+            if (distance <= this.data.attackRange && enemy.remainHealth > 0) {
                 enemiesInRange.push(enemy);
             }
         });

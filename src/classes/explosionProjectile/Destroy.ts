@@ -18,7 +18,7 @@ export default class DestroyExplosion extends ExplosionProjectile {
                     imageSourceString: '../../../public/src/assets/images/explosions/destroy/destroy.png',
                     maxX: 10,
                     maxY: 1,
-                    holdTime: 2,
+                    holdTime: 4,
                 },
             },
         }
