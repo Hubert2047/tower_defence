@@ -53,6 +53,7 @@ export default class Border extends Sprite {
     }
     public updateSelected(): void {
         if (this.selectedBorder) {
+            this.update()
             this.selectedBorder.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
         }
     }

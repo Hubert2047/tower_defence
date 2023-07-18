@@ -1,9 +1,9 @@
-import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../../enum/index.js';
+import { E_angels, E_behaviors, E_characterRoles, E_characters } from '../../../enum/index.js';
 const AutumnTreeProperties = {
     type: E_characters.AUTUMN_TREE,
     width: 85,
     height: 110,
-    action: E_characterActions.PLANTED,
+    role: E_characterRoles.PLANTED,
     initFrames: {
         [E_behaviors.IDLE]: {
             [E_angels.ANGEL_0]: {

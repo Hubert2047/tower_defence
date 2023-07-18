@@ -3,6 +3,7 @@ import PlacementTile from '../classes/placementTile/index.js'
 import {
     E_angels,
     E_behaviors,
+    E_characterRoles,
     E_characters,
     E_enemy,
     E_explosion,
@@ -109,7 +110,7 @@ type T_tower = {
     angelKey?: E_angels
     projectileType?: E_projectile
     opacity?: number
-    attackTargetNums?: number
+    multipleTarget?: number
     placementTile: PlacementTile
 }
 type T_explosion = {
@@ -219,12 +220,13 @@ type T_plant = {
     offset?: T_position
     width?: number
     height?: number
-    fruitingDuration?: number
+    fruitingDuration: number
     initFrames: T_initFramesDictionary
     behaviorKey?: E_behaviors
     angelKey?: E_angels
     opacity?: number
     spawGemType: E_gems
+    spawGemPerTime: number
     placementTile: PlacementTile
 }
 type T_text = {

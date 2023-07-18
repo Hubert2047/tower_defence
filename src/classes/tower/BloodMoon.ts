@@ -1,5 +1,5 @@
 import getBaseTowerProperties from '../../data/baseProperties/characters/index.js'
-import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../enum/index.js'
+import { E_angels, E_behaviors, E_characters } from '../../enum/index.js'
 import { I_characterProperties, I_tower } from '../../types/interface.js'
 import Enemy from '../enemy/index.js'
 import Projectile from '../projectile/index.js'
@@ -7,7 +7,6 @@ import NuclearProjectile from '../projectile/Nuclear.js'
 import Tower from './index.js'
 
 export default class BloodMoonTower extends Tower {
-    action: E_characterActions
     constructor({
         position,
         offset = { x: 10, y: 60 },
@@ -36,7 +35,6 @@ export default class BloodMoonTower extends Tower {
             opacity,
             placementTile,
         })
-        this.action = E_characterActions.ATTACK
     }
     public static prices = 10
     public createProjectiles(targetEnemies: Enemy[]): Projectile[] {
@@ -46,7 +44,7 @@ export default class BloodMoonTower extends Tower {
                     x: this.position.x + this.width / 2,
                     y: this.position.y,
                 },
-                damage: this.damage,
+                damage: this.data.damage,
                 enemy,
                 offset: { x: 25, y: -40 },
             }

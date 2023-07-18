@@ -1,9 +1,9 @@
-import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../../enum/index.js'
+import { E_angels, E_behaviors, E_characterRoles, E_characters } from '../../../enum/index.js'
 import { I_characterProperties } from '../../../types/interface.js'
 
 const HauntedTreeProperties: I_characterProperties = {
     type: E_characters.HAUNTED_TREE,
-    action: E_characterActions.ATTACK,
+    role: E_characterRoles.ATTACK,
     width: 90,
     height: 240,
     initFrames: {

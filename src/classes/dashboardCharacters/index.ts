@@ -1,7 +1,7 @@
 import { T_position } from 'src/types/index'
 import Sprite from '../../classes/sprite/index.js'
 import getBaseCharacterProperties from '../../data/baseProperties/characters/index.js'
-import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../enum/index.js'
+import { E_angels, E_behaviors, E_characterRoles, E_characters } from '../../enum/index.js'
 import { createFrames } from '../../helper/index.js'
 import { T_dashboardCharacters, T_frame } from '../../types/index.js'
 import { I_characterProperties } from '../../types/interface'
@@ -11,7 +11,7 @@ export default class DashboardCharacter extends Sprite {
     private angelKey: E_angels
     private behaviorKey: E_behaviors
     public type: E_characters
-    public action: E_characterActions
+    public role: E_characterRoles
     constructor({
         type,
         position,
@@ -45,23 +45,27 @@ export default class DashboardCharacter extends Sprite {
         this.baseCharacterProperties = baseCharacterProperties
         this.angelKey = angelKey
         this.behaviorKey = behaviorKey
-        this.action = this.getCharacterAction(type)
+        this.role = this.getCharacterRole(type)
     }
     createDashboardShadow({ type, position }: T_dashboardCharacters): DashboardCharacter {
-        const baseCharacterProperties = getBaseCharacterProperties(type)
         const characterOptions: T_dashboardCharacters & { isDashboardShadow: boolean } = {
             type,
             position,
-            offset: { x: baseCharacterProperties.width / 2, y: baseCharacterProperties.height / 2 },
-            width: baseCharacterProperties.width,
-            height: baseCharacterProperties.height,
+            offset: { x: this.baseCharacterProperties.width / 2, y: this.baseCharacterProperties.height / 2 },
+            width: this.baseCharacterProperties.width,
+            height: this.baseCharacterProperties.height,
             isDashboardShadow: true,
             opacity: 0.8,
         }
         return new DashboardCharacter(characterOptions)
     }
-    update(): void {
+    update({ isDisplayDashboardShadow, mouse }: { isDisplayDashboardShadow: boolean; mouse: T_position }): void {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
+        if (isDisplayDashboardShadow && this.dashboardShadow) {
+            this.dashboardShadow.position.x = mouse.x
+            this.dashboardShadow.position.y = mouse.y - this.dashboardShadow.offset.y / 2
+            this.dashboardShadow.update({ isDisplayDashboardShadow: false, mouse })
+        }
     }
     public hasCollision(mouse: T_position): boolean {
         return (
@@ -71,24 +75,24 @@ export default class DashboardCharacter extends Sprite {
             mouse.y <= this.position.y + this.height - 3 * this.offset.y
         )
     }
-    private getCharacterAction(type: E_characters): E_characterActions {
+    private getCharacterRole(type: E_characters): E_characterRoles {
         switch (type) {
             case E_characters.AUTUMN_TREE:
-                return E_characterActions.PLANTED
+                return E_characterRoles.PLANTED
             case E_characters.GREEN_TREE:
-                return E_characterActions.PLANTED
+                return E_characterRoles.PLANTED
             case E_characters.MONSTERRA_TREE:
-                return E_characterActions.PLANTED
+                return E_characterRoles.PLANTED
             case E_characters.BLOOD_MOON:
-                return E_characterActions.ATTACK
+                return E_characterRoles.ATTACK
             case E_characters.OBELISK_THUNDER:
-                return E_characterActions.ATTACK
+                return E_characterRoles.ATTACK
             case E_characters.FLYING_OBELISK:
-                return E_characterActions.ATTACK
+                return E_characterRoles.ATTACK
             case E_characters.SHOVEL:
-                return E_characterActions.DESTROY
+                return E_characterRoles.DESTROY
             default:
-                return E_characterActions.PLANTED
+                return E_characterRoles.PLANTED
         }
     }
 }

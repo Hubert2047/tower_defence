@@ -66,10 +66,10 @@ enum E_characters {
     AUTUMN_TREE = 7,
     SHOVEL = 8,
 }
-enum E_characterActions {
-    ATTACK = 'character attack',
-    PLANTED = 'character planted',
-    DESTROY = 'character destroy',
+enum E_characterRoles {
+    ATTACK = 'attack',
+    PLANTED = 'planted',
+    DESTROY = 'destroy',
 }
 enum E_gems {
     BLUE = 'blue',
@@ -80,7 +80,7 @@ export {
     E_angels,
     E_behaviors,
     E_enemy,
-    E_characterActions,
+    E_characterRoles,
     E_explosion,
     E_gameMap,
     E_gate,

@@ -1,10 +1,10 @@
-import { E_angels, E_behaviors, E_characters, E_characterActions } from '../../../enum/index.js'
+import { E_angels, E_behaviors, E_characters, E_characterRoles } from '../../../enum/index.js'
 import { I_characterProperties } from '../../../types/interface.js'
 const BloodMoonProperties: I_characterProperties = {
     type: E_characters.BLOOD_MOON,
     width: 90,
     height: 128,
-    action: E_characterActions.ATTACK,
+    role: E_characterRoles.ATTACK,
     initFrames: {
         [E_behaviors.ATTACK]: {
             [E_angels.ANGEL_0]: {

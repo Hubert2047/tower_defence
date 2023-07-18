@@ -1,10 +1,11 @@
 import getBaseGemProperties from '../../data/baseProperties/gems/index.js';
-import { E_angels, E_behaviors, E_characterActions } from '../../enum/index.js';
+import { E_angels, E_behaviors, E_characterRoles } from '../../enum/index.js';
 import { createFrames } from '../../helper/index.js';
+import DestroyExplosion from '../explosionProjectile/Destroy.js';
 import Gem from '../gems/index.js';
 import Sprite from '../sprite/index.js';
 export default class Plant extends Sprite {
-    constructor({ position, width, height, fruitingDuration = 10, initFrames, offset = { x: 0, y: 0 }, type, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, spawGemType, opacity = 1, placementTile, }) {
+    constructor({ position, width, height, fruitingDuration, initFrames, offset = { x: 0, y: 0 }, type, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, spawGemType, opacity = 1, placementTile, spawGemPerTime, }) {
         const frames = createFrames({ initFrames });
         super({ position, frames, width, height, offset, opacity });
         this.angelKey = angelKey;
@@ -16,13 +17,22 @@ export default class Plant extends Sprite {
         this.gemFrames = createFrames({ initFrames: this.currentGemProperties.initFrames });
         this.gems = [];
         this.spawGemType = spawGemType;
-        this.action = E_characterActions.PLANTED;
+        this.spawGemPerTime = spawGemPerTime;
         this.placementTile = placementTile;
+        this.role = E_characterRoles.PLANTED;
+        this.beingDestroyed = false;
+        this.destroyExplosion = this.createDestroyExplosion();
     }
     update() {
-        this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
-        this.spawningGems();
-        return this.getGems();
+        if (this.beingDestroyed) {
+            this.destroyExplosion.update();
+            return null;
+        }
+        else {
+            this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
+            this.spawningGems();
+            return this.getGems();
+        }
     }
     spawningGems() {
         if (this.countCreateGemIndex < this.fruitingDuration) {
@@ -38,11 +48,22 @@ export default class Plant extends Sprite {
         };
         this.gems.push(new Gem(gemOptions));
     }
+    get isAlreadyDestroyed() {
+        return this.destroyExplosion.hasFinishedAnimation && this.beingDestroyed;
+    }
+    createDestroyExplosion() {
+        return new DestroyExplosion({
+            position: {
+                x: this.position.x + this.width / 2,
+                y: this.position.y + this.height,
+            },
+        });
+    }
     getGems() {
         let gem = { type: this.spawGemType, value: 0 };
         for (let i = this.gems.length - 1; i >= 0; i--) {
             if (this.gems[i].hasHitTarget) {
-                gem.value = 2;
+                gem.value = this.spawGemPerTime;
                 this.gems.splice(i, 1);
             }
             else {

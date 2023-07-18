@@ -1,9 +1,8 @@
 import getBasePlantProperties from '../../data/baseProperties/characters/index.js'
-import { E_angels, E_behaviors, E_characterActions, E_characters, E_gems } from '../../enum/index.js'
+import { E_angels, E_behaviors, E_characters, E_gems } from '../../enum/index.js'
 import { I_characterProperties, I_plant } from '../../types/interface.js'
 import Plant from './index.js'
 export default class MonsterraTree extends Plant {
-    action: E_characterActions
     constructor({
         position,
         offset = { x: 15, y: 70 },
@@ -12,6 +11,7 @@ export default class MonsterraTree extends Plant {
         opacity = 1,
         fruitingDuration = 500,
         placementTile,
+        spawGemPerTime = 2,
     }: I_plant) {
         const baseTowerProperties: I_characterProperties = getBasePlantProperties(E_characters.MONSTERRA_TREE)
         super({
@@ -28,8 +28,8 @@ export default class MonsterraTree extends Plant {
             opacity,
             spawGemType: E_gems.RED,
             placementTile,
+            spawGemPerTime,
         })
-        this.action = E_characterActions.PLANTED
     }
     public static prices = 15
 }

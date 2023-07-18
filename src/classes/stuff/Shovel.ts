@@ -1,5 +1,5 @@
 import getBasePlantProperties from '../../data/baseProperties/characters/index.js'
-import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../enum/index.js'
+import { E_angels, E_behaviors, E_characterRoles, E_characters } from '../../enum/index.js'
 import { createFrames } from '../../helper/index.js'
 import { T_frame, T_position } from '../../types/index.js'
 import { I_characterProperties } from '../../types/interface.js'
@@ -12,12 +12,12 @@ type T_stuff = {
     angelKey?: E_angels
     opacity?: number
 }
-export default class Stuff extends Sprite {
+export default class Shovel extends Sprite {
     name: string
     type: E_characters
     behaviorKey: E_behaviors
     angelKey: E_angels
-    action: E_characterActions
+    role: E_characterRoles
     constructor({
         position,
         offset = { x: 10, y: 54 },
@@ -39,7 +39,7 @@ export default class Stuff extends Sprite {
         this.type = E_characters.SHOVEL
         this.behaviorKey = behaviorKey
         this.angelKey = angelKey
-        this.action = E_characterActions.ATTACK
+        this.role = E_characterRoles.DESTROY
     }
     public static prices = 5
     update() {

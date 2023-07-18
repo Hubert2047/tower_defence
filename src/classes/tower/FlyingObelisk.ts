@@ -1,11 +1,10 @@
 import getBaseTowerProperties from '../../data/baseProperties/characters/index.js'
-import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../enum/index.js'
-import { I_characterProperties, I_tower } from '../../types/interface.js'
+import { E_angels, E_behaviors, E_characters, E_projectile } from '../../enum/index.js'
+import { I_characterProperties, I_projectile, I_tower } from '../../types/interface.js'
 import Enemy from '../enemy/index.js'
 import { default as Fire, default as Projectile } from '../projectile/Fire.js'
 import Tower from './index.js'
 export default class FlyingObelisk extends Tower {
-    action: E_characterActions
     constructor({
         position,
         offset = { x: 10, y: 50 },
@@ -32,24 +31,31 @@ export default class FlyingObelisk extends Tower {
             behaviorKey,
             angelKey,
             opacity,
-            attackTargetNums: 1,
+            multipleTarget: 1,
             placementTile,
         })
-        this.action = E_characterActions.ATTACK
     }
     public static prices = 10
-    public createProjectiles(targetEnemis: Enemy[]): Projectile[] {
-        return targetEnemis.map((enemy) => {
-            const projectileOptions = {
+    public createProjectiles(targetEnemies: Enemy[]): Projectile[] {
+        return targetEnemies.map((enemy) => {
+            const projectileOptions: I_projectile = {
                 position: {
                     x: enemy.position.x + enemy.width / 2,
                     y: enemy.position.y,
                 },
-                damage: this.damage,
+                damage: this.data.damage,
                 enemy,
                 offset: { x: 220, y: 0 },
             }
-            return new Fire(projectileOptions)
+            return this.createProjectile(projectileOptions, this.data.projectileType)
         })
+    }
+    private createProjectile(projectileOptions: I_projectile, type: E_projectile): Projectile {
+        switch (type) {
+            case E_projectile.FIRE:
+                return new Fire(projectileOptions)
+            default:
+                return new Fire(projectileOptions)
+        }
     }
 }
