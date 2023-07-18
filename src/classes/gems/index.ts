@@ -37,7 +37,7 @@ export default class Gem extends Sprite {
         frames,
         fruitingDuration,
         spawningGemPerTime = 2,
-        moveSpeed = 15,
+        moveSpeed = 100,
         opacity = 1,
     }: T_gem) {
         const currentGemProperties = getBaseGemProperties(gemType)
@@ -126,7 +126,7 @@ export default class Gem extends Sprite {
     }
     private updateVelocity(): void {
         const v_normalized: T_position = getVectorNomalized(this.position, this.targetPosition)
-        this.velocityX = this.moveSpeed * v_normalized.x
-        this.velocityY = this.moveSpeed * v_normalized.y
+        this.velocityX = (this.moveSpeed / 10) * v_normalized.x
+        this.velocityY = (this.moveSpeed / 10) * v_normalized.y
     }
 }

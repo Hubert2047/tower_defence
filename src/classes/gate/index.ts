@@ -4,6 +4,7 @@ import { E_angels, E_behaviors, E_gate } from '../../enum/index.js'
 import {
     calAngleFromPointAToPointB,
     calculateDistanceTwoPoint,
+    calculateHoldTime,
     createFrames,
     updateHealthBars,
 } from '../../helper/index.js'
@@ -41,6 +42,7 @@ export default class Gate extends Sprite {
     private baseGateProperties: T_baseGateProperties | undefined
     public behaviorKey: E_behaviors
     public angelKey: E_angels
+    public moveSpeed: number
 
     constructor({
         name,
@@ -68,9 +70,10 @@ export default class Gate extends Sprite {
         this.behaviorKey = behaviorKey
         this.angelKey = angelKey
         this._remainHealth = health
+        this.moveSpeed = 40
         this.health = health
         this.explosions = []
-        this.holdAttack = parseInt((240 / attackSpeed).toString())
+        this.holdAttack = parseInt((1000 / attackSpeed).toString())
         this.projectiles = []
         this.baseGateProperties = getGatesProperties(this.gateType)
     }
@@ -131,8 +134,10 @@ export default class Gate extends Sprite {
         const distance = calculateDistanceTwoPoint(targetEnemy.position, this.position)
         if (distance <= 64 * 4) {
             this.behaviorKey = E_behaviors.ATTACK
+            this.updateHoldTime(this.attackSpeed)
         } else {
             this.behaviorKey = E_behaviors.ATTACK_BOW
+            this.updateHoldTime(this.moveSpeed)
         }
         if (this.baseGateProperties) {
             const projectileInfo: T_projectileInfo = this.baseGateProperties.projectileInfo[this.behaviorKey]
@@ -155,6 +160,17 @@ export default class Gate extends Sprite {
             const newProjectile: Projectile = new Projectile(projectileOptions)
             this.projectiles.push(newProjectile)
         }
+    }
+    private updateHoldTime(speed: number) {
+        const currentBehavior = this.frames.get(this.behaviorKey)
+        if (!currentBehavior) return
+        const currentFrame = currentBehavior.get(this.angelKey)
+        if (!currentFrame) return
+        currentFrame.holdTime = calculateHoldTime({
+            maxX: currentFrame.maxX,
+            maxY: currentFrame.maxY,
+            speed,
+        })
     }
     private getAngleKeyByTwoPoint(pointA: T_position, pointB: T_position): E_angels {
         const angel = calAngleFromPointAToPointB(pointA, pointB)

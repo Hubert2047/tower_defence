@@ -11,7 +11,7 @@ export default class BloodMoonTower extends Tower {
         position,
         offset = { x: 10, y: 60 },
         damage = 1000,
-        attackSpeed = 4,
+        attackSpeed = 54,
         attackRange = 300,
         behaviorKey = E_behaviors.ATTACK,
         angelKey = E_angels.ANGEL_0,

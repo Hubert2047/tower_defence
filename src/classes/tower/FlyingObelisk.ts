@@ -7,9 +7,9 @@ import Tower from './index.js'
 export default class FlyingObelisk extends Tower {
     constructor({
         position,
-        offset = { x: 10, y: 50 },
+        offset = { x: 15, y: 50 },
         damage = 2000,
-        attackSpeed = 5,
+        attackSpeed = 45,
         attackRange = 300,
         behaviorKey = E_behaviors.IDLE,
         angelKey = E_angels.ANGEL_0,

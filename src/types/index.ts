@@ -11,6 +11,7 @@ import {
     E_gems,
     E_projectile,
 } from '../enum/index.js'
+import { I_character } from './interface.js'
 
 type T_position = {
     x: number
@@ -246,7 +247,13 @@ type T_dashboardCharacters = {
     angelKey?: E_angels
     opacity?: number
 }
+type T_activeCharacterDestroyInfo = {
+    role: E_characterRoles
+    activeMouseOverCharacter: I_character
+}
+
 export {
+    T_activeCharacterDestroyInfo,
     T_baseEnemyProperties,
     T_baseGateProperties,
     T_dashboardBorder,

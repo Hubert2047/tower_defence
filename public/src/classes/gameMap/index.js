@@ -176,14 +176,22 @@ export default class GameMap {
         });
     }
     updateTowers() {
+        this.towers.forEach((tower) => {
+            var _a;
+            const isDisplayAttackRangeCircle = ((_a = this.activeMouseOverCharacterInfo) === null || _a === void 0 ? void 0 : _a.activeMouseOverCharacter) === tower &&
+                this.activeDashboardCharacter === null;
+            tower.update({
+                enemies: this.currentEnemiesData,
+                shootingAudio: this.shootingAudio,
+                isDisplayAttackRangeCircle,
+            });
+        });
         for (let i = this.towers.length - 1; i >= 0; i--) {
             const currentTower = this.towers[i];
             if (currentTower.isAlreadyDestroyed) {
                 currentTower.placementTile.isOccupied = false;
                 this.towers.splice(i, 1);
-                continue;
             }
-            currentTower.update({ enemies: this.currentEnemiesData, shootingAudio: this.shootingAudio });
         }
     }
     updateEnemies() {
@@ -200,8 +208,6 @@ export default class GameMap {
                 this.gemsInfo[E_gems.BLUE].value += currentEnemy.coins;
             }
         }
-    }
-    drawGemsAndMenu() {
         this.menu.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 });
         this.drawGems();
         this.drawDisplayRound();
@@ -608,6 +614,7 @@ export default class GameMap {
             (_b = (_a = this.dashboardCharacters.find((dashboardCharacterInfo) => dashboardCharacterInfo.dashboardCharacter.hasCollision(this.mousePosition))) === null || _a === void 0 ? void 0 : _a.dashboardCharacter) !== null && _b !== void 0 ? _b : null;
     }
     checkMouseOverCharacter() {
+        this.activeMouseOverCharacterInfo = this.handleFindMouseOverCharacterInfo(this.mousePosition);
         if (this.activeDashboardCharacter === null)
             return;
         this.activeMouseOverCharacterInfo = this.handleFindMouseOverCharacterInfo(this.mousePosition);

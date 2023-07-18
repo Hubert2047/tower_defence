@@ -9,6 +9,7 @@ import gatesBaseProperties from '../../data/baseProperties/gates/index.js'
 import { E_angels, E_behaviors, E_characterRoles, E_characters, E_enemy, E_gate, E_gems } from '../../enum/index.js'
 import { createFrames, drawText, randomNumberInRange } from '../../helper/index.js'
 import {
+    T_activeCharacterDestroyInfo,
     T_baseEnemyProperties,
     T_dashboardBorder,
     T_dashboardCharacters,
@@ -48,10 +49,7 @@ interface I_dashboardCharactersInfo {
     border: Border
     type: E_characters
 }
-type T_activeCharacterDestroyInfo = {
-    role: E_characterRoles
-    activeMouseOverCharacter: I_character
-}
+
 type T_gemsInfo = Record<
     string,
     {
@@ -254,14 +252,22 @@ export default class GameMap {
         })
     }
     private updateTowers(): void {
+        this.towers.forEach((tower: Tower) => {
+            const isDisplayAttackRangeCircle =
+                this.activeMouseOverCharacterInfo?.activeMouseOverCharacter === tower &&
+                this.activeDashboardCharacter === null
+            tower.update({
+                enemies: this.currentEnemiesData,
+                shootingAudio: this.shootingAudio,
+                isDisplayAttackRangeCircle,
+            })
+        })
         for (let i = this.towers.length - 1; i >= 0; i--) {
             const currentTower = this.towers[i]
             if (currentTower.isAlreadyDestroyed) {
                 currentTower.placementTile.isOccupied = false
                 this.towers.splice(i, 1)
-                continue
             }
-            currentTower.update({ enemies: this.currentEnemiesData, shootingAudio: this.shootingAudio })
         }
     }
     private updateEnemies(): void {
@@ -278,8 +284,6 @@ export default class GameMap {
                 this.gemsInfo[E_gems.BLUE].value += currentEnemy.coins
             }
         }
-    }
-    private drawGemsAndMenu(): void {
         this.menu.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
         this.drawGems()
         this.drawDisplayRound()
@@ -711,6 +715,7 @@ export default class GameMap {
             )?.dashboardCharacter ?? null
     }
     public checkMouseOverCharacter() {
+        this.activeMouseOverCharacterInfo = this.handleFindMouseOverCharacterInfo(this.mousePosition)
         if (this.activeDashboardCharacter === null) return
         this.activeMouseOverCharacterInfo = this.handleFindMouseOverCharacterInfo(this.mousePosition)
     }

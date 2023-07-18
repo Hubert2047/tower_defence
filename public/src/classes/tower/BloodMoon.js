@@ -3,7 +3,7 @@ import { E_angels, E_behaviors, E_characters } from '../../enum/index.js';
 import NuclearProjectile from '../projectile/Nuclear.js';
 import Tower from './index.js';
 class BloodMoonTower extends Tower {
-    constructor({ position, offset = { x: 10, y: 60 }, damage = 1000, attackSpeed = 4, attackRange = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile, }) {
+    constructor({ position, offset = { x: 10, y: 60 }, damage = 1000, attackSpeed = 54, attackRange = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile, }) {
         const baseTowerProperties = getBaseTowerProperties(E_characters.BLOOD_MOON);
         super({
             name: 'Blood Moon Tower',

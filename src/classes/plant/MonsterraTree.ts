@@ -5,7 +5,7 @@ import Plant from './index.js'
 export default class MonsterraTree extends Plant {
     constructor({
         position,
-        offset = { x: 15, y: 70 },
+        offset = { x: 14, y: 60 },
         behaviorKey = E_behaviors.IDLE,
         angelKey = E_angels.ANGEL_0,
         opacity = 1,

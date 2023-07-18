@@ -315,7 +315,7 @@ const gatesBaseProperties = new Map([
                     projectileType: E_projectile.FIRE,
                     width: 40,
                     height: 40,
-                    moveSpeed: 15,
+                    moveSpeed: 300,
                     offset: { x: -115, y: 60 },
                     initFrames: {
                         [E_behaviors.ATTACK]: {
@@ -393,7 +393,7 @@ const gatesBaseProperties = new Map([
                     projectileType: E_projectile.FIRE,
                     width: 220,
                     height: 220,
-                    moveSpeed: 9,
+                    moveSpeed: 100,
                     offset: { x: 15, y: 90 },
                     initFrames: {
                         [E_behaviors.ATTACK]: {

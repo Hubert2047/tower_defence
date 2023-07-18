@@ -25,7 +25,7 @@ export default class Projectile extends Sprite {
         width = 64,
         height = 64,
         initFrames,
-        moveSpeed = 1,
+        moveSpeed = 100,
         damage = 100,
         enemy,
         behaviorKey = E_behaviors.ATTACK,
@@ -66,8 +66,8 @@ export default class Projectile extends Sprite {
             x: this.targetEnemy.position.x - this.targetEnemy.width / 4,
             y: this.targetEnemy.position.y - this.targetEnemy.height / 5,
         })
-        this.velocityX = this.moveSpeed * v_normalized.x
-        this.velocityY = this.moveSpeed * v_normalized.y
+        this.velocityX = (this.moveSpeed / 10) * v_normalized.x
+        this.velocityY = (this.moveSpeed / 10) * v_normalized.y
     }
     public get canHitEnemy(): boolean {
         const realEnemyPostion: T_position = {

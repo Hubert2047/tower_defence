@@ -34,6 +34,27 @@ export default class Plant extends Sprite {
             return this.getGems();
         }
     }
+    createLeveUpIcon() {
+        const initFrames = {
+            [E_behaviors.IDLE]: {
+                [E_angels.ANGEL_0]: {
+                    imageSourceString: '../../public/src/assets/images/stuff/level-up.png',
+                    maxX: 5,
+                    maxY: 3,
+                    holdTime: 4,
+                },
+            },
+        };
+        const frames = createFrames({ initFrames });
+        const options = {
+            frames,
+            position: { x: this.position.x, y: this.position.y },
+            offset: { x: 8, y: 30 },
+            height: 80,
+            width: 80,
+        };
+        return new Sprite(options);
+    }
     spawningGems() {
         if (this.countCreateGemIndex < this.fruitingDuration) {
             this.countCreateGemIndex++;
