@@ -42,7 +42,7 @@ export default class Enemy extends Sprite {
         height = 124,
         initFrames,
         coins = 1,
-        moveSpeed = 1,
+        moveSpeed = 40,
         health = 1000,
         damage = 100,
         attackRange = 200,
@@ -145,8 +145,8 @@ export default class Enemy extends Sprite {
     }
     private updateVelocity(waypoints: T_position[]): void {
         const v_normalized: T_position = getVectorNomalized(this.position, waypoints[this.currentWayPointIndex])
-        this.velocityX = this.moveSpeed * v_normalized.x
-        this.velocityY = this.moveSpeed * v_normalized.y
+        this.velocityX = (this.moveSpeed / 10) * v_normalized.x
+        this.velocityY = (this.moveSpeed / 10) * v_normalized.y
     }
     public getHit(damage: number): void {
         this.remainHealth -= damage

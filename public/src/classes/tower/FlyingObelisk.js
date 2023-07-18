@@ -3,7 +3,7 @@ import { E_angels, E_behaviors, E_characterActions, E_characters } from '../../e
 import { default as Fire } from '../projectile/Fire.js';
 import Tower from './index.js';
 class FlyingObelisk extends Tower {
-    constructor({ position, offset = { x: 10, y: 50 }, damage = 2000, attackSpeed = 5, attackRange = 300, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile, }) {
+    constructor({ position, offset = { x: 15, y: 50 }, damage = 2000, attackSpeed = 45, attackRange = 300, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile, }) {
         const baseTowerProperties = getBaseTowerProperties(E_characters.FLYING_OBELISK);
         super({
             name: 'Flying Obelisk Tower',

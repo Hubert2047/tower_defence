@@ -15,6 +15,7 @@ import gatesBaseProperties from '../../data/baseProperties/gates/index.js'
 import { E_angels, E_behaviors, E_characterActions, E_characters, E_enemy, E_gate, E_gems } from '../../enum/index.js'
 import { createFrames, drawText, randomNumberInRange } from '../../helper/index.js'
 import {
+    T_activeCharacterDestroyInfo,
     T_baseEnemyProperties,
     T_dashboardBorder,
     T_dashboardCharacters,
@@ -56,10 +57,7 @@ interface I_dashboardCharactersInfo {
     border: Border
     type: E_characters
 }
-type T_activeCharacterDestroyInfo = {
-    action: E_characterActions
-    activeMouseOverCharacter: I_character
-}
+
 type T_gemsInfo = Record<
     string,
     {
@@ -175,7 +173,10 @@ export default class GameMap {
     }
     private updatePlants() {
         this.plants.forEach((plant: Plant) => {
-            const gem = plant.update()
+            const isDisplayLevelUp =
+                this.activeMouseOverCharacterInfo?.activeMouseOverCharacter === plant &&
+                this.activeDashboardCharacter === null
+            const gem = plant.update(isDisplayLevelUp)
             this.gemsInfo[gem.type].value += gem.value
         })
     }
@@ -277,7 +278,14 @@ export default class GameMap {
     }
     private updateTowers(): void {
         this.towers.forEach((tower: Tower) => {
-            tower.update({ enemies: this.currentEnemiesData, shootingAudio: this.shootingAudio })
+            const isDisplayAttackRangeCircle =
+                this.activeMouseOverCharacterInfo?.activeMouseOverCharacter === tower &&
+                this.activeDashboardCharacter === null
+            tower.update({
+                enemies: this.currentEnemiesData,
+                shootingAudio: this.shootingAudio,
+                isDisplayAttackRangeCircle,
+            })
         })
     }
     private updateEnemies(): void {
@@ -795,7 +803,6 @@ export default class GameMap {
             )?.dashboardCharacter ?? null
     }
     public checkMouseOverCharacter() {
-        if (this.activeDashboardCharacter === null) return
         const allCurrentCharacters: I_character[] = [...this.towers, ...this.plants]
         this.activeMouseOverCharacterInfo = this.handleFindMouseOverCharacterInfo(
             allCurrentCharacters,

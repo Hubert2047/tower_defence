@@ -12,7 +12,7 @@ export default class FireProjectile extends Projectile {
         offset = { x: 0, y: 0 },
         width = 320,
         height = 200,
-        moveSpeed = 3,
+        moveSpeed = 100,
         damage = 300,
         behaviorKey = E_behaviors.ATTACK,
         angelKey = E_angels.ANGEL_0,
@@ -49,7 +49,7 @@ export default class FireProjectile extends Projectile {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
     }
     public updatePosition(): void {
-        this.currentMove += 6
+        this.currentMove += 8
         this.position.x = this.targetEnemy.position.x + this.targetEnemy.width / 2
         this.position.y = this.targetEnemy.position.y - this.targetEnemy.position.y / 4 + this.currentMove
     }
@@ -59,10 +59,13 @@ export default class FireProjectile extends Projectile {
     public createExplosion(): ExplosionProjectile {
         let explosionOptions: I_explosion = {
             position: {
-                x: this.position.x + this.offset.x,
-                y: this.position.y - this.offset.y,
+                x:
+                    this.targetEnemy.position.x +
+                    (this.targetEnemy.width - 2 * this.targetEnemy.offset.x) / 2 -
+                    (this.width - 2 * this.offset.x) / 2,
+                y: this.targetEnemy.position.y,
             },
-            offset: { x: 300, y: -60 },
+            offset: { x: 80, y: 0 },
         }
         return new FireExplosion(explosionOptions)
     }

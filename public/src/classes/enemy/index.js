@@ -2,7 +2,7 @@ import { E_angels, E_behaviors } from '../../enum/index.js';
 import { calculateHoldTime, createFrames, getAngleKeyByTwoPoint, getVectorNomalized, updateHealthBars, } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Enemy extends Sprite {
-    constructor({ name, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, coins = 1, moveSpeed = 1, health = 1000, damage = 100, attackRange = 200, attackSpeed = 5, enemyType, angelKey = E_angels.ANGEL_90, behaviorKey = E_behaviors.RUN, }) {
+    constructor({ name, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, coins = 1, moveSpeed = 40, health = 1000, damage = 100, attackRange = 200, attackSpeed = 5, enemyType, angelKey = E_angels.ANGEL_90, behaviorKey = E_behaviors.RUN, }) {
         const frames = createFrames({ initFrames, speed: moveSpeed });
         super({
             position,
@@ -99,8 +99,8 @@ export default class Enemy extends Sprite {
     }
     updateVelocity(waypoints) {
         const v_normalized = getVectorNomalized(this.position, waypoints[this.currentWayPointIndex]);
-        this.velocityX = this.moveSpeed * v_normalized.x;
-        this.velocityY = this.moveSpeed * v_normalized.y;
+        this.velocityX = (this.moveSpeed / 10) * v_normalized.x;
+        this.velocityY = (this.moveSpeed / 10) * v_normalized.y;
     }
     getHit(damage) {
         this.remainHealth -= damage;

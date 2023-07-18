@@ -13,7 +13,7 @@ export default class ObeliskThunderTower extends Tower {
         position,
         offset = { x: 10, y: 55 },
         damage = 3000,
-        attackSpeed = 2,
+        attackSpeed = 40,
         attackRange = 300,
         behaviorKey = E_behaviors.IDLE,
         angelKey = E_angels.ANGEL_0,
@@ -46,13 +46,16 @@ export default class ObeliskThunderTower extends Tower {
     public update({
         enemies,
         shootingAudio,
+        isDisplayAttackRangeCircle,
     }: {
         enemies: Enemy[]
         shootingAudio: HTMLAudioElement | HTMLElement | null
+        isDisplayAttackRangeCircle: boolean
     }): void {
         super.update({
             enemies,
             shootingAudio,
+            isDisplayAttackRangeCircle,
         })
         if (this.behaviorKey === E_behaviors.ATTACK) {
             this.width = this.baseTowerProperties.width

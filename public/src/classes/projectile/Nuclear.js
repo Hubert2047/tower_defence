@@ -3,7 +3,7 @@ import { E_angels, E_behaviors, E_projectile } from '../../enum/index.js';
 import { calculateDistanceTwoPoint, getVectorNomalized } from '../../helper/index.js';
 import Projectile from './index.js';
 export default class NuclearProjectile extends Projectile {
-    constructor({ position, enemy, offset = { x: 0, y: 0 }, width = 40, height = 40, moveSpeed = 20, damage = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, }) {
+    constructor({ position, enemy, offset = { x: 0, y: 0 }, width = 40, height = 40, moveSpeed = 300, damage = 300, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, }) {
         const initFrames = {
             [E_behaviors.ATTACK]: {
                 [E_angels.ANGEL_0]: {
@@ -138,8 +138,8 @@ export default class NuclearProjectile extends Projectile {
             x: this.targetEnemy.position.x + +this.targetEnemy.width / 2 - this.offset.x - this.width / 2,
             y: this.targetEnemy.position.y,
         });
-        this.velocityX = this.moveSpeed * v_normalized.x;
-        this.velocityY = this.moveSpeed * v_normalized.y;
+        this.velocityX = (this.moveSpeed / 10) * v_normalized.x;
+        this.velocityY = (this.moveSpeed / 10) * v_normalized.y;
     }
     get canHitEnemy() {
         const realEnemyPostion = {
@@ -152,10 +152,12 @@ export default class NuclearProjectile extends Projectile {
     createExplosion() {
         let explosionOptions = {
             position: {
-                x: this.targetEnemy.position.x + this.targetEnemy.width / 2 - this.offset.x - this.width / 2,
-                y: this.position.y,
+                x: this.targetEnemy.position.x +
+                    (this.targetEnemy.width - 2 * this.targetEnemy.offset.x) / 2 -
+                    (this.width - 2 * this.offset.x) / 2,
+                y: this.targetEnemy.position.y,
             },
-            offset: { x: 10, y: 0 },
+            offset: { x: 50, y: 10 },
             moveSpeed: this.moveSpeed,
         };
         return new NuclearExplosion(explosionOptions);

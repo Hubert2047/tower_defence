@@ -2,7 +2,7 @@ import FireProjectile from '../../classes/projectile/Fire.js'
 import context2D from '../../context2D/index.js'
 import { E_angels, E_behaviors, E_characterActions, E_characters, E_projectile } from '../../enum/index.js'
 import { calAngleFromPointAToPointB, calculateDistanceTwoPoint, createFrames } from '../../helper/index.js'
-import { T_frame, T_position, T_tower } from '../../types/index.js'
+import { T_frame, T_initFramesDictionary, T_position, T_sprite, T_tower } from '../../types/index.js'
 import { I_character, I_projectile } from '../../types/interface.js'
 import Enemy from '../enemy/index.js'
 import ExplosionProjectile from '../explosionProjectile/index.js'
@@ -25,6 +25,7 @@ export default class Tower extends Sprite implements I_character {
     public projectiles: Projectile[]
     public action: E_characterActions
     public placementTile: PlacementTile
+    public levelUp: Sprite
     // public attacked: boolean
     public explosions: ExplosionProjectile[]
     constructor({
@@ -54,7 +55,7 @@ export default class Tower extends Sprite implements I_character {
         this.attackRange = attackRange
         this.projectileType = projectileType
         this.projectiles = []
-        this.holdAttack = parseInt((100 / attackSpeed).toString())
+        this.holdAttack = parseInt((1000 / attackSpeed).toString())
         this.countAttackTime = this.holdAttack
         this.explosions = []
         this.attackTargetNums = attackTargetNums
@@ -62,30 +63,63 @@ export default class Tower extends Sprite implements I_character {
         this.angelKey = angelKey
         this.action = E_characterActions.ATTACK
         this.placementTile = placementTile
-        // this.attacked = false
+        this.levelUp = this.createLeveUpIcon()
     }
     public draw(): void {
         super.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
-        // this.drawAttackRangeCicle()
     }
     public drawAttackRangeCicle(): void {
         if (context2D) {
             context2D.beginPath()
-            context2D.arc(this.position.x + this.offset.x, this.position.y, this.attackRange, 0, 2 * Math.PI)
-            context2D.fillStyle = 'rgba(225,225,225,0.1)'
+            context2D.arc(
+                this.placementTile.position.x + 32,
+                this.placementTile.position.y + 32,
+                this.attackRange,
+                0,
+                2 * Math.PI
+            )
+            context2D.fillStyle = 'rgba(225,225,225,0.15)'
             context2D.fill()
         }
+    }
+    private createLeveUpIcon() {
+        const initFrames: T_initFramesDictionary = {
+            [E_behaviors.IDLE]: {
+                [E_angels.ANGEL_0]: {
+                    imageSourceString: '../../public/src/assets/images/stuff/level-up.png',
+                    maxX: 5,
+                    maxY: 3,
+                    holdTime: 4,
+                },
+            },
+        }
+
+        const frames = createFrames({ initFrames })
+        const options: T_sprite = {
+            frames,
+            position: { x: this.position.x, y: this.position.y },
+            offset: { x: 4, y: 12 },
+            height: 80,
+            width: 80,
+        }
+        return new Sprite(options)
     }
     public update({
         enemies,
         shootingAudio,
+        isDisplayAttackRangeCircle,
     }: {
         enemies: Enemy[]
         shootingAudio: HTMLAudioElement | HTMLElement | null
+        isDisplayAttackRangeCircle: boolean
     }): void {
         this.draw()
         this.attackEnemies(enemies)
         this.updateProjectile(shootingAudio)
+        if (isDisplayAttackRangeCircle) {
+            this.drawAttackRangeCicle()
+            this.levelUp.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
+        }
     }
     private updateProjectile(shootingAudio: HTMLAudioElement | HTMLElement | null) {
         for (var i = this.projectiles.length - 1; i >= 0; i--) {

@@ -3,6 +3,7 @@ import PlacementTile from '../classes/placementTile/index.js'
 import {
     E_angels,
     E_behaviors,
+    E_characterActions,
     E_characters,
     E_enemy,
     E_explosion,
@@ -10,6 +11,7 @@ import {
     E_gems,
     E_projectile,
 } from '../enum/index.js'
+import { I_character } from './interface.js'
 
 type T_position = {
     x: number
@@ -243,6 +245,10 @@ type T_dashboardCharacters = {
     angelKey?: E_angels
     opacity?: number
 }
+type T_activeCharacterDestroyInfo = {
+    action: E_characterActions
+    activeMouseOverCharacter: I_character
+}
 export {
     T_baseEnemyProperties,
     T_baseGateProperties,
@@ -269,4 +275,5 @@ export {
     T_text,
     T_thunderProjectile,
     T_tower,
+    T_activeCharacterDestroyInfo,
 }

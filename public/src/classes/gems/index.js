@@ -5,7 +5,7 @@ import { E_angels, E_behaviors, E_gems } from '../../enum/index.js';
 import { drawText, getVectorNomalized } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Gem extends Sprite {
-    constructor({ position, gemType, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, offset, frames, fruitingDuration, spawningGemPerTime = 2, moveSpeed = 15, opacity = 1, }) {
+    constructor({ position, gemType, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, offset, frames, fruitingDuration, spawningGemPerTime = 2, moveSpeed = 100, opacity = 1, }) {
         const currentGemProperties = getBaseGemProperties(gemType);
         super({
             position,
@@ -91,7 +91,7 @@ export default class Gem extends Sprite {
     }
     updateVelocity() {
         const v_normalized = getVectorNomalized(this.position, this.targetPosition);
-        this.velocityX = this.moveSpeed * v_normalized.x;
-        this.velocityY = this.moveSpeed * v_normalized.y;
+        this.velocityX = (this.moveSpeed / 10) * v_normalized.x;
+        this.velocityY = (this.moveSpeed / 10) * v_normalized.y;
     }
 }

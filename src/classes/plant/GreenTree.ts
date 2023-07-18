@@ -6,7 +6,7 @@ export default class GreenTree extends Plant {
     action: E_characterActions
     constructor({
         position,
-        offset = { x: 10, y: 80 },
+        offset = { x: 10, y: 65 },
         behaviorKey = E_behaviors.IDLE,
         angelKey = E_angels.ANGEL_0,
         opacity = 1,

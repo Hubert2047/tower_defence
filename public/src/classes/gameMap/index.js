@@ -85,7 +85,10 @@ export default class GameMap {
     }
     updatePlants() {
         this.plants.forEach((plant) => {
-            const gem = plant.update();
+            var _a;
+            const isDisplayLevelUp = ((_a = this.activeMouseOverCharacterInfo) === null || _a === void 0 ? void 0 : _a.activeMouseOverCharacter) === plant &&
+                this.activeDashboardCharacter === null;
+            const gem = plant.update(isDisplayLevelUp);
             this.gemsInfo[gem.type].value += gem.value;
         });
     }
@@ -189,7 +192,14 @@ export default class GameMap {
     }
     updateTowers() {
         this.towers.forEach((tower) => {
-            tower.update({ enemies: this.currentEnemiesData, shootingAudio: this.shootingAudio });
+            var _a;
+            const isDisplayAttackRangeCircle = ((_a = this.activeMouseOverCharacterInfo) === null || _a === void 0 ? void 0 : _a.activeMouseOverCharacter) === tower &&
+                this.activeDashboardCharacter === null;
+            tower.update({
+                enemies: this.currentEnemiesData,
+                shootingAudio: this.shootingAudio,
+                isDisplayAttackRangeCircle,
+            });
         });
     }
     updateEnemies() {
@@ -684,8 +694,6 @@ export default class GameMap {
             (_b = (_a = this.dashboardCharacters.find((dashboardCharacterInfo) => dashboardCharacterInfo.dashboardCharacter.hasCollision(this.mousePosition))) === null || _a === void 0 ? void 0 : _a.dashboardCharacter) !== null && _b !== void 0 ? _b : null;
     }
     checkMouseOverCharacter() {
-        if (this.activeDashboardCharacter === null)
-            return;
         const allCurrentCharacters = [...this.towers, ...this.plants];
         this.activeMouseOverCharacterInfo = this.handleFindMouseOverCharacterInfo(allCurrentCharacters, this.mousePosition);
     }

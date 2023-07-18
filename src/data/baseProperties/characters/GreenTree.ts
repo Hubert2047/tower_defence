@@ -3,7 +3,7 @@ import { I_characterProperties } from '../../../types/interface.js'
 const GreenTreeProperties: I_characterProperties = {
     type: E_characters.GREEN_TREE,
     width: 90,
-    height: 140,
+    height: 100,
     action: E_characterActions.PLANTED,
     initFrames: {
         [E_behaviors.IDLE]: {

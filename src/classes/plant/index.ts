@@ -2,7 +2,7 @@ import { I_character, I_gemProperties } from 'src/types/interface.js'
 import getBaseGemProperties from '../../data/baseProperties/gems/index.js'
 import { E_angels, E_behaviors, E_characterActions, E_characters, E_gems } from '../../enum/index.js'
 import { createFrames } from '../../helper/index.js'
-import { T_frame, T_plant, T_position } from '../../types/index.js'
+import { T_frame, T_initFramesDictionary, T_plant, T_position, T_sprite } from '../../types/index.js'
 import Gem from '../gems/index.js'
 import PlacementTile from '../placementTile/index.js'
 import Sprite from '../sprite/index.js'
@@ -18,6 +18,7 @@ export default class Plant extends Sprite implements I_character {
     spawGemType: E_gems
     action: E_characterActions
     public placementTile: PlacementTile
+    public levelUp: Sprite
 
     constructor({
         position,
@@ -46,11 +47,37 @@ export default class Plant extends Sprite implements I_character {
         this.spawGemType = spawGemType
         this.action = E_characterActions.PLANTED
         this.placementTile = placementTile
+        this.levelUp = this.createLeveUpIcon()
     }
-    update(): { type: E_gems; value: number } {
+    update(isDisplayLevelUp: boolean): { type: E_gems; value: number } {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
         this.spawningGems()
+        if (isDisplayLevelUp) {
+            this.levelUp.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
+        }
         return this.getGems()
+    }
+    private createLeveUpIcon() {
+        const initFrames: T_initFramesDictionary = {
+            [E_behaviors.IDLE]: {
+                [E_angels.ANGEL_0]: {
+                    imageSourceString: '../../public/src/assets/images/stuff/level-up.png',
+                    maxX: 5,
+                    maxY: 3,
+                    holdTime: 4,
+                },
+            },
+        }
+
+        const frames = createFrames({ initFrames })
+        const options: T_sprite = {
+            frames,
+            position: { x: this.position.x, y: this.position.y },
+            offset: { x: 8, y: 30 },
+            height: 80,
+            width: 80,
+        }
+        return new Sprite(options)
     }
     spawningGems() {
         if (this.countCreateGemIndex < this.fruitingDuration) {
