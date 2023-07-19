@@ -5,6 +5,7 @@ import {
     E_behaviors,
     E_characterRoles,
     E_characters,
+    E_chests,
     E_enemy,
     E_explosion,
     E_gate,
@@ -251,11 +252,20 @@ type T_activeCharacterDestroyInfo = {
     role: E_characterRoles
     activeMouseOverCharacter: I_character
 }
+type T_chest = {
+    type: E_chests
+    value: number
+}
+type T_gemValue = {
+    type: E_gems
+    value: number
+}
 
 export {
     T_activeCharacterDestroyInfo,
     T_baseEnemyProperties,
     T_baseGateProperties,
+    T_chest,
     T_dashboardBorder,
     T_dashboardCharacters,
     T_enemy,
@@ -266,6 +276,7 @@ export {
     T_gate,
     T_gateInfo,
     T_gemStartInfo,
+    T_gemValue,
     T_initDashboardCharacterInfo,
     T_initDashboardPlantInfo,
     T_initFrame,

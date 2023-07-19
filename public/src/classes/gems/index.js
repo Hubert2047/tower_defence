@@ -5,7 +5,7 @@ import { E_angels, E_behaviors, E_gems } from '../../enum/index.js';
 import { drawText, getVectorNomalized } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Gem extends Sprite {
-    constructor({ position, gemType, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, offset, frames, fruitingDuration, spawningGemPerTime = 2, moveSpeed = 100, opacity = 1, }) {
+    constructor({ position, gemType, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, offset, frames, gemNum, moveSpeed = 100, opacity = 1, }) {
         const currentGemProperties = getBaseGemProperties(gemType);
         super({
             position,
@@ -18,13 +18,12 @@ export default class Gem extends Sprite {
         this.angelKey = angelKey;
         this.behaviorKey = behaviorKey;
         this.gemType = gemType;
-        this.fruitingDuration = fruitingDuration;
         this.moveSpeed = moveSpeed;
-        this.countTimeToMove = 0;
         this.velocityX = 0;
         this.velocityY = 0;
         this.targetPosition = this.findTargetPosition();
-        this.spawningGemPerTime = spawningGemPerTime;
+        this.gemNum = gemNum;
+        this.haveharvestGems = false;
     }
     get hasHitTarget() {
         return this.position.x === this.targetPosition.x && this.position.y === this.targetPosition.y;
@@ -32,7 +31,7 @@ export default class Gem extends Sprite {
     update() {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
         if (context2D) {
-            const textString = `+${this.spawningGemPerTime.toString()}`;
+            const textString = `+${this.gemNum.toString()}`;
             const textWidth = context2D.measureText(textString).width;
             const textOptions = {
                 text: textString,
@@ -47,15 +46,10 @@ export default class Gem extends Sprite {
         }
         if (this.hasHitTarget)
             return;
-        if (this.countTimeToMove < this.fruitingDuration / 2) {
-            this.countTimeToMove++;
-            return;
+        if (this.haveharvestGems) {
+            this.opacity = 0.5;
+            this.updatePosition();
         }
-        this.opacity = 0.5;
-        this.updatePosition();
-    }
-    harvestGem() {
-        this.countTimeToMove = this.fruitingDuration;
     }
     findTargetPosition() {
         switch (this.gemType) {
@@ -78,9 +72,6 @@ export default class Gem extends Sprite {
         }
         if (this.position.y >= this.targetPosition.y && this.velocityY > 0) {
             this.position.y = this.targetPosition.y;
-        }
-        if (this.position.x === this.targetPosition.x && this.position.y === this.targetPosition.y) {
-            this.countTimeToMove = 0;
         }
     }
     hasCollision(mouse) {

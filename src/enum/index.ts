@@ -37,6 +37,7 @@ enum E_behaviors {
     DEATH = 'death',
     IDLE = 'idle',
     HIT = 'gethit',
+    DROP_CHEST = 'DROP_CHEST',
 }
 enum E_angels {
     ANGEL_0 = '0degree',
@@ -76,6 +77,11 @@ enum E_gems {
     RED = 'red',
     PURPLE = 'purple',
 }
+enum E_chests {
+    GOLD = 'gold',
+    SILVER = 'silver',
+    PURPLE = 'purple',
+}
 export {
     E_angels,
     E_behaviors,
@@ -87,4 +93,5 @@ export {
     E_projectile,
     E_characters,
     E_gems,
+    E_chests,
 }

@@ -1,8 +1,7 @@
-import Sprite from '../classes/sprite/index.js';
 import { BASE_HEALTH, FPS } from '../constants/index.js';
 import context2D from '../context2D/index.js';
 import gameData from '../data/gameMaps/index.js';
-import { E_angels, E_behaviors } from '../enum/index.js';
+import { E_angels, E_behaviors, E_chests } from '../enum/index.js';
 function calculateDistanceTwoPoint(pointA, pointB) {
     const dx = pointA.x - pointB.x;
     const dy = pointA.y - pointB.y;
@@ -33,20 +32,6 @@ function updateHealthBars({ sprite, health, remainHealth }) {
     else {
         drawRemainHealthBar({ sprite, drawOption, fullHealthWidth, remainHealthWidth, fillStyle: 'green' });
     }
-}
-function createCoinIcon({ position, offset, height, width, }) {
-    const initFrames = {
-        [E_behaviors.IDLE]: {
-            [E_angels.ANGEL_0]: {
-                imageSourceString: '../../public/src/assets/images/stuff/chest/coins.png',
-                maxX: 4,
-                maxY: 2,
-                holdTime: 4,
-            },
-        },
-    };
-    const frames = createFrames({ initFrames });
-    return new Sprite({ frames, position, offset, height, width });
 }
 function drawText({ text, position, color = 'black', fontSize = 16 }) {
     if (context2D) {
@@ -264,6 +249,86 @@ function deepClone(data) {
     return clone;
 }
 function randomNumberInRange(min, max) {
-    return Math.random() * (max - min) + min;
+    return Math.floor(Math.random() * (max - min) + min);
 }
-export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createFrames, createImage, deepClone, drawText, getAngleKeyByTwoPoint, getGameMapData, getVectorNomalized, randomNumberInRange, shouldEventOccur, updateHealthBars, createCoinIcon, };
+function findChestInitFrame(chestType) {
+    switch (chestType) {
+        case E_chests.GOLD:
+            return {
+                [E_behaviors.DROP_CHEST]: {
+                    [E_angels.ANGEL_0]: {
+                        imageSourceString: '../../public/src/assets/images/stuff/chest/chest_gold.png',
+                        maxX: 3,
+                        maxY: 1,
+                        holdTime: 50,
+                    },
+                },
+                [E_behaviors.IDLE]: {
+                    [E_angels.ANGEL_0]: {
+                        imageSourceString: '../../public/src/assets/images/stuff/chest/chest_gold_idle.png',
+                        maxX: 1,
+                        maxY: 1,
+                        holdTime: 20,
+                    },
+                },
+            };
+        case E_chests.PURPLE:
+            return {
+                [E_behaviors.DROP_CHEST]: {
+                    [E_angels.ANGEL_0]: {
+                        imageSourceString: '../../public/src/assets/images/stuff/chest/chest_purple.png',
+                        maxX: 3,
+                        maxY: 1,
+                        holdTime: 50,
+                    },
+                },
+                [E_behaviors.IDLE]: {
+                    [E_angels.ANGEL_0]: {
+                        imageSourceString: '../../public/src/assets/images/stuff/chest/chest_purple_idle.png',
+                        maxX: 1,
+                        maxY: 1,
+                        holdTime: 20,
+                    },
+                },
+            };
+        case E_chests.SILVER:
+            return {
+                [E_behaviors.DROP_CHEST]: {
+                    [E_angels.ANGEL_0]: {
+                        imageSourceString: '../../public/src/assets/images/stuff/chest/chest_silver.png',
+                        maxX: 3,
+                        maxY: 1,
+                        holdTime: 50,
+                    },
+                },
+                [E_behaviors.IDLE]: {
+                    [E_angels.ANGEL_0]: {
+                        imageSourceString: '../../public/src/assets/images/stuff/chest/chest_silver_idle.png',
+                        maxX: 1,
+                        maxY: 1,
+                        holdTime: 20,
+                    },
+                },
+            };
+        default:
+            return {
+                [E_behaviors.DROP_CHEST]: {
+                    [E_angels.ANGEL_0]: {
+                        imageSourceString: '../../public/src/assets/images/stuff/chest/chest_gold.png',
+                        maxX: 3,
+                        maxY: 1,
+                        holdTime: 50,
+                    },
+                },
+                [E_behaviors.IDLE]: {
+                    [E_angels.ANGEL_0]: {
+                        imageSourceString: '../../public/src/assets/images/stuff/chest/chest_gold_idle.png',
+                        maxX: 1,
+                        maxY: 1,
+                        holdTime: 20,
+                    },
+                },
+            };
+    }
+}
+export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createFrames, createImage, deepClone, drawText, findChestInitFrame, getAngleKeyByTwoPoint, getGameMapData, getVectorNomalized, randomNumberInRange, shouldEventOccur, updateHealthBars, };

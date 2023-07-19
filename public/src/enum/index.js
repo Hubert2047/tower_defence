@@ -43,6 +43,7 @@ var E_behaviors;
     E_behaviors["DEATH"] = "death";
     E_behaviors["IDLE"] = "idle";
     E_behaviors["HIT"] = "gethit";
+    E_behaviors["DROP_CHEST"] = "DROP_CHEST";
 })(E_behaviors || (E_behaviors = {}));
 var E_angels;
 (function (E_angels) {
@@ -86,4 +87,10 @@ var E_gems;
     E_gems["RED"] = "red";
     E_gems["PURPLE"] = "purple";
 })(E_gems || (E_gems = {}));
-export { E_angels, E_behaviors, E_enemy, E_characterRoles, E_explosion, E_gameMap, E_gate, E_projectile, E_characters, E_gems, };
+var E_chests;
+(function (E_chests) {
+    E_chests["GOLD"] = "gold";
+    E_chests["SILVER"] = "silver";
+    E_chests["PURPLE"] = "purple";
+})(E_chests || (E_chests = {}));
+export { E_angels, E_behaviors, E_enemy, E_characterRoles, E_explosion, E_gameMap, E_gate, E_projectile, E_characters, E_gems, E_chests, };

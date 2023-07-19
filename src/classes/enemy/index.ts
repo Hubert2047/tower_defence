@@ -1,5 +1,5 @@
 import { GATE_POSITION_X } from '../../constants/index.js'
-import { E_angels, E_behaviors, E_enemy } from '../../enum/index.js'
+import { E_angels, E_behaviors, E_chests, E_enemy } from '../../enum/index.js'
 import {
     calculateHoldTime,
     createFrames,
@@ -8,7 +8,7 @@ import {
     shouldEventOccur,
     updateHealthBars,
 } from '../../helper/index.js'
-import { T_enemy, T_frame, T_initFramesDictionary, T_position } from '../../types/index.js'
+import { T_chest, T_enemy, T_frame, T_gemValue, T_initFramesDictionary, T_position } from '../../types/index.js'
 import Chest from '../chest/index.js'
 import Gate from '../gate/index.js'
 import Sprite from '../sprite/index.js'
@@ -22,7 +22,7 @@ export default class Enemy extends Sprite {
     private _remainHealth: number
     public behaviorKey: E_behaviors
     public angelKey: E_angels
-    public coins: number
+    public gem: T_gemValue | null
     private health: number
     public damage: number
     public moveSpeed: number
@@ -30,7 +30,6 @@ export default class Enemy extends Sprite {
     public attackSpeed: number
     public countAttackTime: number
     public holdAttack: number
-    public deadEffectEnemy: Enemy | undefined
     private chest: Chest | null
     private hasCheckChest: boolean
     private hasDropChest: boolean
@@ -41,7 +40,6 @@ export default class Enemy extends Sprite {
         width = 124,
         height = 124,
         initFrames,
-        coins = 1,
         moveSpeed = 40,
         health = 1000,
         damage = 100,
@@ -50,7 +48,6 @@ export default class Enemy extends Sprite {
         enemyType,
         angelKey = E_angels.ANGEL_90,
         behaviorKey = E_behaviors.RUN,
-        haveCreateDeadEffect = true,
     }: T_enemy) {
         const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames, speed: moveSpeed })
         super({
@@ -66,7 +63,6 @@ export default class Enemy extends Sprite {
         this.velocityX = 0
         this.velocityY = 0
         this.currentWayPointIndex = 0
-        this.coins = coins
         this._remainHealth = health
         this.health = health
         this.damage = damage
@@ -76,13 +72,16 @@ export default class Enemy extends Sprite {
         this.behaviorKey = behaviorKey
         this.angelKey = angelKey
         this.countAttackTime = 0
-        if (haveCreateDeadEffect) {
-            this.deadEffectEnemy = this.createDeathEffecEnemy()
-        }
         this.hasCheckChest = false
-        this.chest = new Chest({ position })
         this.holdAttack = parseInt((200 / attackSpeed).toString())
         this.hasDropChest = false
+        this.chest = null
+        this.gem = null
+        const hasDropChest = shouldEventOccur(10)
+        if (hasDropChest) {
+            const chestInfo = this.randomDropGem()
+            this.chest = new Chest({ position, type: chestInfo.type })
+        }
     }
     set remainHealth(remainHealth: number) {
         if (remainHealth <= 0) {
@@ -96,15 +95,28 @@ export default class Enemy extends Sprite {
     }
     public update(waypoints: T_position[], gate: Gate): void {
         if (this.remainHealth <= 0) {
-            this.updateDeathEffect()
-            this.renderChest()
-        } else if (this.position.x >= GATE_POSITION_X) {
+            this.updateDeathAction()
+            return
+        }
+        this.updateAliveAction(waypoints, gate)
+    }
+    private updateAliveAction(waypoints: T_position[], gate: Gate): void {
+        if (this.position.x >= GATE_POSITION_X) {
             this.updateEnemyAttackGate({ gate })
         } else {
             this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
             this.updateFrameKeys(waypoints)
             this.updatePosition(waypoints)
-            updateHealthBars({ sprite: this, health: this.health, remainHealth: this.remainHealth })
+        }
+        updateHealthBars({ sprite: this, health: this.health, remainHealth: this.remainHealth })
+    }
+    private updateDeathAction() {
+        if (!this.isFinishedDeathEffect) {
+            this.behaviorKey = E_behaviors.DEATH
+            this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
+        }
+        if (!this.isChestOk) {
+            this.renderChest()
         }
     }
     private attackGate(gate: Gate): void {
@@ -115,43 +127,40 @@ export default class Enemy extends Sprite {
         this.countAttackTime = 0
         gate.getHit(this.damage)
     }
-    private createDeathEffecEnemy() {
-        const deathEnemyOptions: T_enemy = {
-            name: this.name,
-            position: this.position,
-            enemyType: this.enemyType,
-            initFrames: this.initFrames,
-            offset: this.offset,
-            width: this.width,
-            height: this.height,
-            moveSpeed: this.moveSpeed,
-            angelKey: this.angelKey,
-            behaviorKey: E_behaviors.DEATH,
-            haveCreateDeadEffect: false,
+    private randomByPercent<T>(array: { item: T; percentage: number }[]) {
+        const itemsArray: T[] = []
+        for (const { item, percentage } of array) {
+            const numberOfOccurrences = Math.floor((percentage / 100) * 1000)
+            for (let i = 0; i < numberOfOccurrences; i++) {
+                itemsArray.push(item)
+            }
         }
-        return new Enemy(deathEnemyOptions)
+        const randomIndex = Math.floor(Math.random() * itemsArray.length)
+        return itemsArray[randomIndex]
     }
-    public updateDeathEffect() {
-        if (!this.deadEffectEnemy || this.isFinishedDeathEffect) return
-        this.behaviorKey = E_behaviors.DEATH
-        this.deadEffectEnemy.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
+    public randomDropGem(): T_chest {
+        const gemDropWithPercentage: { item: E_chests; percentage: number }[] = [
+            { item: E_chests.SILVER, percentage: 50 },
+            { item: E_chests.GOLD, percentage: 20 },
+            { item: E_chests.PURPLE, percentage: 15 },
+        ]
+        const valuePercentage: { item: number; percentage: number }[] = [
+            { item: 1, percentage: 50 },
+            { item: 2, percentage: 5 },
+            { item: 3, percentage: 5 },
+        ]
+        const type = this.randomByPercent(gemDropWithPercentage)
+        const value = this.randomByPercent(valuePercentage)
+        return { type, value }
     }
     public renderChest() {
-        if (!this.hasCheckChest) {
-            this.hasDropChest = shouldEventOccur(10)
-            this.hasCheckChest = true
-        }
-        if (!this.hasDropChest) {
-            this.chest = null
-            return
-        }
         this.chest?.update()
     }
+
     public updateEnemyAttackGate({ gate }: { gate: Gate | null }) {
         this.behaviorKey = E_behaviors.ATTACK
         this.updateHoldTime(this.attackSpeed)
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
-        updateHealthBars({ sprite: this, health: this.health, remainHealth: this.remainHealth })
         if (gate) this.attackGate(gate)
     }
     private updateHoldTime(speed: number) {
@@ -166,18 +175,19 @@ export default class Enemy extends Sprite {
         })
     }
     private get isFinishedDeathEffect() {
-        if (this._remainHealth > 0) return false
-        if (!this.deadEffectEnemy) return true
-        const currentDeathEffectEnemyFrame = this.deadEffectEnemy.currentFrame
+        if (this._remainHealth > 0 || this.behaviorKey !== E_behaviors.DEATH) return false
+        const currentDeathEffectEnemyFrame = this.currentFrame
         if (!currentDeathEffectEnemyFrame) return false
         const isDeathEffecFinishedOneTimeAnimation: boolean =
-            this.deadEffectEnemy.cropPosition.x === currentDeathEffectEnemyFrame.maxX - 1 &&
-            this.deadEffectEnemy.cropPosition.y === currentDeathEffectEnemyFrame.maxY - 1
+            this.cropPosition.x === currentDeathEffectEnemyFrame.maxX - 1 &&
+            this.cropPosition.y === currentDeathEffectEnemyFrame.maxY - 1
         return isDeathEffecFinishedOneTimeAnimation
     }
+    private get isChestOk() {
+        return this.chest === null || this.chest.isReadyToFakeOut
+    }
     public get isAlreadyDead() {
-        const isChestOk = this.chest === null || this.chest.isReadyToFakeOut
-        return this.isFinishedDeathEffect && isChestOk
+        return this.isFinishedDeathEffect && this.isChestOk
     }
     private updateFrameKeys(waypoints: T_position[]) {
         this.angelKey = getAngleKeyByTwoPoint(this.position, waypoints[this.currentWayPointIndex])

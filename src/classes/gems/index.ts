@@ -9,25 +9,23 @@ type T_gem = {
     position: T_position
     gemType: E_gems
     frames: Map<string, Map<string, T_frame>>
+    gemNum: number
     offset?: T_position
     behaviorKey?: E_behaviors
     angelKey?: E_angels
-    fruitingDuration: number
     moveSpeed?: number
     opacity?: number
-    spawningGemPerTime?: number
 }
 export default class Gem extends Sprite {
     public behaviorKey: E_behaviors
     public angelKey: E_angels
     public gemType: E_gems
-    private fruitingDuration: number
     private moveSpeed: number
-    private countTimeToMove: number
     private velocityX: number
     private velocityY: number
-    private spawningGemPerTime: number
+    private gemNum: number
     private targetPosition: T_position
+    public haveharvestGems: boolean
     constructor({
         position,
         gemType,
@@ -35,8 +33,7 @@ export default class Gem extends Sprite {
         angelKey = E_angels.ANGEL_0,
         offset,
         frames,
-        fruitingDuration,
-        spawningGemPerTime = 2,
+        gemNum,
         moveSpeed = 100,
         opacity = 1,
     }: T_gem) {
@@ -52,13 +49,12 @@ export default class Gem extends Sprite {
         this.angelKey = angelKey
         this.behaviorKey = behaviorKey
         this.gemType = gemType
-        this.fruitingDuration = fruitingDuration
         this.moveSpeed = moveSpeed
-        this.countTimeToMove = 0
         this.velocityX = 0
         this.velocityY = 0
         this.targetPosition = this.findTargetPosition()
-        this.spawningGemPerTime = spawningGemPerTime
+        this.gemNum = gemNum
+        this.haveharvestGems = false
     }
     public get hasHitTarget() {
         return this.position.x === this.targetPosition.x && this.position.y === this.targetPosition.y
@@ -66,7 +62,7 @@ export default class Gem extends Sprite {
     public update() {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
         if (context2D) {
-            const textString = `+${this.spawningGemPerTime.toString()}`
+            const textString = `+${this.gemNum.toString()}`
             const textWidth = context2D.measureText(textString).width
             const textOptions: T_text = {
                 text: textString,
@@ -80,16 +76,12 @@ export default class Gem extends Sprite {
             drawText(textOptions)
         }
         if (this.hasHitTarget) return
-        if (this.countTimeToMove < this.fruitingDuration / 2) {
-            this.countTimeToMove++
-            return
+        if (this.haveharvestGems) {
+            this.opacity = 0.5
+            this.updatePosition()
         }
-        this.opacity = 0.5
-        this.updatePosition()
     }
-    public harvestGem() {
-        this.countTimeToMove = this.fruitingDuration
-    }
+
     private findTargetPosition() {
         switch (this.gemType) {
             case E_gems.BLUE:
@@ -111,9 +103,6 @@ export default class Gem extends Sprite {
         }
         if (this.position.y >= this.targetPosition.y && this.velocityY > 0) {
             this.position.y = this.targetPosition.y
-        }
-        if (this.position.x === this.targetPosition.x && this.position.y === this.targetPosition.y) {
-            this.countTimeToMove = 0
         }
     }
     public hasCollision(mouse: T_position) {

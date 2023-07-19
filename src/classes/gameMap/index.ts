@@ -284,7 +284,9 @@ export default class GameMap {
             if (currentEnemy.isAlreadyDead) {
                 this._currentEnemiesData.splice(i, 1)
                 this.subtractDashboardEnemies(currentEnemy)
-                this.gemsInfo[E_gems.BLUE].value += currentEnemy.coins
+                if (currentEnemy.gem !== null) {
+                    this.gemsInfo[currentEnemy.gem.type].value += currentEnemy.gem.value
+                }
             }
         }
     }
@@ -661,7 +663,7 @@ export default class GameMap {
             for (let i = plant.gems.length - 1; i >= 0; i--) {
                 const currentGem = plant.gems[i]
                 if (currentGem.hasCollision(this.mousePosition)) {
-                    currentGem.harvestGem()
+                    currentGem.haveharvestGems = true
                 }
             }
         })
