@@ -1,7 +1,9 @@
 import { GATE_POSITION_X } from '../../constants/index.js';
-import { E_angels, E_behaviors, E_chests } from '../../enum/index.js';
+import getBaseGemProperties from '../../data/baseProperties/gems/index.js';
+import { E_angels, E_behaviors, E_gems } from '../../enum/index.js';
 import { calculateHoldTime, createFrames, getAngleKeyByTwoPoint, getVectorNomalized, shouldEventOccur, updateHealthBars, } from '../../helper/index.js';
 import Chest from '../chest/index.js';
+import Gem from '../gems/index.js';
 import Sprite from '../sprite/index.js';
 export default class Enemy extends Sprite {
     constructor({ name, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, moveSpeed = 40, health = 1000, damage = 100, attackRange = 200, attackSpeed = 5, enemyType, angelKey = E_angels.ANGEL_90, behaviorKey = E_behaviors.RUN, }) {
@@ -28,15 +30,22 @@ export default class Enemy extends Sprite {
         this.behaviorKey = behaviorKey;
         this.angelKey = angelKey;
         this.countAttackTime = 0;
-        this.hasCheckChest = false;
         this.holdAttack = parseInt((200 / attackSpeed).toString());
-        this.hasDropChest = false;
         this.chest = null;
-        this.gem = null;
+        this.gem = { type: E_gems.BLUE, value: 1 };
         const hasDropChest = shouldEventOccur(10);
         if (hasDropChest) {
-            const chestInfo = this.randomDropGem();
-            this.chest = new Chest({ position, type: chestInfo.type });
+            this.gem = this.randomDropGem();
+            const gemBaseProperties = getBaseGemProperties(this.gem.type);
+            const chestframes = createFrames({
+                initFrames: gemBaseProperties.chestFrames,
+            });
+            const gem = new Gem({
+                position: { x: 0, y: 0 },
+                gemType: this.gem.type,
+                gemNum: this.gem.value,
+            });
+            this.chest = new Chest({ position, frames: chestframes, gem });
         }
     }
     set remainHealth(remainHealth) {
@@ -98,14 +107,15 @@ export default class Enemy extends Sprite {
     }
     randomDropGem() {
         const gemDropWithPercentage = [
-            { item: E_chests.SILVER, percentage: 50 },
-            { item: E_chests.GOLD, percentage: 20 },
-            { item: E_chests.PURPLE, percentage: 15 },
+            { item: E_gems.BLUE, percentage: 70 },
+            { item: E_gems.RED, percentage: 15 },
+            { item: E_gems.PURPLE, percentage: 10 },
+            { item: E_gems.COIN, percentage: 5 },
         ];
         const valuePercentage = [
-            { item: 1, percentage: 50 },
-            { item: 2, percentage: 5 },
-            { item: 3, percentage: 5 },
+            { item: 2, percentage: 75 },
+            { item: 3, percentage: 20 },
+            { item: 5, percentage: 5 },
         ];
         const type = this.randomByPercent(gemDropWithPercentage);
         const value = this.randomByPercent(valuePercentage);

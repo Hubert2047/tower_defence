@@ -53,6 +53,7 @@ interface I_characterProperties {
 interface I_gemProperties {
     type: E_gems
     initFrames: T_initFramesDictionary
+    chestFrames: T_initFramesDictionary
     width: number
     height: number
 }

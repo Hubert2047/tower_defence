@@ -2,7 +2,7 @@ import getBasePlantProperties from '../../data/baseProperties/characters/index.j
 import { E_angels, E_behaviors, E_characters, E_gems } from '../../enum/index.js';
 import Plant from './index.js';
 class MonsterraTree extends Plant {
-    constructor({ position, offset = { x: 14, y: 60 }, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, fruitingDuration = 500, placementTile, spawGemPerTime = 2, }) {
+    constructor({ position, offset = { x: 14, y: 60 }, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, fruitingDuration = 3000, placementTile, spawGemPerTime = 1, }) {
         const baseTowerProperties = getBasePlantProperties(E_characters.MONSTERRA_TREE);
         super({
             name: 'Monsterra Tree',
@@ -22,5 +22,5 @@ class MonsterraTree extends Plant {
         });
     }
 }
-MonsterraTree.prices = 15;
+MonsterraTree.prices = 45;
 export default MonsterraTree;

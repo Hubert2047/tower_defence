@@ -42,7 +42,7 @@ interface healthBarOptions {
     borderRadius: number
     strokeStyle: string
 }
-function drawText({ text, position, color = 'black', fontSize = 16 }: T_text) {
+function drawText({ text, position, color = 'black', fontSize = 16, offset = { x: 0, y: 0 } }: T_text) {
     if (context2D) {
         context2D.font = `${fontSize}px Changa One`
         context2D.fillStyle = color

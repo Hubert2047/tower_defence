@@ -14,7 +14,6 @@ export default class Plant extends Sprite {
         this.type = type;
         this.countCreateGemIndex = 0;
         this.currentGemProperties = getBaseGemProperties(spawGemType);
-        this.gemFrames = createFrames({ initFrames: this.currentGemProperties.initFrames });
         this.gems = [];
         this.spawGemType = spawGemType;
         this.spawGemPerTime = spawGemPerTime;
@@ -22,7 +21,6 @@ export default class Plant extends Sprite {
         this.role = E_characterRoles.PLANTED;
         this.beingDestroyed = false;
         this.destroyExplosion = this.createDestroyExplosion();
-        this.countTimeToHarvestGem = 0;
         this.levelUpIcon = this.createLeveUpIcon();
     }
     update(isDisplayLevelUp) {
@@ -33,17 +31,8 @@ export default class Plant extends Sprite {
         else {
             this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
             this.spawningGems();
-            if (isDisplayLevelUp) {
+            if (isDisplayLevelUp && this.gems.length <= 0) {
                 this.levelUpIcon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 });
-            }
-            if (this.countTimeToHarvestGem <= this.fruitingDuration / 2) {
-                this.countTimeToHarvestGem++;
-            }
-            else {
-                this.countTimeToHarvestGem = 0;
-                if (this.gems.length > 0) {
-                    this.gems[0].haveharvestGems = true;
-                }
             }
             return this.getGems();
         }
@@ -70,6 +59,9 @@ export default class Plant extends Sprite {
         return new Sprite(options);
     }
     spawningGems() {
+        if (this.countCreateGemIndex > this.fruitingDuration / 2 && this.gems.length > 0) {
+            this.gems[0].haveharvestGems = true;
+        }
         if (this.countCreateGemIndex < this.fruitingDuration) {
             this.countCreateGemIndex++;
             return;
@@ -77,7 +69,6 @@ export default class Plant extends Sprite {
         this.countCreateGemIndex = 0;
         const gemOptions = {
             position: { x: this.position.x, y: this.position.y + this.height - this.offset.y },
-            frames: this.gemFrames,
             gemType: this.spawGemType,
             fruitingDuration: this.fruitingDuration,
             gemNum: this.spawGemPerTime,

@@ -383,6 +383,7 @@ const startGems = {
     blueGems: 20,
     redGems: 0,
     yellowGems: 0,
+    coins: 0,
 };
 backgroundImage.src = '../../public/src/assets/images/gameMap.png';
 const gateInfor = {

@@ -24,11 +24,11 @@ class ObeliskThunderTower extends Tower {
         });
         this.baseTowerProperties = baseTowerProperties;
     }
-    update({ enemies, shootingAudio, isDisplayAttackRangeCircle, }) {
+    update({ enemies, shootingAudio, isDisplayAttackRangeCircleAndLevelUp, }) {
         super.update({
             enemies,
             shootingAudio,
-            isDisplayAttackRangeCircle,
+            isDisplayAttackRangeCircleAndLevelUp,
         });
         if (this.behaviorKey === E_behaviors.ATTACK) {
             this.width = this.baseTowerProperties.width;

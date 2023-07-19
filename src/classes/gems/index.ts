@@ -1,14 +1,13 @@
-import { BLUE_GEM_POSITION, RED_GEM_POSITION, YELLOW_GEM_POSITION } from '../../constants/index.js'
+import { BLUE_GEM_POSITION, COIN_POSITION, RED_GEM_POSITION, YELLOW_GEM_POSITION } from '../../constants/index.js'
 import context2D from '../../context2D/index.js'
 import getBaseGemProperties from '../../data/baseProperties/gems/index.js'
 import { E_angels, E_behaviors, E_gems } from '../../enum/index.js'
-import { drawText, getVectorNomalized } from '../../helper/index.js'
+import { createFrames, drawText, getVectorNomalized } from '../../helper/index.js'
 import { T_frame, T_position, T_text } from '../../types/index.js'
 import Sprite from '../sprite/index.js'
 type T_gem = {
     position: T_position
     gemType: E_gems
-    frames: Map<string, Map<string, T_frame>>
     gemNum: number
     offset?: T_position
     behaviorKey?: E_behaviors
@@ -32,12 +31,14 @@ export default class Gem extends Sprite {
         behaviorKey = E_behaviors.IDLE,
         angelKey = E_angels.ANGEL_0,
         offset,
-        frames,
         gemNum,
-        moveSpeed = 100,
+        moveSpeed = 250,
         opacity = 1,
     }: T_gem) {
         const currentGemProperties = getBaseGemProperties(gemType)
+        const frames: Map<string, Map<string, T_frame>> = createFrames({
+            initFrames: currentGemProperties.initFrames,
+        })
         super({
             position,
             frames,
@@ -67,8 +68,8 @@ export default class Gem extends Sprite {
             const textOptions: T_text = {
                 text: textString,
                 position: {
-                    x: this.position.x + this.width - textWidth / 2,
-                    y: this.position.y - this.height + 10,
+                    x: this.position.x + this.width - textWidth / 2 - this.offset.x,
+                    y: this.position.y - this.height + 10 - this.offset.y,
                 },
                 color: 'white',
                 fontSize: 16,
@@ -90,6 +91,8 @@ export default class Gem extends Sprite {
                 return RED_GEM_POSITION
             case E_gems.PURPLE:
                 return YELLOW_GEM_POSITION
+            case E_gems.COIN:
+                return COIN_POSITION
             default:
                 return BLUE_GEM_POSITION
         }

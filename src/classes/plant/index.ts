@@ -14,7 +14,6 @@ export default class Plant extends Sprite implements I_character {
     fruitingDuration: number
     countCreateGemIndex: number
     currentGemProperties: I_gemProperties
-    gemFrames: Map<string, Map<string, T_frame>>
     gems: Gem[]
     type: E_characters
     spawGemType: E_gems
@@ -24,7 +23,6 @@ export default class Plant extends Sprite implements I_character {
     public destroyExplosion: DestroyExplosion
     public spawGemPerTime: number
     public levelUpIcon: Sprite
-    private countTimeToHarvestGem: number
     constructor({
         position,
         width,
@@ -48,7 +46,6 @@ export default class Plant extends Sprite implements I_character {
         this.type = type
         this.countCreateGemIndex = 0
         this.currentGemProperties = getBaseGemProperties(spawGemType)
-        this.gemFrames = createFrames({ initFrames: this.currentGemProperties.initFrames })
         this.gems = []
         this.spawGemType = spawGemType
         this.spawGemPerTime = spawGemPerTime
@@ -56,7 +53,6 @@ export default class Plant extends Sprite implements I_character {
         this.role = E_characterRoles.PLANTED
         this.beingDestroyed = false
         this.destroyExplosion = this.createDestroyExplosion()
-        this.countTimeToHarvestGem = 0
         this.levelUpIcon = this.createLeveUpIcon()
     }
     update(isDisplayLevelUp: boolean): { type: E_gems; value: number } | null {
@@ -66,16 +62,8 @@ export default class Plant extends Sprite implements I_character {
         } else {
             this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
             this.spawningGems()
-            if (isDisplayLevelUp) {
+            if (isDisplayLevelUp && this.gems.length <= 0) {
                 this.levelUpIcon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
-            }
-            if (this.countTimeToHarvestGem <= this.fruitingDuration / 2) {
-                this.countTimeToHarvestGem++
-            } else {
-                this.countTimeToHarvestGem = 0
-                if (this.gems.length > 0) {
-                    this.gems[0].haveharvestGems = true
-                }
             }
             return this.getGems()
         }
@@ -103,6 +91,9 @@ export default class Plant extends Sprite implements I_character {
         return new Sprite(options)
     }
     spawningGems() {
+        if (this.countCreateGemIndex > this.fruitingDuration / 2 && this.gems.length > 0) {
+            this.gems[0].haveharvestGems = true
+        }
         if (this.countCreateGemIndex < this.fruitingDuration) {
             this.countCreateGemIndex++
             return
@@ -110,7 +101,6 @@ export default class Plant extends Sprite implements I_character {
         this.countCreateGemIndex = 0
         const gemOptions = {
             position: { x: this.position.x, y: this.position.y + this.height - this.offset.y },
-            frames: this.gemFrames,
             gemType: this.spawGemType,
             fruitingDuration: this.fruitingDuration,
             gemNum: this.spawGemPerTime,

@@ -2,7 +2,7 @@ import Shovel from '../../classes/stuff/Shovel.js';
 import BloodMoon from '../../classes/tower/BloodMoon.js';
 import FlyingObelisk from '../../classes/tower/FlyingObelisk.js';
 import ObeliskThunder from '../../classes/tower/ObeliskThunder.js';
-import { BLUE_GEM_POSITION, RED_GEM_POSITION, TILE_SIZE, YELLOW_GEM_POSITION } from '../../constants/index.js';
+import { BLUE_GEM_POSITION, COIN_POSITION, RED_GEM_POSITION, TILE_SIZE, YELLOW_GEM_POSITION, } from '../../constants/index.js';
 import context2D, { canvas, resetCanvas } from '../../context2D/index.js';
 import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js';
 import gatesBaseProperties from '../../data/baseProperties/gates/index.js';
@@ -12,6 +12,7 @@ import Border from '../dashboardBorder/index.js';
 import DashboardCharacter from '../dashboardCharacters/index.js';
 import Enemy from '../enemy/index.js';
 import Gate from '../gate/index.js';
+import TowerLevelUp from '../levelUp/TowerLevelUp.js';
 import PlacementTile from '../placementTile/index.js';
 import AutumnTree from '../plant/AutumnTree.js';
 import GreenTree from '../plant/GreenTree.js';
@@ -30,6 +31,7 @@ export default class GameMap {
         this.gemsInfo = this.createGemInfo(startGems);
         this.currentDashboardEnemiesInfo = [];
         this.menu = this.createMenu();
+        this.towerLevelUp = new TowerLevelUp({ position: { x: 64 * 5, y: 64 * 10 } });
         this.displayRound = this.createDisplayRound();
         this._mouseOverTile = null;
         this.mouseOverDashboardCharacter = null;
@@ -46,6 +48,7 @@ export default class GameMap {
             attackSpeed: 0.05,
         };
         this.mousePosition = { x: 0, y: 0 };
+        this.isDisplayTowerMenu = false;
         this.spawingCurrentRoundEnemies();
         this.handleAddEventGame();
     }
@@ -76,6 +79,9 @@ export default class GameMap {
         this.updateDashboardCharacters();
         this.drawGemsAndMenu();
         this.updateGate();
+        if (this.isDisplayTowerMenu) {
+            this.towerLevelUp.update();
+        }
         return this.getGameStatus();
     }
     updatePlants() {
@@ -179,22 +185,20 @@ export default class GameMap {
         });
     }
     updateTowers() {
-        this.towers.forEach((tower) => {
-            var _a;
-            const isDisplayAttackRangeCircle = ((_a = this.activeMouseOverCharacterInfo) === null || _a === void 0 ? void 0 : _a.activeMouseOverCharacter) === tower &&
-                this.activeDashboardCharacter === null;
-            tower.update({
-                enemies: this.currentEnemiesData,
-                shootingAudio: this.shootingAudio,
-                isDisplayAttackRangeCircle,
-            });
-        });
+        var _a;
         for (let i = this.towers.length - 1; i >= 0; i--) {
             const currentTower = this.towers[i];
             if (currentTower.isAlreadyDestroyed) {
                 currentTower.placementTile.isOccupied = false;
                 this.towers.splice(i, 1);
             }
+            const isDisplayAttackRangeCircleAndLevelUp = ((_a = this.activeMouseOverCharacterInfo) === null || _a === void 0 ? void 0 : _a.activeMouseOverCharacter) === currentTower &&
+                this.activeDashboardCharacter === null;
+            currentTower.update({
+                enemies: this.currentEnemiesData,
+                shootingAudio: this.shootingAudio,
+                isDisplayAttackRangeCircleAndLevelUp,
+            });
         }
     }
     updateEnemies() {
@@ -280,25 +284,39 @@ export default class GameMap {
         return dashboardCharacters;
     }
     createGemInfo(gems) {
+        const coinIcon = this.createGemIcon({
+            gemSourceImage: '../../public/src/assets/images/stuff/chest/coins.png',
+            offset: { x: 0, y: 0 },
+            position: COIN_POSITION,
+            maxX: 4,
+            maxY: 2,
+        });
         const blueGemIcon = this.createGemIcon({
             gemSourceImage: '../../public/src/assets/images/gems/blue.png',
             offset: { x: 0, y: 0 },
             position: BLUE_GEM_POSITION,
+            maxX: 1,
+            maxY: 1,
         });
         const redGemIcon = this.createGemIcon({
             gemSourceImage: '../../public/src/assets/images/gems/red.png',
             offset: { x: 0, y: 0 },
             position: RED_GEM_POSITION,
+            maxX: 1,
+            maxY: 1,
         });
         const yellowGemIcon = this.createGemIcon({
             gemSourceImage: '../../public/src/assets/images/gems/purple.png',
             offset: { x: 0, y: 0 },
             position: YELLOW_GEM_POSITION,
+            maxX: 1,
+            maxY: 1,
         });
         return {
             [E_gems.BLUE]: { value: gems.blueGems, icon: blueGemIcon },
             [E_gems.RED]: { value: gems.redGems, icon: redGemIcon },
             [E_gems.PURPLE]: { value: gems.yellowGems, icon: yellowGemIcon },
+            [E_gems.COIN]: { value: gems.coins, icon: coinIcon },
         };
     }
     drawGems() {
@@ -333,10 +351,10 @@ export default class GameMap {
         const frames = createFrames({ initFrames });
         const options = {
             frames,
-            position: { x: 64 * 15, y: 64 * 1 },
-            offset: { x: 20, y: 26 },
+            position: { x: 64 * 14, y: 64 * 1 },
+            offset: { x: 50, y: 26 },
             height: 120,
-            width: 360,
+            width: 430,
         };
         return new Sprite(options);
     }
@@ -361,14 +379,14 @@ export default class GameMap {
         };
         return new Sprite(options);
     }
-    createGemIcon({ gemSourceImage, offset, position, }) {
+    createGemIcon({ gemSourceImage, maxX, maxY, offset, position, }) {
         const initFrames = {
             [E_behaviors.IDLE]: {
                 [E_angels.ANGEL_0]: {
                     imageSourceString: gemSourceImage,
-                    maxX: 1,
-                    maxY: 1,
-                    holdTime: 4,
+                    maxX,
+                    maxY,
+                    holdTime: 8,
                 },
             },
         };
@@ -521,7 +539,7 @@ export default class GameMap {
                 break;
         }
         if (isSuccess) {
-            this.towers.sort((a, b) => a.position.y - b.position.y);
+            this.towers.sort((a, b) => b.position.y - a.position.y);
         }
         return isSuccess;
     }
@@ -542,7 +560,7 @@ export default class GameMap {
                 break;
         }
         if (isSuccess) {
-            this.plants.sort((a, b) => a.position.y - b.position.y);
+            this.plants.sort((a, b) => b.position.y - a.position.y);
         }
         return isSuccess;
     }
@@ -714,8 +732,16 @@ export default class GameMap {
                 this.checkMouseOverDashboardCharacters();
             });
             canvas.addEventListener('click', () => {
+                var _a;
                 this.checkHavestGems();
                 this.checkToHandleBuildCharacter();
+                if (!this.towerLevelUp.hasCollision(this.mousePosition)) {
+                    this.isDisplayTowerMenu = false;
+                }
+                if (((_a = this.activeMouseOverCharacterInfo) === null || _a === void 0 ? void 0 : _a.activeMouseOverCharacter) &&
+                    this.activeDashboardCharacter === null) {
+                    this.isDisplayTowerMenu = true;
+                }
             });
         }
     }

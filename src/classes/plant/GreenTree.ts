@@ -9,7 +9,7 @@ export default class GreenTree extends Plant {
         behaviorKey = E_behaviors.IDLE,
         angelKey = E_angels.ANGEL_0,
         opacity = 1,
-        fruitingDuration = 500,
+        fruitingDuration = 1000,
         placementTile,
         spawGemPerTime = 2,
     }: I_plant) {

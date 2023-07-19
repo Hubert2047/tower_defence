@@ -47,7 +47,7 @@ type T_round = {
     roundName: string
     enemies: T_enemyInfo[]
 }
-type T_gemStartInfo = { blueGems: number; redGems: number; yellowGems: number }
+type T_gemStartInfo = { blueGems: number; redGems: number; yellowGems: number; coins: number }
 type T_gameMapData = {
     rounds: T_round[]
     placementTiles2D: number[][]
@@ -235,6 +235,7 @@ type T_plant = {
 type T_text = {
     text: string
     position: T_position
+    offset?: T_position
     fontSize?: number
     color?: string
 }

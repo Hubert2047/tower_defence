@@ -76,6 +76,7 @@ enum E_gems {
     BLUE = 'blue',
     RED = 'red',
     PURPLE = 'purple',
+    COIN = 'coin',
 }
 enum E_chests {
     GOLD = 'gold',
@@ -85,13 +86,13 @@ enum E_chests {
 export {
     E_angels,
     E_behaviors,
-    E_enemy,
     E_characterRoles,
+    E_characters,
+    E_chests,
+    E_enemy,
     E_explosion,
     E_gameMap,
     E_gate,
-    E_projectile,
-    E_characters,
     E_gems,
-    E_chests,
+    E_projectile,
 }

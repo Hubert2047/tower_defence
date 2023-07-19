@@ -109,11 +109,11 @@ export default class Tower extends Sprite implements I_character {
     public update({
         enemies,
         shootingAudio,
-        isDisplayAttackRangeCircle,
+        isDisplayAttackRangeCircleAndLevelUp,
     }: {
         enemies: Enemy[]
         shootingAudio: HTMLAudioElement | HTMLElement | null
-        isDisplayAttackRangeCircle: boolean
+        isDisplayAttackRangeCircleAndLevelUp: boolean
     }): void {
         if (this.beingDestroyed) {
             this.destroyExplosion.update()
@@ -121,7 +121,7 @@ export default class Tower extends Sprite implements I_character {
             this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
             this.attackEnemies(enemies)
             this.updateProjectile(shootingAudio)
-            if (isDisplayAttackRangeCircle) {
+            if (isDisplayAttackRangeCircleAndLevelUp) {
                 this.drawAttackRangeCicle()
                 this.levelUpIcon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
             }

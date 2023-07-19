@@ -33,7 +33,7 @@ function updateHealthBars({ sprite, health, remainHealth }) {
         drawRemainHealthBar({ sprite, drawOption, fullHealthWidth, remainHealthWidth, fillStyle: 'green' });
     }
 }
-function drawText({ text, position, color = 'black', fontSize = 16 }) {
+function drawText({ text, position, color = 'black', fontSize = 16, offset = { x: 0, y: 0 } }) {
     if (context2D) {
         context2D.font = `${fontSize}px Changa One`;
         context2D.fillStyle = color;

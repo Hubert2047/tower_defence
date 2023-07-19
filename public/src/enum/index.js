@@ -86,6 +86,7 @@ var E_gems;
     E_gems["BLUE"] = "blue";
     E_gems["RED"] = "red";
     E_gems["PURPLE"] = "purple";
+    E_gems["COIN"] = "coin";
 })(E_gems || (E_gems = {}));
 var E_chests;
 (function (E_chests) {
@@ -93,4 +94,4 @@ var E_chests;
     E_chests["SILVER"] = "silver";
     E_chests["PURPLE"] = "purple";
 })(E_chests || (E_chests = {}));
-export { E_angels, E_behaviors, E_enemy, E_characterRoles, E_explosion, E_gameMap, E_gate, E_projectile, E_characters, E_gems, E_chests, };
+export { E_angels, E_behaviors, E_characterRoles, E_characters, E_chests, E_enemy, E_explosion, E_gameMap, E_gate, E_gems, E_projectile, };

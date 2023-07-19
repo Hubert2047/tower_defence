@@ -44,16 +44,16 @@ export default class ObeliskThunderTower extends Tower {
     public update({
         enemies,
         shootingAudio,
-        isDisplayAttackRangeCircle,
+        isDisplayAttackRangeCircleAndLevelUp,
     }: {
         enemies: Enemy[]
         shootingAudio: HTMLAudioElement | HTMLElement | null
-        isDisplayAttackRangeCircle: boolean
+        isDisplayAttackRangeCircleAndLevelUp: boolean
     }): void {
         super.update({
             enemies,
             shootingAudio,
-            isDisplayAttackRangeCircle,
+            isDisplayAttackRangeCircleAndLevelUp,
         })
         if (this.behaviorKey === E_behaviors.ATTACK) {
             this.width = this.baseTowerProperties.width

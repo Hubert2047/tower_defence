@@ -9,9 +9,9 @@ export default class MonsterraTree extends Plant {
         behaviorKey = E_behaviors.IDLE,
         angelKey = E_angels.ANGEL_0,
         opacity = 1,
-        fruitingDuration = 500,
+        fruitingDuration = 3000,
         placementTile,
-        spawGemPerTime = 2,
+        spawGemPerTime = 1,
     }: I_plant) {
         const baseTowerProperties: I_characterProperties = getBasePlantProperties(E_characters.MONSTERRA_TREE)
         super({
@@ -31,5 +31,5 @@ export default class MonsterraTree extends Plant {
             spawGemPerTime,
         })
     }
-    public static prices = 15
+    public static prices = 45
 }

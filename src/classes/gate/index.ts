@@ -242,7 +242,7 @@ export default class Gate extends Sprite {
         currentEnemies.forEach((enemy: Enemy) => {
             const realPostion: T_position = { x: this.position.x + this.offset.x, y: this.position.y }
             const distance: number = calculateDistanceTwoPoint(enemy.position, realPostion)
-            if (distance <= this.attackRange) {
+            if (distance <= this.attackRange && enemy.remainHealth > 0) {
                 enemiesInRange.push(enemy)
             }
         })

@@ -13,5 +13,23 @@ const RedProperties = {
             },
         },
     },
+    chestFrames: {
+        [E_behaviors.DROP_CHEST]: {
+            [E_angels.ANGEL_0]: {
+                imageSourceString: '../../public/src/assets/images/stuff/chest/chest_red.png',
+                maxX: 3,
+                maxY: 1,
+                holdTime: 50,
+            },
+        },
+        [E_behaviors.IDLE]: {
+            [E_angels.ANGEL_0]: {
+                imageSourceString: '../../public/src/assets/images/stuff/chest/chest_red_idle.png',
+                maxX: 1,
+                maxY: 1,
+                holdTime: 20,
+            },
+        },
+    },
 };
 export default RedProperties;
