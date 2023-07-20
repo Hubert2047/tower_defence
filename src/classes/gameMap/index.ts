@@ -94,7 +94,7 @@ export default class GameMap {
     private baseIncreasedStrengthEnemies: T_baseIncreasedStrengthEnemies
     private mousePosition: T_position
     private towerLevelUp: TowerLevelUp
-    isDisplayTowerMenu: boolean
+    private activeLevelUpTower: Tower | undefined
     constructor({
         rounds,
         placementTiles2D,
@@ -132,7 +132,7 @@ export default class GameMap {
             attackSpeed: 0.05,
         }
         this.mousePosition = { x: 0, y: 0 }
-        this.isDisplayTowerMenu = false
+        this.activeLevelUpTower = undefined
         this.spawingCurrentRoundEnemies()
         this.handleAddEventGame()
     }
@@ -163,8 +163,8 @@ export default class GameMap {
         this.updateDashboardCharacters()
         this.drawGemsAndMenu()
         this.updateGate()
-        if (this.isDisplayTowerMenu) {
-            this.towerLevelUp.update()
+        if (this.activeLevelUpTower) {
+            this.towerLevelUp.update(this.activeLevelUpTower)
         }
         return this.getGameStatus()
     }
@@ -271,13 +271,15 @@ export default class GameMap {
     private updateTowers(): void {
         for (let i = this.towers.length - 1; i >= 0; i--) {
             const currentTower = this.towers[i]
+            if (currentTower.placementTile === undefined) continue
             if (currentTower.isAlreadyDestroyed) {
                 currentTower.placementTile.isOccupied = false
                 this.towers.splice(i, 1)
             }
             const isDisplayAttackRangeCircleAndLevelUp =
                 this.activeMouseOverCharacterInfo?.activeMouseOverCharacter === currentTower &&
-                this.activeDashboardCharacter === null
+                this.activeDashboardCharacter === null &&
+                this.activeLevelUpTower === undefined
             currentTower.update({
                 enemies: this.currentEnemiesData,
                 shootingAudio: this.shootingAudio,
@@ -759,16 +761,18 @@ export default class GameMap {
     private handleFindMouseOverCharacterInfo(mouse: T_position): T_activeCharacterDestroyInfo | null {
         let activeMouseOverCharacterInfo: T_activeCharacterDestroyInfo | null = null
         for (let i = 0; i < this.allCharacters.length; i++) {
-            if (this.allCharacters[i].placementTile.hasCollision(mouse)) {
+            const currentCharacter = this.allCharacters[i]
+            if (currentCharacter.placementTile === undefined) continue
+            if (currentCharacter.placementTile.hasCollision(mouse)) {
                 activeMouseOverCharacterInfo = {
-                    role: this.allCharacters[i].role,
-                    activeMouseOverCharacter: this.allCharacters[i],
+                    role: currentCharacter.role,
+                    activeMouseOverCharacter: currentCharacter,
                 }
                 if (this.activeDashboardCharacter?.role === E_characterRoles.DESTROY) {
-                    this.allCharacters[i].opacity = 0.4
+                    currentCharacter.opacity = 0.4
                 }
             } else {
-                this.allCharacters[i].opacity = 1
+                currentCharacter.opacity = 1
             }
         }
         return activeMouseOverCharacterInfo
@@ -830,6 +834,16 @@ export default class GameMap {
         })
         return placementTiles
     }
+    private handleCheckDisplayUpdateLevel() {
+        if (this.towerLevelUp.isClose(this.mousePosition)) {
+            this.activeLevelUpTower = undefined
+        }
+        if (this.activeMouseOverCharacterInfo?.activeMouseOverCharacter && this.activeDashboardCharacter === null) {
+            if (this.activeMouseOverCharacterInfo.activeMouseOverCharacter instanceof Tower) {
+                this.activeLevelUpTower = this.activeMouseOverCharacterInfo.activeMouseOverCharacter
+            }
+        }
+    }
     private handleAddEventGame() {
         if (canvas) {
             canvas.addEventListener('mousemove', (event) => {
@@ -842,15 +856,7 @@ export default class GameMap {
             canvas.addEventListener('click', () => {
                 this.checkHavestGems()
                 this.checkToHandleBuildCharacter()
-                if (this.towerLevelUp.isClose(this.mousePosition)) {
-                    this.isDisplayTowerMenu = false
-                }
-                if (
-                    this.activeMouseOverCharacterInfo?.activeMouseOverCharacter &&
-                    this.activeDashboardCharacter === null
-                ) {
-                    this.isDisplayTowerMenu = true
-                }
+                this.handleCheckDisplayUpdateLevel()
             })
         }
     }

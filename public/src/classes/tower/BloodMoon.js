@@ -21,6 +21,7 @@ class BloodMoonTower extends Tower {
             opacity,
             placementTile,
         });
+        this.displayLevelUpTower = this.createTowerDisplayLevelUp({ width: 90, height: 150, offset: { x: 10, y: -10 } });
     }
     createProjectiles(targetEnemies) {
         return targetEnemies.map((enemy) => {

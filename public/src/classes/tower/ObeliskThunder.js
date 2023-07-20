@@ -23,6 +23,7 @@ class ObeliskThunderTower extends Tower {
             placementTile,
         });
         this.baseTowerProperties = baseTowerProperties;
+        this.displayLevelUpTower = this.createTowerDisplayLevelUp({ width: 90, height: 180, offset: { x: 10, y: -20 } });
     }
     update({ enemies, shootingAudio, isDisplayAttackRangeCircleAndLevelUp, }) {
         super.update({

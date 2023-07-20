@@ -42,11 +42,16 @@ interface healthBarOptions {
     borderRadius: number
     strokeStyle: string
 }
-function drawText({ text, position, color = 'black', fontSize = 16, offset = { x: 0, y: 0 } }: T_text) {
+function drawText({ center, text, position, color = 'black', fontSize = 16, offset = { x: 0, y: 0 } }: T_text) {
     if (context2D) {
         context2D.font = `${fontSize}px Changa One`
         context2D.fillStyle = color
-        context2D.fillText(text, position.x, position.y)
+        if (center) {
+            const textWidth = context2D?.measureText(text).width ?? 2
+            context2D.fillText(text, position.x - textWidth / 2 + offset.x, position.y + offset.y)
+        } else {
+            context2D.fillText(text, position.x + offset.x, position.y + offset.y)
+        }
     }
 }
 function shouldEventOccur(percentage: number): boolean {

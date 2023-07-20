@@ -34,6 +34,7 @@ export default class FlyingObelisk extends Tower {
             multipleTarget: 1,
             placementTile,
         })
+        this.displayLevelUpTower = this.createTowerDisplayLevelUp({ width: 90, height: 150, offset: { x: 10, y: -20 } })
     }
     public static prices = 10
     public createProjectiles(targetEnemies: Enemy[]): Projectile[] {

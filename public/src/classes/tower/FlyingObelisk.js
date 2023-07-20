@@ -22,6 +22,7 @@ class FlyingObelisk extends Tower {
             multipleTarget: 1,
             placementTile,
         });
+        this.displayLevelUpTower = this.createTowerDisplayLevelUp({ width: 90, height: 150, offset: { x: 10, y: -20 } });
     }
     createProjectiles(targetEnemies) {
         return targetEnemies.map((enemy) => {

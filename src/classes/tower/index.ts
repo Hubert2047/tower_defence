@@ -26,13 +26,15 @@ export default class Tower extends Sprite implements I_character {
     public holdAttack: number
     public projectileType?: E_projectile
     public projectiles: Projectile[]
-    public placementTile: PlacementTile
+    public placementTile: PlacementTile | undefined
     public role: E_characterRoles
     public explosions: ExplosionProjectile[]
     private destroyExplosion: ExplosionProjectile
     public beingDestroyed: boolean
     public data: T_towerData
     private levelUpIcon: Sprite
+    public initFrames: T_initFramesDictionary
+    public displayLevelUpTower: Tower | undefined
     constructor({
         name,
         type,
@@ -50,6 +52,7 @@ export default class Tower extends Sprite implements I_character {
         angelKey = E_angels.ANGEL_0,
         opacity = 1,
         placementTile,
+        isDisplayLevelUpTower,
     }: T_tower) {
         const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames })
         super({ position, offset, width, height, frames, opacity })
@@ -61,18 +64,22 @@ export default class Tower extends Sprite implements I_character {
         this.countAttackTime = this.holdAttack
         this.explosions = []
         this.behaviorKey = behaviorKey
+        this.initFrames = initFrames
         this.angelKey = angelKey
         this.role = E_characterRoles.ATTACK
         this.placementTile = placementTile
         this.levelUpIcon = this.createLeveUpIcon()
         this.destroyExplosion = this.createDestroyExplosion()
         this.beingDestroyed = false
+        if (!isDisplayLevelUpTower) {
+            this.displayLevelUpTower = this.createTowerDisplayLevelUp({ width: this.width, height: this.height })
+        }
     }
     public get isAlreadyDestroyed(): boolean {
         return this.destroyExplosion.hasFinishedAnimation && this.beingDestroyed
     }
     public drawAttackRangeCicle(): void {
-        if (context2D) {
+        if (context2D && this.placementTile !== undefined) {
             context2D.beginPath()
             context2D.arc(
                 this.placementTile.position.x + 32,
@@ -105,6 +112,27 @@ export default class Tower extends Sprite implements I_character {
             width: 80,
         }
         return new Sprite(options)
+    }
+    public createTowerDisplayLevelUp({
+        height = this.height,
+        width = this.width,
+        offset = { x: 0, y: 0 },
+    }: {
+        height?: number
+        width?: number
+        offset?: T_position
+    }): Tower {
+        const towerOption: T_tower = {
+            position: { x: 0, y: 0 },
+            name: this.name,
+            type: this.type,
+            initFrames: this.initFrames,
+            height,
+            width,
+            isDisplayLevelUpTower: true,
+            offset,
+        }
+        return new Tower(towerOption)
     }
     public update({
         enemies,

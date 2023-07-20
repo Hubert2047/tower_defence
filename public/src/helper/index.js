@@ -33,11 +33,18 @@ function updateHealthBars({ sprite, health, remainHealth }) {
         drawRemainHealthBar({ sprite, drawOption, fullHealthWidth, remainHealthWidth, fillStyle: 'green' });
     }
 }
-function drawText({ text, position, color = 'black', fontSize = 16, offset = { x: 0, y: 0 } }) {
+function drawText({ center, text, position, color = 'black', fontSize = 16, offset = { x: 0, y: 0 } }) {
+    var _a;
     if (context2D) {
         context2D.font = `${fontSize}px Changa One`;
         context2D.fillStyle = color;
-        context2D.fillText(text, position.x, position.y);
+        if (center) {
+            const textWidth = (_a = context2D === null || context2D === void 0 ? void 0 : context2D.measureText(text).width) !== null && _a !== void 0 ? _a : 2;
+            context2D.fillText(text, position.x - textWidth / 2 + offset.x, position.y + offset.y);
+        }
+        else {
+            context2D.fillText(text, position.x + offset.x, position.y + offset.y);
+        }
     }
 }
 function shouldEventOccur(percentage) {

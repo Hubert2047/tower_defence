@@ -5,7 +5,7 @@ import { E_angels, E_behaviors, E_characterRoles, E_projectile } from '../../enu
 import { calAngleFromPointAToPointB, calculateDistanceTwoPoint, createFrames } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Tower extends Sprite {
-    constructor({ name, type, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, damage = 100, attackSpeed = 1, attackRange = 300, multipleTarget = 1, projectileType = E_projectile.FIRE, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile, }) {
+    constructor({ name, type, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, damage = 100, attackSpeed = 1, attackRange = 300, multipleTarget = 1, projectileType = E_projectile.FIRE, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile, isDisplayLevelUpTower, }) {
         const frames = createFrames({ initFrames });
         super({ position, offset, width, height, frames, opacity });
         this.name = name;
@@ -16,18 +16,22 @@ export default class Tower extends Sprite {
         this.countAttackTime = this.holdAttack;
         this.explosions = [];
         this.behaviorKey = behaviorKey;
+        this.initFrames = initFrames;
         this.angelKey = angelKey;
         this.role = E_characterRoles.ATTACK;
         this.placementTile = placementTile;
         this.levelUpIcon = this.createLeveUpIcon();
         this.destroyExplosion = this.createDestroyExplosion();
         this.beingDestroyed = false;
+        if (!isDisplayLevelUpTower) {
+            this.displayLevelUpTower = this.createTowerDisplayLevelUp({ width: this.width, height: this.height });
+        }
     }
     get isAlreadyDestroyed() {
         return this.destroyExplosion.hasFinishedAnimation && this.beingDestroyed;
     }
     drawAttackRangeCicle() {
-        if (context2D) {
+        if (context2D && this.placementTile !== undefined) {
             context2D.beginPath();
             context2D.arc(this.placementTile.position.x + 32, this.placementTile.position.y + 32, this.data.attackRange, 0, 2 * Math.PI);
             context2D.fillStyle = 'rgba(225,225,225,0.15)';
@@ -54,6 +58,19 @@ export default class Tower extends Sprite {
             width: 80,
         };
         return new Sprite(options);
+    }
+    createTowerDisplayLevelUp({ height = this.height, width = this.width, offset = { x: 0, y: 0 }, }) {
+        const towerOption = {
+            position: { x: 0, y: 0 },
+            name: this.name,
+            type: this.type,
+            initFrames: this.initFrames,
+            height,
+            width,
+            isDisplayLevelUpTower: true,
+            offset,
+        };
+        return new Tower(towerOption);
     }
     update({ enemies, shootingAudio, isDisplayAttackRangeCircleAndLevelUp, }) {
         if (this.beingDestroyed) {

@@ -114,7 +114,8 @@ type T_tower = {
     projectileType?: E_projectile
     opacity?: number
     multipleTarget?: number
-    placementTile: PlacementTile
+    placementTile?: PlacementTile
+    isDisplayLevelUpTower?: boolean
 }
 type T_explosion = {
     name: string
@@ -238,6 +239,7 @@ type T_text = {
     offset?: T_position
     fontSize?: number
     color?: string
+    center?: boolean
 }
 type T_dashboardCharacters = {
     type: E_characters
