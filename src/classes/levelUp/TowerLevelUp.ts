@@ -10,6 +10,8 @@ type T_towerLevelUp = {
 export default class TowerLevelUp extends Sprite {
     behaviorKey: E_behaviors
     angelKey: E_angels
+    col: number
+    row: number
     constructor({ position, angelKey = E_angels.ANGEL_0, behaviorKey = E_behaviors.IDLE }: T_towerLevelUp) {
         const initFrames: T_initFramesDictionary = {
             [E_behaviors.IDLE]: {
@@ -21,8 +23,12 @@ export default class TowerLevelUp extends Sprite {
                 },
             },
         }
+        const col = 12
+        const row = 8
         const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames })
-        super({ position, frames, width: 64 * 12, height: 64 * 8, opacity: 0.9 })
+        super({ position, frames, width: 64 * col, height: 64 * row, opacity: 0.99 })
+        this.col = col
+        this.row = row
         this.behaviorKey = behaviorKey
         this.angelKey = angelKey
     }
@@ -36,5 +42,17 @@ export default class TowerLevelUp extends Sprite {
             this.position.y >= position.y - this.offset.y &&
             position.y >= this.position.y - this.height + this.offset.y
         )
+    }
+    private hasCollistionWithCloseBtn(position: T_position) {
+        const closePosition = { x: this.position.x + this.width - 64, y: this.position.y - this.height }
+        return (
+            closePosition.x <= position.x &&
+            position.x <= closePosition.x + 64 &&
+            closePosition.y <= position.y &&
+            closePosition.y + 64 >= position.y
+        )
+    }
+    public isClose(position: T_position) {
+        return !this.hasCollision(position) || this.hasCollistionWithCloseBtn(position)
     }
 }

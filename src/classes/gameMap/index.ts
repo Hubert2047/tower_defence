@@ -842,7 +842,7 @@ export default class GameMap {
             canvas.addEventListener('click', () => {
                 this.checkHavestGems()
                 this.checkToHandleBuildCharacter()
-                if (!this.towerLevelUp.hasCollision(this.mousePosition)) {
+                if (this.towerLevelUp.isClose(this.mousePosition)) {
                     this.isDisplayTowerMenu = false
                 }
                 if (

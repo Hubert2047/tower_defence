@@ -735,7 +735,7 @@ export default class GameMap {
                 var _a;
                 this.checkHavestGems();
                 this.checkToHandleBuildCharacter();
-                if (!this.towerLevelUp.hasCollision(this.mousePosition)) {
+                if (this.towerLevelUp.isClose(this.mousePosition)) {
                     this.isDisplayTowerMenu = false;
                 }
                 if (((_a = this.activeMouseOverCharacterInfo) === null || _a === void 0 ? void 0 : _a.activeMouseOverCharacter) &&
