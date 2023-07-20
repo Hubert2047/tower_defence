@@ -14,7 +14,7 @@ export default class TowerLevelUp extends Sprite {
         const initFrames: T_initFramesDictionary = {
             [E_behaviors.IDLE]: {
                 [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../public/src/assets/images/menu/tower_menu.png',
+                    imageSourceString: '../../public/src/assets/images/menu/tower_level_up_menu.png',
                     maxX: 1,
                     maxY: 1,
                     holdTime: 4,
@@ -22,7 +22,7 @@ export default class TowerLevelUp extends Sprite {
             },
         }
         const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames })
-        super({ position, frames, width: 64 * 9, height: 64 * 8, opacity: 0.9 })
+        super({ position, frames, width: 64 * 12, height: 64 * 8, opacity: 0.9 })
         this.behaviorKey = behaviorKey
         this.angelKey = angelKey
     }
