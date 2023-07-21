@@ -68,7 +68,7 @@ enum E_characters {
     SHOVEL = 8,
 }
 enum E_characterRoles {
-    ATTACK = 'attack',
+    TOWER = 'tower',
     PLANTED = 'planted',
     DESTROY = 'destroy',
 }
@@ -83,6 +83,26 @@ enum E_chests {
     SILVER = 'silver',
     PURPLE = 'purple',
 }
+enum E_towerAttackProperties {
+    ATTACK_RANGE = 'ATTACK_RANGE',
+    ATTACK_DAMAGE = 'ATTACK_DAMAGE',
+    ATTACK_SPEED = 'ATTACK_SPEED',
+    ATTACK_MULTI = 'ATTACK_MULTI',
+    PROJECTILE = 'PROJECTILE',
+}
+enum E_level {
+    LV2 = '2',
+    LV3 = '3',
+    LV4 = '4',
+    LV5 = '5',
+    LV6 = '6',
+    LV7 = '7',
+    LV8 = '8',
+    LV9 = '9',
+    LV10 = '10',
+    LV11 = '11',
+    LV12 = '12',
+}
 export {
     E_angels,
     E_behaviors,
@@ -94,5 +114,7 @@ export {
     E_gameMap,
     E_gate,
     E_gems,
+    E_level,
     E_projectile,
+    E_towerAttackProperties,
 }

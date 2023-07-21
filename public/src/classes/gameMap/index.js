@@ -2,7 +2,7 @@ import Shovel from '../../classes/stuff/Shovel.js';
 import BloodMoon from '../../classes/tower/BloodMoon.js';
 import FlyingObelisk from '../../classes/tower/FlyingObelisk.js';
 import ObeliskThunder from '../../classes/tower/ObeliskThunder.js';
-import { BLUE_GEM_POSITION, COIN_POSITION, RED_GEM_POSITION, TILE_SIZE, YELLOW_GEM_POSITION, } from '../../constants/index.js';
+import { BLUE_GEM_POSITION, COIN_POSITION, PURPLE_GEM_POSITION, RED_GEM_POSITION, TILE_SIZE, } from '../../constants/index.js';
 import context2D, { canvas, resetCanvas } from '../../context2D/index.js';
 import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js';
 import gatesBaseProperties from '../../data/baseProperties/gates/index.js';
@@ -12,10 +12,12 @@ import Border from '../dashboardBorder/index.js';
 import DashboardCharacter from '../dashboardCharacters/index.js';
 import Enemy from '../enemy/index.js';
 import Gate from '../gate/index.js';
-import TowerLevelUp from '../levelUp/TowerLevelUp.js';
+import Gem from '../gems/index.js';
+import TowerLevelUpMenu from '../levelUp/TowerLevelUpMenu.js';
 import PlacementTile from '../placementTile/index.js';
 import AutumnTree from '../plant/AutumnTree.js';
 import GreenTree from '../plant/GreenTree.js';
+import Plant from '../plant/index.js';
 import MonsterraTree from '../plant/MonsterraTree.js';
 import Sprite from '../sprite/index.js';
 import Tower from '../tower/index.js';
@@ -32,7 +34,7 @@ export default class GameMap {
         this.gemsInfo = this.createGemInfo(startGems);
         this.currentDashboardEnemiesInfo = [];
         this.menu = this.createMenu();
-        this.towerLevelUp = new TowerLevelUp({ position: { x: 64 * 5, y: 64 * 10 } });
+        this.towerLevelUpMenu = new TowerLevelUpMenu({ position: { x: 64 * 5, y: 64 * 10 } });
         this.displayRound = this.createDisplayRound();
         this._mouseOverTile = null;
         this.mouseOverDashboardCharacter = null;
@@ -73,33 +75,58 @@ export default class GameMap {
     updateMap() {
         this.updateScreenGame();
         this.updatePlacementTiles();
-        this.updatePlants();
-        this.updateTowers();
+        this.updateAllCharacters();
         this.updateEnemies();
         this.updateDashboardEnemies();
         this.updateDashboardCharacters();
         this.drawGemsAndMenu();
         this.updateGate();
         if (this.activeLevelUpTower) {
-            this.towerLevelUp.update(this.activeLevelUpTower);
+            this.towerLevelUpMenu.update(this.activeLevelUpTower, this.gemsInfo);
         }
         return this.getGameStatus();
     }
-    updatePlants() {
-        var _a;
-        for (let i = this.plants.length - 1; i >= 0; i--) {
-            const currentPlan = this.plants[i];
-            const isDisplayLevelUp = ((_a = this.activeMouseOverCharacterInfo) === null || _a === void 0 ? void 0 : _a.activeMouseOverCharacter) === currentPlan &&
-                this.activeDashboardCharacter === null;
-            if (currentPlan.isAlreadyDestroyed) {
-                this.plants.slice(i, 1);
-                currentPlan.placementTile.isOccupied = false;
+    updateAllCharacters() {
+        const allCharacters = [...this.plants, ...this.towers];
+        this.towers = [];
+        this.plants = [];
+        allCharacters.sort((a, b) => b.position.y - a.position.y);
+        for (let i = allCharacters.length - 1; i >= 0; i--) {
+            const currentCharacter = allCharacters[i];
+            if (currentCharacter.placementTile === undefined)
+                continue; //delete currentCharacter
+            if (currentCharacter.isAlreadyDestroyed) {
+                currentCharacter.placementTile.isOccupied = false; //delete currentCharacter
                 continue;
             }
-            const gem = currentPlan.update(isDisplayLevelUp);
-            if (gem) {
-                this.gemsInfo[gem.type].value += gem.value;
+            if (currentCharacter instanceof Tower) {
+                this.updateTower(currentCharacter);
+                this.towers.push(currentCharacter);
             }
+            if (currentCharacter instanceof Plant) {
+                this.updatePlant(currentCharacter);
+                this.plants.push(currentCharacter);
+            }
+        }
+    }
+    updateTower(tower) {
+        var _a;
+        const isDisplayAttackRangeCircleAndLevelUp = ((_a = this.activeMouseOverCharacterInfo) === null || _a === void 0 ? void 0 : _a.activeMouseOverCharacter) === tower &&
+            this.activeDashboardCharacter === null &&
+            this.activeLevelUpTower === undefined;
+        tower.update({
+            enemies: this.currentEnemiesData,
+            shootingAudio: this.shootingAudio,
+            isDisplayAttackRangeCircleAndLevelUp,
+        });
+    }
+    updatePlant(plant) {
+        var _a;
+        const isDisplayLevelUp = ((_a = this.activeMouseOverCharacterInfo) === null || _a === void 0 ? void 0 : _a.activeMouseOverCharacter) === plant &&
+            this.activeDashboardCharacter === null;
+        const gem = plant.update(isDisplayLevelUp);
+        if (gem) {
+            this.gemsInfo[gem.type].value += gem.value;
         }
     }
     updateGate() {
@@ -185,26 +212,6 @@ export default class GameMap {
             placementTile.update(this.activeDashboardCharacter, this.mousePosition);
         });
     }
-    updateTowers() {
-        var _a;
-        for (let i = this.towers.length - 1; i >= 0; i--) {
-            const currentTower = this.towers[i];
-            if (currentTower.placementTile === undefined)
-                continue;
-            if (currentTower.isAlreadyDestroyed) {
-                currentTower.placementTile.isOccupied = false;
-                this.towers.splice(i, 1);
-            }
-            const isDisplayAttackRangeCircleAndLevelUp = ((_a = this.activeMouseOverCharacterInfo) === null || _a === void 0 ? void 0 : _a.activeMouseOverCharacter) === currentTower &&
-                this.activeDashboardCharacter === null &&
-                this.activeLevelUpTower === undefined;
-            currentTower.update({
-                enemies: this.currentEnemiesData,
-                shootingAudio: this.shootingAudio,
-                isDisplayAttackRangeCircleAndLevelUp,
-            });
-        }
-    }
     updateEnemies() {
         if (this._currentEnemiesData.length <= 0) {
             this.currentRound++;
@@ -288,33 +295,29 @@ export default class GameMap {
         return dashboardCharacters;
     }
     createGemInfo(gems) {
-        const coinIcon = this.createGemIcon({
-            gemSourceImage: '../../public/src/assets/images/stuff/chest/coins.png',
-            offset: { x: 0, y: 0 },
+        const coinIcon = new Gem({
             position: COIN_POSITION,
-            maxX: 4,
-            maxY: 2,
+            gemType: E_gems.COIN,
+            isDisplayGemNum: false,
+            gemNum: 0,
         });
-        const blueGemIcon = this.createGemIcon({
-            gemSourceImage: '../../public/src/assets/images/gems/blue.png',
-            offset: { x: 0, y: 0 },
+        const blueGemIcon = new Gem({
             position: BLUE_GEM_POSITION,
-            maxX: 1,
-            maxY: 1,
+            gemType: E_gems.COIN,
+            isDisplayGemNum: false,
+            gemNum: 0,
         });
-        const redGemIcon = this.createGemIcon({
-            gemSourceImage: '../../public/src/assets/images/gems/red.png',
-            offset: { x: 0, y: 0 },
+        const redGemIcon = new Gem({
             position: RED_GEM_POSITION,
-            maxX: 1,
-            maxY: 1,
+            gemType: E_gems.COIN,
+            isDisplayGemNum: false,
+            gemNum: 0,
         });
-        const yellowGemIcon = this.createGemIcon({
-            gemSourceImage: '../../public/src/assets/images/gems/purple.png',
-            offset: { x: 0, y: 0 },
-            position: YELLOW_GEM_POSITION,
-            maxX: 1,
-            maxY: 1,
+        const yellowGemIcon = new Gem({
+            position: PURPLE_GEM_POSITION,
+            gemType: E_gems.COIN,
+            isDisplayGemNum: false,
+            gemNum: 0,
         });
         return {
             [E_gems.BLUE]: { value: gems.blueGems, icon: blueGemIcon },
@@ -326,7 +329,7 @@ export default class GameMap {
     drawGems() {
         const keys = Object.keys(this.gemsInfo);
         keys.forEach((key) => {
-            this.gemsInfo[key].icon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 });
+            this.gemsInfo[key].icon.update();
             const textString = this.gemsInfo[key].value.toString();
             const textOptions = {
                 text: textString,
@@ -506,7 +509,7 @@ export default class GameMap {
         };
         let isSuccess = true;
         switch (this.activeDashboardCharacter.role) {
-            case E_characterRoles.ATTACK:
+            case E_characterRoles.TOWER:
                 isSuccess = this.handleBuildTowers({ options, type: this.activeDashboardCharacter.type });
                 break;
             case E_characterRoles.PLANTED:
@@ -542,9 +545,6 @@ export default class GameMap {
                 isSuccess = false;
                 break;
         }
-        if (isSuccess) {
-            this.towers.sort((a, b) => b.position.y - a.position.y);
-        }
         return isSuccess;
     }
     handleBuildPlants({ options, type, }) {
@@ -562,9 +562,6 @@ export default class GameMap {
             default:
                 isSuccess = false;
                 break;
-        }
-        if (isSuccess) {
-            this.plants.sort((a, b) => b.position.y - a.position.y);
         }
         return isSuccess;
     }
@@ -647,6 +644,11 @@ export default class GameMap {
         if (this.activeDashboardCharacter === null)
             return;
         this.activeMouseOverCharacterInfo = this.handleFindMouseOverCharacterInfo(this.mousePosition);
+    }
+    handleMouseMoveOnActiveLevelUpTower() {
+        if (this.activeLevelUpTower === undefined)
+            return;
+        this.towerLevelUpMenu.drawGemConditions(this.activeLevelUpTower, this.mousePosition);
     }
     //calculate function place
     handleFindMouseOverCharacterInfo(mouse) {
@@ -731,7 +733,7 @@ export default class GameMap {
     }
     handleCheckDisplayUpdateLevel() {
         var _a;
-        if (this.towerLevelUp.isClose(this.mousePosition)) {
+        if (this.towerLevelUpMenu.isClose(this.mousePosition)) {
             this.activeLevelUpTower = undefined;
         }
         if (((_a = this.activeMouseOverCharacterInfo) === null || _a === void 0 ? void 0 : _a.activeMouseOverCharacter) && this.activeDashboardCharacter === null) {
@@ -748,6 +750,9 @@ export default class GameMap {
                 this.checkMouseOverCharacter();
                 this.checkMouseOverTile();
                 this.checkMouseOverDashboardCharacters();
+                if (this.activeLevelUpTower) {
+                    this.handleMouseMoveOnActiveLevelUpTower();
+                }
             });
             canvas.addEventListener('click', () => {
                 this.checkHavestGems();

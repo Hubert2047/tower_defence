@@ -1,22 +1,35 @@
 import DestroyExplosion from '../../classes/explosionProjectile/Destroy.js'
 import FireProjectile from '../../classes/projectile/Fire.js'
 import context2D from '../../context2D/index.js'
-import { E_angels, E_behaviors, E_characterRoles, E_characters, E_projectile } from '../../enum/index.js'
+import {
+    E_angels,
+    E_behaviors,
+    E_characterRoles,
+    E_characters,
+    E_projectile,
+    E_towerAttackProperties,
+} from '../../enum/index.js'
 import { calAngleFromPointAToPointB, calculateDistanceTwoPoint, createFrames } from '../../helper/index.js'
-import { T_frame, T_initFramesDictionary, T_position, T_sprite, T_tower } from '../../types/index.js'
+import { T_frame, T_initFramesDictionary, T_position, T_tower } from '../../types/index.js'
 import { I_character, I_projectile } from '../../types/interface.js'
 import Enemy from '../enemy/index.js'
 import ExplosionProjectile from '../explosionProjectile/index.js'
+import LevelUpIcon from '../levelUpIcon/index.js'
 import PlacementTile from '../placementTile/index.js'
 import Projectile from '../projectile/index.js'
 import Sprite from '../sprite/index.js'
-type T_towerData = {
-    attackSpeed: number
-    attackRange: number
-    multipleTarget: number
-    damage: number
-    projectileType: E_projectile
+// type T_towerData = {
+//     attackSpeed: number
+//     attackRange: number
+//     multipleTarget: number
+//     damage: number
+//     projectileType: E_projectile
+// }
+type attackProperty = {
+    currentLv: number
+    value: number
 }
+type T_towerData = Record<string, attackProperty>
 export default class Tower extends Sprite implements I_character {
     public name: string
     public type: E_characters
@@ -32,7 +45,7 @@ export default class Tower extends Sprite implements I_character {
     private destroyExplosion: ExplosionProjectile
     public beingDestroyed: boolean
     public data: T_towerData
-    private levelUpIcon: Sprite
+    private levelUpIcon: LevelUpIcon
     public initFrames: T_initFramesDictionary
     public displayLevelUpTower: Tower | undefined
     constructor({
@@ -58,7 +71,29 @@ export default class Tower extends Sprite implements I_character {
         super({ position, offset, width, height, frames, opacity })
         this.name = name
         this.type = type
-        this.data = { damage, attackSpeed, attackRange, multipleTarget, projectileType }
+        this.role = E_characterRoles.TOWER
+        this.data = {
+            [E_towerAttackProperties.ATTACK_DAMAGE]: {
+                currentLv: 1,
+                value: damage,
+            },
+            [E_towerAttackProperties.ATTACK_SPEED]: {
+                currentLv: 1,
+                value: attackSpeed,
+            },
+            [E_towerAttackProperties.ATTACK_RANGE]: {
+                currentLv: 1,
+                value: attackRange,
+            },
+            [E_towerAttackProperties.ATTACK_MULTI]: {
+                currentLv: 1,
+                value: multipleTarget,
+            },
+            [E_towerAttackProperties.PROJECTILE]: {
+                currentLv: 1,
+                value: projectileType,
+            },
+        }
         this.projectiles = []
         this.holdAttack = parseInt((1000 / attackSpeed).toString())
         this.countAttackTime = this.holdAttack
@@ -66,9 +101,14 @@ export default class Tower extends Sprite implements I_character {
         this.behaviorKey = behaviorKey
         this.initFrames = initFrames
         this.angelKey = angelKey
-        this.role = E_characterRoles.ATTACK
         this.placementTile = placementTile
-        this.levelUpIcon = this.createLeveUpIcon()
+        this.levelUpIcon = new LevelUpIcon({
+            position: { x: this.position.x, y: this.position.y },
+            offset: { x: 4, y: 12 },
+            height: 80,
+            width: 80,
+            behaviorKey: E_behaviors.RUN,
+        })
         this.destroyExplosion = this.createDestroyExplosion()
         this.beingDestroyed = false
         if (!isDisplayLevelUpTower) {
@@ -84,34 +124,13 @@ export default class Tower extends Sprite implements I_character {
             context2D.arc(
                 this.placementTile.position.x + 32,
                 this.placementTile.position.y + 32,
-                this.data.attackRange,
+                this.data[E_towerAttackProperties.ATTACK_RANGE].value,
                 0,
                 2 * Math.PI
             )
             context2D.fillStyle = 'rgba(225,225,225,0.15)'
             context2D.fill()
         }
-    }
-    private createLeveUpIcon() {
-        const initFrames: T_initFramesDictionary = {
-            [E_behaviors.IDLE]: {
-                [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../public/src/assets/images/stuff/level-up.png',
-                    maxX: 5,
-                    maxY: 3,
-                    holdTime: 4,
-                },
-            },
-        }
-        const frames = createFrames({ initFrames })
-        const options: T_sprite = {
-            frames,
-            position: { x: this.position.x, y: this.position.y },
-            offset: { x: 4, y: 12 },
-            height: 80,
-            width: 80,
-        }
-        return new Sprite(options)
     }
     public createTowerDisplayLevelUp({
         height = this.height,
@@ -151,7 +170,7 @@ export default class Tower extends Sprite implements I_character {
             this.updateProjectile(shootingAudio)
             if (isDisplayAttackRangeCircleAndLevelUp) {
                 this.drawAttackRangeCicle()
-                this.levelUpIcon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
+                this.levelUpIcon.update()
             }
         }
     }
@@ -204,7 +223,7 @@ export default class Tower extends Sprite implements I_character {
             return
         }
         this.behaviorKey = E_behaviors.ATTACK
-        const targetEnemies: Enemy[] = enemiesInRange.slice(0, this.data.multipleTarget)
+        const targetEnemies: Enemy[] = enemiesInRange.slice(0, this.data[E_towerAttackProperties.ATTACK_MULTI].value)
         const centerRightTargetEnemyPosition = {
             x: targetEnemies[0].position.x + targetEnemies[0].width - targetEnemies[0].offset.x,
             y: targetEnemies[0].position.y - targetEnemies[0].height / 2,
@@ -224,7 +243,7 @@ export default class Tower extends Sprite implements I_character {
                     x: this.position.x - this.width + 1.5 * this.offset.x,
                     y: this.position.y - this.height + 1.8 * this.offset.y,
                 },
-                damage: this.data.damage,
+                damage: this.data[E_towerAttackProperties.ATTACK_DAMAGE].value,
                 enemy,
                 moveSpeed: 30,
                 offset: { x: 0, y: 0 },
@@ -237,7 +256,7 @@ export default class Tower extends Sprite implements I_character {
         currentEnemies.forEach((enemy: Enemy) => {
             const realPostion: T_position = { x: this.position.x + this.offset.x, y: this.position.y }
             const distance: number = calculateDistanceTwoPoint(enemy.position, realPostion)
-            if (distance <= this.data.attackRange && enemy.remainHealth > 0) {
+            if (distance <= this.data[E_towerAttackProperties.ATTACK_RANGE].value && enemy.remainHealth > 0) {
                 enemiesInRange.push(enemy)
             }
         })

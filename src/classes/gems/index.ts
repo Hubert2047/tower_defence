@@ -1,4 +1,4 @@
-import { BLUE_GEM_POSITION, COIN_POSITION, RED_GEM_POSITION, YELLOW_GEM_POSITION } from '../../constants/index.js'
+import { BLUE_GEM_POSITION, COIN_POSITION, PURPLE_GEM_POSITION, RED_GEM_POSITION } from '../../constants/index.js'
 import context2D from '../../context2D/index.js'
 import getBaseGemProperties from '../../data/baseProperties/gems/index.js'
 import { E_angels, E_behaviors, E_gems } from '../../enum/index.js'
@@ -14,6 +14,7 @@ type T_gem = {
     angelKey?: E_angels
     moveSpeed?: number
     opacity?: number
+    isDisplayGemNum?: boolean
 }
 export default class Gem extends Sprite {
     public behaviorKey: E_behaviors
@@ -25,15 +26,17 @@ export default class Gem extends Sprite {
     private gemNum: number
     private targetPosition: T_position
     public haveharvestGems: boolean
+    public isDisplayGemNum: boolean
     constructor({
         position,
         gemType,
         behaviorKey = E_behaviors.IDLE,
         angelKey = E_angels.ANGEL_0,
         offset,
-        gemNum,
+        gemNum = 1,
         moveSpeed = 250,
         opacity = 1,
+        isDisplayGemNum = true,
     }: T_gem) {
         const currentGemProperties = getBaseGemProperties(gemType)
         const frames: Map<string, Map<string, T_frame>> = createFrames({
@@ -55,6 +58,7 @@ export default class Gem extends Sprite {
         this.velocityY = 0
         this.targetPosition = this.findTargetPosition()
         this.gemNum = gemNum
+        this.isDisplayGemNum = isDisplayGemNum
         this.haveharvestGems = false
     }
     public get hasHitTarget() {
@@ -62,7 +66,7 @@ export default class Gem extends Sprite {
     }
     public update() {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
-        if (context2D) {
+        if (context2D && this.isDisplayGemNum) {
             const textString = `+${this.gemNum.toString()}`
             const textWidth = context2D.measureText(textString).width
             const textOptions: T_text = {
@@ -90,7 +94,7 @@ export default class Gem extends Sprite {
             case E_gems.RED:
                 return RED_GEM_POSITION
             case E_gems.PURPLE:
-                return YELLOW_GEM_POSITION
+                return PURPLE_GEM_POSITION
             case E_gems.COIN:
                 return COIN_POSITION
             default:

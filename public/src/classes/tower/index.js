@@ -1,8 +1,9 @@
 import DestroyExplosion from '../../classes/explosionProjectile/Destroy.js';
 import FireProjectile from '../../classes/projectile/Fire.js';
 import context2D from '../../context2D/index.js';
-import { E_angels, E_behaviors, E_characterRoles, E_projectile } from '../../enum/index.js';
+import { E_angels, E_behaviors, E_characterRoles, E_projectile, E_towerAttackProperties, } from '../../enum/index.js';
 import { calAngleFromPointAToPointB, calculateDistanceTwoPoint, createFrames } from '../../helper/index.js';
+import LevelUpIcon from '../levelUpIcon/index.js';
 import Sprite from '../sprite/index.js';
 export default class Tower extends Sprite {
     constructor({ name, type, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, damage = 100, attackSpeed = 1, attackRange = 300, multipleTarget = 1, projectileType = E_projectile.FIRE, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile, isDisplayLevelUpTower, }) {
@@ -10,7 +11,29 @@ export default class Tower extends Sprite {
         super({ position, offset, width, height, frames, opacity });
         this.name = name;
         this.type = type;
-        this.data = { damage, attackSpeed, attackRange, multipleTarget, projectileType };
+        this.role = E_characterRoles.TOWER;
+        this.data = {
+            [E_towerAttackProperties.ATTACK_DAMAGE]: {
+                currentLv: 1,
+                value: damage,
+            },
+            [E_towerAttackProperties.ATTACK_SPEED]: {
+                currentLv: 1,
+                value: attackSpeed,
+            },
+            [E_towerAttackProperties.ATTACK_RANGE]: {
+                currentLv: 1,
+                value: attackRange,
+            },
+            [E_towerAttackProperties.ATTACK_MULTI]: {
+                currentLv: 1,
+                value: multipleTarget,
+            },
+            [E_towerAttackProperties.PROJECTILE]: {
+                currentLv: 1,
+                value: projectileType,
+            },
+        };
         this.projectiles = [];
         this.holdAttack = parseInt((1000 / attackSpeed).toString());
         this.countAttackTime = this.holdAttack;
@@ -18,9 +41,14 @@ export default class Tower extends Sprite {
         this.behaviorKey = behaviorKey;
         this.initFrames = initFrames;
         this.angelKey = angelKey;
-        this.role = E_characterRoles.ATTACK;
         this.placementTile = placementTile;
-        this.levelUpIcon = this.createLeveUpIcon();
+        this.levelUpIcon = new LevelUpIcon({
+            position: { x: this.position.x, y: this.position.y },
+            offset: { x: 4, y: 12 },
+            height: 80,
+            width: 80,
+            behaviorKey: E_behaviors.RUN,
+        });
         this.destroyExplosion = this.createDestroyExplosion();
         this.beingDestroyed = false;
         if (!isDisplayLevelUpTower) {
@@ -33,31 +61,10 @@ export default class Tower extends Sprite {
     drawAttackRangeCicle() {
         if (context2D && this.placementTile !== undefined) {
             context2D.beginPath();
-            context2D.arc(this.placementTile.position.x + 32, this.placementTile.position.y + 32, this.data.attackRange, 0, 2 * Math.PI);
+            context2D.arc(this.placementTile.position.x + 32, this.placementTile.position.y + 32, this.data[E_towerAttackProperties.ATTACK_RANGE].value, 0, 2 * Math.PI);
             context2D.fillStyle = 'rgba(225,225,225,0.15)';
             context2D.fill();
         }
-    }
-    createLeveUpIcon() {
-        const initFrames = {
-            [E_behaviors.IDLE]: {
-                [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../public/src/assets/images/stuff/level-up.png',
-                    maxX: 5,
-                    maxY: 3,
-                    holdTime: 4,
-                },
-            },
-        };
-        const frames = createFrames({ initFrames });
-        const options = {
-            frames,
-            position: { x: this.position.x, y: this.position.y },
-            offset: { x: 4, y: 12 },
-            height: 80,
-            width: 80,
-        };
-        return new Sprite(options);
     }
     createTowerDisplayLevelUp({ height = this.height, width = this.width, offset = { x: 0, y: 0 }, }) {
         const towerOption = {
@@ -82,7 +89,7 @@ export default class Tower extends Sprite {
             this.updateProjectile(shootingAudio);
             if (isDisplayAttackRangeCircleAndLevelUp) {
                 this.drawAttackRangeCicle();
-                this.levelUpIcon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 });
+                this.levelUpIcon.update();
             }
         }
     }
@@ -135,7 +142,7 @@ export default class Tower extends Sprite {
             return;
         }
         this.behaviorKey = E_behaviors.ATTACK;
-        const targetEnemies = enemiesInRange.slice(0, this.data.multipleTarget);
+        const targetEnemies = enemiesInRange.slice(0, this.data[E_towerAttackProperties.ATTACK_MULTI].value);
         const centerRightTargetEnemyPosition = {
             x: targetEnemies[0].position.x + targetEnemies[0].width - targetEnemies[0].offset.x,
             y: targetEnemies[0].position.y - targetEnemies[0].height / 2,
@@ -155,7 +162,7 @@ export default class Tower extends Sprite {
                     x: this.position.x - this.width + 1.5 * this.offset.x,
                     y: this.position.y - this.height + 1.8 * this.offset.y,
                 },
-                damage: this.data.damage,
+                damage: this.data[E_towerAttackProperties.ATTACK_DAMAGE].value,
                 enemy,
                 moveSpeed: 30,
                 offset: { x: 0, y: 0 },
@@ -168,7 +175,7 @@ export default class Tower extends Sprite {
         currentEnemies.forEach((enemy) => {
             const realPostion = { x: this.position.x + this.offset.x, y: this.position.y };
             const distance = calculateDistanceTwoPoint(enemy.position, realPostion);
-            if (distance <= this.data.attackRange && enemy.remainHealth > 0) {
+            if (distance <= this.data[E_towerAttackProperties.ATTACK_RANGE].value && enemy.remainHealth > 0) {
                 enemiesInRange.push(enemy);
             }
         });

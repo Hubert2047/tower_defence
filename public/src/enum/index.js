@@ -77,7 +77,7 @@ var E_characters;
 })(E_characters || (E_characters = {}));
 var E_characterRoles;
 (function (E_characterRoles) {
-    E_characterRoles["ATTACK"] = "attack";
+    E_characterRoles["TOWER"] = "tower";
     E_characterRoles["PLANTED"] = "planted";
     E_characterRoles["DESTROY"] = "destroy";
 })(E_characterRoles || (E_characterRoles = {}));
@@ -94,4 +94,26 @@ var E_chests;
     E_chests["SILVER"] = "silver";
     E_chests["PURPLE"] = "purple";
 })(E_chests || (E_chests = {}));
-export { E_angels, E_behaviors, E_characterRoles, E_characters, E_chests, E_enemy, E_explosion, E_gameMap, E_gate, E_gems, E_projectile, };
+var E_towerAttackProperties;
+(function (E_towerAttackProperties) {
+    E_towerAttackProperties["ATTACK_RANGE"] = "ATTACK_RANGE";
+    E_towerAttackProperties["ATTACK_DAMAGE"] = "ATTACK_DAMAGE";
+    E_towerAttackProperties["ATTACK_SPEED"] = "ATTACK_SPEED";
+    E_towerAttackProperties["ATTACK_MULTI"] = "ATTACK_MULTI";
+    E_towerAttackProperties["PROJECTILE"] = "PROJECTILE";
+})(E_towerAttackProperties || (E_towerAttackProperties = {}));
+var E_level;
+(function (E_level) {
+    E_level["LV2"] = "2";
+    E_level["LV3"] = "3";
+    E_level["LV4"] = "4";
+    E_level["LV5"] = "5";
+    E_level["LV6"] = "6";
+    E_level["LV7"] = "7";
+    E_level["LV8"] = "8";
+    E_level["LV9"] = "9";
+    E_level["LV10"] = "10";
+    E_level["LV11"] = "11";
+    E_level["LV12"] = "12";
+})(E_level || (E_level = {}));
+export { E_angels, E_behaviors, E_characterRoles, E_characters, E_chests, E_enemy, E_explosion, E_gameMap, E_gate, E_gems, E_level, E_projectile, E_towerAttackProperties, };

@@ -5,9 +5,9 @@ import ObeliskThunder from '../../classes/tower/ObeliskThunder.js'
 import {
     BLUE_GEM_POSITION,
     COIN_POSITION,
+    PURPLE_GEM_POSITION,
     RED_GEM_POSITION,
     TILE_SIZE,
-    YELLOW_GEM_POSITION,
 } from '../../constants/index.js'
 import context2D, { canvas, resetCanvas } from '../../context2D/index.js'
 import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js'
@@ -24,6 +24,7 @@ import {
     T_gameMapData,
     T_gate,
     T_gateInfo,
+    T_gemsInfo,
     T_gemStartInfo,
     T_initDashboardCharacterInfo,
     T_initFramesDictionary,
@@ -37,7 +38,8 @@ import Border from '../dashboardBorder/index.js'
 import DashboardCharacter from '../dashboardCharacters/index.js'
 import Enemy from '../enemy/index.js'
 import Gate from '../gate/index.js'
-import TowerLevelUp from '../levelUp/TowerLevelUp.js'
+import Gem from '../gems/index.js'
+import TowerLevelUpMenu from '../levelUp/TowerLevelUpMenu.js'
 import PlacementTile from '../placementTile/index.js'
 import AutumnTree from '../plant/AutumnTree.js'
 import GreenTree from '../plant/GreenTree.js'
@@ -57,13 +59,6 @@ interface I_dashboardCharactersInfo {
     type: E_characters
 }
 
-type T_gemsInfo = Record<
-    string,
-    {
-        icon: Sprite
-        value: number
-    }
->
 type T_baseIncreasedStrengthEnemies = {
     health: number
     damage: number
@@ -93,7 +88,7 @@ export default class GameMap {
     private currentRound: number
     private baseIncreasedStrengthEnemies: T_baseIncreasedStrengthEnemies
     private mousePosition: T_position
-    private towerLevelUp: TowerLevelUp
+    private towerLevelUpMenu: TowerLevelUpMenu
     private activeLevelUpTower: Tower | undefined
     constructor({
         rounds,
@@ -115,7 +110,7 @@ export default class GameMap {
         this.gemsInfo = this.createGemInfo(startGems)
         this.currentDashboardEnemiesInfo = []
         this.menu = this.createMenu()
-        this.towerLevelUp = new TowerLevelUp({ position: { x: 64 * 5, y: 64 * 10 } })
+        this.towerLevelUpMenu = new TowerLevelUpMenu({ position: { x: 64 * 5, y: 64 * 10 } })
         this.displayRound = this.createDisplayRound()
         this._mouseOverTile = null
         this.mouseOverDashboardCharacter = null
@@ -156,33 +151,57 @@ export default class GameMap {
     public updateMap(): [boolean, boolean] {
         this.updateScreenGame()
         this.updatePlacementTiles()
-        this.updatePlants()
-        this.updateTowers()
+        this.updateAllCharacters()
         this.updateEnemies()
         this.updateDashboardEnemies()
         this.updateDashboardCharacters()
         this.drawGemsAndMenu()
         this.updateGate()
         if (this.activeLevelUpTower) {
-            this.towerLevelUp.update(this.activeLevelUpTower)
+            this.towerLevelUpMenu.update(this.activeLevelUpTower, this.gemsInfo)
         }
         return this.getGameStatus()
     }
-    private updatePlants() {
-        for (let i = this.plants.length - 1; i >= 0; i--) {
-            const currentPlan: Plant = this.plants[i]
-            const isDisplayLevelUp =
-                this.activeMouseOverCharacterInfo?.activeMouseOverCharacter === currentPlan &&
-                this.activeDashboardCharacter === null
-            if (currentPlan.isAlreadyDestroyed) {
-                this.plants.slice(i, 1)
-                currentPlan.placementTile.isOccupied = false
+    private updateAllCharacters(): void {
+        const allCharacters: I_character[] = [...this.plants, ...this.towers]
+        this.towers = []
+        this.plants = []
+        allCharacters.sort((a, b) => b.position.y - a.position.y)
+        for (let i = allCharacters.length - 1; i >= 0; i--) {
+            const currentCharacter = allCharacters[i]
+            if (currentCharacter.placementTile === undefined) continue //delete currentCharacter
+            if (currentCharacter.isAlreadyDestroyed) {
+                currentCharacter.placementTile.isOccupied = false //delete currentCharacter
                 continue
             }
-            const gem = currentPlan.update(isDisplayLevelUp)
-            if (gem) {
-                this.gemsInfo[gem.type].value += gem.value
+            if (currentCharacter instanceof Tower) {
+                this.updateTower(currentCharacter)
+                this.towers.push(currentCharacter)
             }
+            if (currentCharacter instanceof Plant) {
+                this.updatePlant(currentCharacter)
+                this.plants.push(currentCharacter)
+            }
+        }
+    }
+    private updateTower(tower: Tower): void {
+        const isDisplayAttackRangeCircleAndLevelUp =
+            this.activeMouseOverCharacterInfo?.activeMouseOverCharacter === tower &&
+            this.activeDashboardCharacter === null &&
+            this.activeLevelUpTower === undefined
+        tower.update({
+            enemies: this.currentEnemiesData,
+            shootingAudio: this.shootingAudio,
+            isDisplayAttackRangeCircleAndLevelUp,
+        })
+    }
+    private updatePlant(plant: Plant): void {
+        const isDisplayLevelUp =
+            this.activeMouseOverCharacterInfo?.activeMouseOverCharacter === plant &&
+            this.activeDashboardCharacter === null
+        const gem = plant.update(isDisplayLevelUp)
+        if (gem) {
+            this.gemsInfo[gem.type].value += gem.value
         }
     }
     private updateGate() {
@@ -268,25 +287,7 @@ export default class GameMap {
             placementTile.update(this.activeDashboardCharacter, this.mousePosition)
         })
     }
-    private updateTowers(): void {
-        for (let i = this.towers.length - 1; i >= 0; i--) {
-            const currentTower = this.towers[i]
-            if (currentTower.placementTile === undefined) continue
-            if (currentTower.isAlreadyDestroyed) {
-                currentTower.placementTile.isOccupied = false
-                this.towers.splice(i, 1)
-            }
-            const isDisplayAttackRangeCircleAndLevelUp =
-                this.activeMouseOverCharacterInfo?.activeMouseOverCharacter === currentTower &&
-                this.activeDashboardCharacter === null &&
-                this.activeLevelUpTower === undefined
-            currentTower.update({
-                enemies: this.currentEnemiesData,
-                shootingAudio: this.shootingAudio,
-                isDisplayAttackRangeCircleAndLevelUp,
-            })
-        }
-    }
+
     private updateEnemies(): void {
         if (this._currentEnemiesData.length <= 0) {
             this.currentRound++
@@ -373,34 +374,31 @@ export default class GameMap {
         return dashboardCharacters
     }
     private createGemInfo(gems: T_gemStartInfo): T_gemsInfo {
-        const coinIcon = this.createGemIcon({
-            gemSourceImage: '../../public/src/assets/images/stuff/chest/coins.png',
-            offset: { x: 0, y: 0 },
+        const coinIcon = new Gem({
             position: COIN_POSITION,
-            maxX: 4,
-            maxY: 2,
+            gemType: E_gems.COIN,
+            isDisplayGemNum: false,
+            gemNum: 0,
         })
-        const blueGemIcon = this.createGemIcon({
-            gemSourceImage: '../../public/src/assets/images/gems/blue.png',
-            offset: { x: 0, y: 0 },
+        const blueGemIcon = new Gem({
             position: BLUE_GEM_POSITION,
-            maxX: 1,
-            maxY: 1,
+            gemType: E_gems.COIN,
+            isDisplayGemNum: false,
+            gemNum: 0,
         })
-        const redGemIcon = this.createGemIcon({
-            gemSourceImage: '../../public/src/assets/images/gems/red.png',
-            offset: { x: 0, y: 0 },
+        const redGemIcon = new Gem({
             position: RED_GEM_POSITION,
-            maxX: 1,
-            maxY: 1,
+            gemType: E_gems.COIN,
+            isDisplayGemNum: false,
+            gemNum: 0,
         })
-        const yellowGemIcon = this.createGemIcon({
-            gemSourceImage: '../../public/src/assets/images/gems/purple.png',
-            offset: { x: 0, y: 0 },
-            position: YELLOW_GEM_POSITION,
-            maxX: 1,
-            maxY: 1,
+        const yellowGemIcon = new Gem({
+            position: PURPLE_GEM_POSITION,
+            gemType: E_gems.COIN,
+            isDisplayGemNum: false,
+            gemNum: 0,
         })
+
         return {
             [E_gems.BLUE]: { value: gems.blueGems, icon: blueGemIcon },
             [E_gems.RED]: { value: gems.redGems, icon: redGemIcon },
@@ -411,7 +409,7 @@ export default class GameMap {
     private drawGems() {
         const keys = Object.keys(this.gemsInfo)
         keys.forEach((key) => {
-            this.gemsInfo[key].icon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
+            this.gemsInfo[key].icon.update()
             const textString = this.gemsInfo[key].value.toString()
             const textOptions: T_text = {
                 text: textString,
@@ -605,7 +603,7 @@ export default class GameMap {
         }
         let isSuccess = true
         switch (this.activeDashboardCharacter.role) {
-            case E_characterRoles.ATTACK:
+            case E_characterRoles.TOWER:
                 isSuccess = this.handleBuildTowers({ options, type: this.activeDashboardCharacter.type })
                 break
             case E_characterRoles.PLANTED:
@@ -646,9 +644,6 @@ export default class GameMap {
                 isSuccess = false
                 break
         }
-        if (isSuccess) {
-            this.towers.sort((a, b) => b.position.y - a.position.y)
-        }
         return isSuccess
     }
     private handleBuildPlants({
@@ -673,9 +668,6 @@ export default class GameMap {
                 isSuccess = false
                 break
         }
-        if (isSuccess) {
-            this.plants.sort((a, b) => b.position.y - a.position.y)
-        }
         return isSuccess
     }
     private handleDestroyStuff(): boolean {
@@ -699,14 +691,14 @@ export default class GameMap {
             }
         })
     }
-    public checkMouseOverTile(): void {
+    private checkMouseOverTile(): void {
         if (!this.activeDashboardCharacter?.dashboardShadow) {
             this._mouseOverTile = null
             return
         }
         this._mouseOverTile = this.placementTiles.find((tile) => tile.hasCollision(this.mousePosition)) ?? null
     }
-    public checkToHandleBuildCharacter(): void {
+    private checkToHandleBuildCharacter(): void {
         //click ouside can plant character and select character in dashboard
         const isDestroyRole = this.mouseOverDashboardCharacter?.role === E_characterRoles.DESTROY
         if (
@@ -746,16 +738,20 @@ export default class GameMap {
             this.handleCharacterRoleBehavior()
         }
     }
-    public checkMouseOverDashboardCharacters() {
+    private checkMouseOverDashboardCharacters() {
         this.mouseOverDashboardCharacter =
             this.dashboardCharacters.find((dashboardCharacterInfo) =>
                 dashboardCharacterInfo.dashboardCharacter.hasCollision(this.mousePosition)
             )?.dashboardCharacter ?? null
     }
-    public checkMouseOverCharacter() {
+    private checkMouseOverCharacter() {
         this.activeMouseOverCharacterInfo = this.handleFindMouseOverCharacterInfo(this.mousePosition)
         if (this.activeDashboardCharacter === null) return
         this.activeMouseOverCharacterInfo = this.handleFindMouseOverCharacterInfo(this.mousePosition)
+    }
+    private handleMouseMoveOnActiveLevelUpTower() {
+        if (this.activeLevelUpTower === undefined) return
+        this.towerLevelUpMenu.drawGemConditions(this.activeLevelUpTower, this.mousePosition)
     }
     //calculate function place
     private handleFindMouseOverCharacterInfo(mouse: T_position): T_activeCharacterDestroyInfo | null {
@@ -777,7 +773,7 @@ export default class GameMap {
         }
         return activeMouseOverCharacterInfo
     }
-    public hasEnoughGems(type: E_characters | undefined): boolean {
+    private hasEnoughGems(type: E_characters | undefined): boolean {
         if (type === undefined) return false
         switch (type) {
             case E_characters.BLOOD_MOON:
@@ -835,7 +831,7 @@ export default class GameMap {
         return placementTiles
     }
     private handleCheckDisplayUpdateLevel() {
-        if (this.towerLevelUp.isClose(this.mousePosition)) {
+        if (this.towerLevelUpMenu.isClose(this.mousePosition)) {
             this.activeLevelUpTower = undefined
         }
         if (this.activeMouseOverCharacterInfo?.activeMouseOverCharacter && this.activeDashboardCharacter === null) {
@@ -852,6 +848,9 @@ export default class GameMap {
                 this.checkMouseOverCharacter()
                 this.checkMouseOverTile()
                 this.checkMouseOverDashboardCharacters()
+                if (this.activeLevelUpTower) {
+                    this.handleMouseMoveOnActiveLevelUpTower()
+                }
             })
             canvas.addEventListener('click', () => {
                 this.checkHavestGems()

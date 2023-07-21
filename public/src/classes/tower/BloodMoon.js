@@ -1,5 +1,5 @@
 import getBaseTowerProperties from '../../data/baseProperties/characters/index.js';
-import { E_angels, E_behaviors, E_characters } from '../../enum/index.js';
+import { E_angels, E_behaviors, E_characters, E_towerAttackProperties } from '../../enum/index.js';
 import NuclearProjectile from '../projectile/Nuclear.js';
 import Tower from './index.js';
 class BloodMoonTower extends Tower {
@@ -30,7 +30,7 @@ class BloodMoonTower extends Tower {
                     x: this.position.x + this.width / 2,
                     y: this.position.y,
                 },
-                damage: this.data.damage,
+                damage: this.data[E_towerAttackProperties.ATTACK_DAMAGE].value,
                 enemy,
                 offset: { x: 25, y: -40 },
             };

@@ -1,6 +1,6 @@
 import Thunder from '../../classes/projectile/Thunder.js';
 import getBaseTowerProperties from '../../data/baseProperties/characters/index.js';
-import { E_angels, E_behaviors, E_characters } from '../../enum/index.js';
+import { E_angels, E_behaviors, E_characters, E_towerAttackProperties } from '../../enum/index.js';
 import Tower from './index.js';
 class ObeliskThunderTower extends Tower {
     constructor({ position, offset = { x: 10, y: 55 }, damage = 3000, attackSpeed = 40, attackRange = 300, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile, }) {
@@ -50,7 +50,7 @@ class ObeliskThunderTower extends Tower {
                     x: enemy.position.x + (enemy.width - 2 * enemy.offset.x) / 2 - (width - 2 * offset.x) / 2,
                     y: enemy.position.y,
                 },
-                damage: this.data.damage,
+                damage: this.data[E_towerAttackProperties.ATTACK_DAMAGE].value,
                 enemy,
                 width,
                 height,

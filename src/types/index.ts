@@ -1,4 +1,5 @@
 import Enemy from '../classes/enemy/index.js'
+import Gem from '../classes/gems/index.js'
 import PlacementTile from '../classes/placementTile/index.js'
 import {
     E_angels,
@@ -263,12 +264,30 @@ type T_gemValue = {
     type: E_gems
     value: number
 }
+type T_conditionLevelUp = {
+    type: E_gems
+    value: number
+}[]
+type T_levelData = {
+    condition: T_conditionLevelUp
+    addValue: number
+    isMaxLevel?: boolean
+}
 
+type T_leveupData = Record<string, Record<string, T_levelData>>
+type T_gemsInfo = Record<
+    string,
+    {
+        icon: Gem
+        value: number
+    }
+>
 export {
     T_activeCharacterDestroyInfo,
     T_baseEnemyProperties,
     T_baseGateProperties,
     T_chest,
+    T_conditionLevelUp,
     T_dashboardBorder,
     T_dashboardCharacters,
     T_enemy,
@@ -280,10 +299,12 @@ export {
     T_gateInfo,
     T_gemStartInfo,
     T_gemValue,
+    T_gemsInfo,
     T_initDashboardCharacterInfo,
     T_initDashboardPlantInfo,
     T_initFrame,
     T_initFramesDictionary,
+    T_leveupData,
     T_plant,
     T_position,
     T_projectile,

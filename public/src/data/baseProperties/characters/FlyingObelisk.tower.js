@@ -1,9 +1,9 @@
-import { E_angels, E_behaviors, E_characterRoles, E_characters } from '../../../enum/index.js';
+import { E_angels, E_behaviors, E_characterRoles, E_characters, E_gems, E_level, E_towerAttackProperties, } from '../../../enum/index.js';
 const FlyingObeliskProperties = {
     type: E_characters.FLYING_OBELISK,
     width: 100,
     height: 128,
-    role: E_characterRoles.ATTACK,
+    role: E_characterRoles.TOWER,
     initFrames: {
         [E_behaviors.ATTACK]: {
             [E_angels.ANGEL_0]: {
@@ -199,6 +199,56 @@ const FlyingObeliskProperties = {
                 maxX: 1,
                 maxY: 1,
                 holdTime: 3,
+            },
+        },
+    },
+    dataLv: {
+        [E_towerAttackProperties.ATTACK_DAMAGE]: {
+            [E_level.LV2]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 100,
+                isMaxLevel: true,
+            },
+        },
+        [E_towerAttackProperties.ATTACK_RANGE]: {
+            [E_level.LV2]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 10,
+                isMaxLevel: true,
+            },
+        },
+        [E_towerAttackProperties.ATTACK_MULTI]: {
+            [E_level.LV2]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 200 },
+                    { type: E_gems.RED, value: 150 },
+                    { type: E_gems.PURPLE, value: 100 },
+                    { type: E_gems.COIN, value: 50 },
+                ],
+                addValue: 1,
+                isMaxLevel: true,
+            },
+        },
+        [E_towerAttackProperties.ATTACK_SPEED]: {
+            [E_level.LV2]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 1,
+                isMaxLevel: true,
             },
         },
     },

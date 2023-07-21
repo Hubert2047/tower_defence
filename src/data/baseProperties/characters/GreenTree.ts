@@ -1,4 +1,12 @@
-import { E_angels, E_behaviors, E_characterRoles, E_characters } from '../../../enum/index.js'
+import {
+    E_angels,
+    E_behaviors,
+    E_characterRoles,
+    E_characters,
+    E_gems,
+    E_level,
+    E_towerAttackProperties,
+} from '../../../enum/index.js'
 import { I_characterProperties } from '../../../types/interface.js'
 const GreenTreeProperties: I_characterProperties = {
     type: E_characters.GREEN_TREE,
@@ -12,6 +20,19 @@ const GreenTreeProperties: I_characterProperties = {
                 maxX: 6,
                 maxY: 4,
                 holdTime: 60,
+            },
+        },
+    },
+    dataLv: {
+        [E_towerAttackProperties.ATTACK_DAMAGE]: {
+            [E_level.LV2]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 100,
             },
         },
     },

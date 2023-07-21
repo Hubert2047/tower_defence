@@ -1,11 +1,11 @@
-import { BLUE_GEM_POSITION, COIN_POSITION, RED_GEM_POSITION, YELLOW_GEM_POSITION } from '../../constants/index.js';
+import { BLUE_GEM_POSITION, COIN_POSITION, PURPLE_GEM_POSITION, RED_GEM_POSITION } from '../../constants/index.js';
 import context2D from '../../context2D/index.js';
 import getBaseGemProperties from '../../data/baseProperties/gems/index.js';
 import { E_angels, E_behaviors, E_gems } from '../../enum/index.js';
 import { createFrames, drawText, getVectorNomalized } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Gem extends Sprite {
-    constructor({ position, gemType, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, offset, gemNum, moveSpeed = 250, opacity = 1, }) {
+    constructor({ position, gemType, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, offset, gemNum = 1, moveSpeed = 250, opacity = 1, isDisplayGemNum = true, }) {
         const currentGemProperties = getBaseGemProperties(gemType);
         const frames = createFrames({
             initFrames: currentGemProperties.initFrames,
@@ -26,6 +26,7 @@ export default class Gem extends Sprite {
         this.velocityY = 0;
         this.targetPosition = this.findTargetPosition();
         this.gemNum = gemNum;
+        this.isDisplayGemNum = isDisplayGemNum;
         this.haveharvestGems = false;
     }
     get hasHitTarget() {
@@ -33,7 +34,7 @@ export default class Gem extends Sprite {
     }
     update() {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey });
-        if (context2D) {
+        if (context2D && this.isDisplayGemNum) {
             const textString = `+${this.gemNum.toString()}`;
             const textWidth = context2D.measureText(textString).width;
             const textOptions = {
@@ -61,7 +62,7 @@ export default class Gem extends Sprite {
             case E_gems.RED:
                 return RED_GEM_POSITION;
             case E_gems.PURPLE:
-                return YELLOW_GEM_POSITION;
+                return PURPLE_GEM_POSITION;
             case E_gems.COIN:
                 return COIN_POSITION;
             default:

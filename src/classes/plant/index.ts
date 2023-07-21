@@ -2,10 +2,11 @@ import { I_character, I_gemProperties } from 'src/types/interface.js'
 import getBaseGemProperties from '../../data/baseProperties/gems/index.js'
 import { E_angels, E_behaviors, E_characterRoles, E_characters, E_gems } from '../../enum/index.js'
 import { createFrames } from '../../helper/index.js'
-import { T_frame, T_initFramesDictionary, T_plant, T_position, T_sprite } from '../../types/index.js'
+import { T_frame, T_plant, T_position } from '../../types/index.js'
 import DestroyExplosion from '../explosionProjectile/Destroy.js'
 import ExplosionProjectile from '../explosionProjectile/index.js'
 import Gem from '../gems/index.js'
+import LevelUpIcon from '../levelUpIcon/index.js'
 import PlacementTile from '../placementTile/index.js'
 import Sprite from '../sprite/index.js'
 export default class Plant extends Sprite implements I_character {
@@ -22,7 +23,7 @@ export default class Plant extends Sprite implements I_character {
     public beingDestroyed: boolean
     public destroyExplosion: DestroyExplosion
     public spawGemPerTime: number
-    public levelUpIcon: Sprite
+    public levelUpIcon: LevelUpIcon
     constructor({
         position,
         width,
@@ -53,7 +54,13 @@ export default class Plant extends Sprite implements I_character {
         this.role = E_characterRoles.PLANTED
         this.beingDestroyed = false
         this.destroyExplosion = this.createDestroyExplosion()
-        this.levelUpIcon = this.createLeveUpIcon()
+        this.levelUpIcon = new LevelUpIcon({
+            position: { x: this.position.x, y: this.position.y },
+            offset: { x: 8, y: 30 },
+            height: 80,
+            width: 80,
+            behaviorKey: E_behaviors.RUN,
+        })
     }
     update(isDisplayLevelUp: boolean): { type: E_gems; value: number } | null {
         if (this.beingDestroyed) {
@@ -63,32 +70,10 @@ export default class Plant extends Sprite implements I_character {
             this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
             this.spawningGems()
             if (isDisplayLevelUp && this.gems.length <= 0) {
-                this.levelUpIcon.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
+                this.levelUpIcon.update()
             }
             return this.getGems()
         }
-    }
-    private createLeveUpIcon() {
-        const initFrames: T_initFramesDictionary = {
-            [E_behaviors.IDLE]: {
-                [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../public/src/assets/images/stuff/level-up.png',
-                    maxX: 5,
-                    maxY: 3,
-                    holdTime: 4,
-                },
-            },
-        }
-
-        const frames = createFrames({ initFrames })
-        const options: T_sprite = {
-            frames,
-            position: { x: this.position.x, y: this.position.y },
-            offset: { x: 8, y: 30 },
-            height: 80,
-            width: 80,
-        }
-        return new Sprite(options)
     }
     spawningGems() {
         if (this.countCreateGemIndex > this.fruitingDuration / 2 && this.gems.length > 0) {

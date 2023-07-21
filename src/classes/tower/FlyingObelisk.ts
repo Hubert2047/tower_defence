@@ -1,5 +1,5 @@
 import getBaseTowerProperties from '../../data/baseProperties/characters/index.js'
-import { E_angels, E_behaviors, E_characters, E_projectile } from '../../enum/index.js'
+import { E_angels, E_behaviors, E_characters, E_projectile, E_towerAttackProperties } from '../../enum/index.js'
 import { I_characterProperties, I_projectile, I_tower } from '../../types/interface.js'
 import Enemy from '../enemy/index.js'
 import { default as Fire, default as Projectile } from '../projectile/Fire.js'
@@ -44,11 +44,11 @@ export default class FlyingObelisk extends Tower {
                     x: enemy.position.x + enemy.width / 2,
                     y: enemy.position.y,
                 },
-                damage: this.data.damage,
+                damage: this.data[E_towerAttackProperties.ATTACK_DAMAGE].value,
                 enemy,
                 offset: { x: 220, y: 0 },
             }
-            return this.createProjectile(projectileOptions, this.data.projectileType)
+            return this.createProjectile(projectileOptions, this.data[E_towerAttackProperties.PROJECTILE].value)
         })
     }
     private createProjectile(projectileOptions: I_projectile, type: E_projectile): Projectile {

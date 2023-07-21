@@ -1,7 +1,7 @@
 import Enemy from '../classes/enemy/index.js'
 import PlacementTile from '../classes/placementTile/index.js'
 import { E_angels, E_behaviors, E_characterRoles, E_characters, E_gems } from '../enum/index.js'
-import { T_initFramesDictionary, T_position } from '../types/index.js'
+import { T_initFramesDictionary, T_leveupData, T_position } from '../types/index.js'
 interface I_projectile {
     position: T_position
     enemy: Enemy
@@ -50,6 +50,7 @@ interface I_characterProperties {
     width: number
     height: number
     role: E_characterRoles
+    dataLv: T_leveupData
 }
 interface I_gemProperties {
     type: E_gems
@@ -59,13 +60,14 @@ interface I_gemProperties {
     height: number
 }
 interface I_character {
+    position: T_position
     opacity: number
-    role: E_characterRoles
     width: number
     height: number
     placementTile?: PlacementTile
-    position: T_position
-    hasCollision(position: T_position): boolean
+    role: E_characterRoles
     beingDestroyed: boolean
+    isAlreadyDestroyed?: boolean
+    hasCollision(position: T_position): boolean
 }
 export { I_character, I_characterProperties, I_explosion, I_gemProperties, I_plant, I_projectile, I_tower }

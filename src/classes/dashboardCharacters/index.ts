@@ -84,11 +84,11 @@ export default class DashboardCharacter extends Sprite {
             case E_characters.MONSTERRA_TREE:
                 return E_characterRoles.PLANTED
             case E_characters.BLOOD_MOON:
-                return E_characterRoles.ATTACK
+                return E_characterRoles.TOWER
             case E_characters.OBELISK_THUNDER:
-                return E_characterRoles.ATTACK
+                return E_characterRoles.TOWER
             case E_characters.FLYING_OBELISK:
-                return E_characterRoles.ATTACK
+                return E_characterRoles.TOWER
             case E_characters.SHOVEL:
                 return E_characterRoles.DESTROY
             default:
