@@ -68,7 +68,8 @@ enum E_characters {
     HAUNTED_TREE = 5,
     OBELISK_THUNDER = 6,
     AUTUMN_TREE = 7,
-    SHOVEL = 8,
+    GALATA = 8,
+    SHOVEL = 9,
 }
 enum E_characterRoles {
     TOWER = 'tower',
@@ -87,10 +88,10 @@ enum E_chests {
     PURPLE = 'purple',
 }
 enum E_towerAttackProperties {
-    ATTACK_RANGE = 'Attack Range',
+    ATTACK_RANGE = 'AttackRange',
     ATTACK_DAMAGE = 'Damage',
-    ATTACK_SPEED = 'Attack Speed',
-    ATTACK_MULTI = 'Multi-target',
+    ATTACK_SPEED = 'AttackSpeed',
+    ATTACK_MULTI = 'MultiTarget',
     PROJECTILE = 'Projectile',
 }
 enum E_level {
@@ -106,6 +107,21 @@ enum E_level {
     LV10 = '10',
     LV11 = '11',
     LV12 = '12',
+    LV13 = '13',
+    LV14 = '14',
+    LV15 = '15',
+    LV16 = '16',
+    LV17 = '17',
+    LV18 = '18',
+    LV19 = '19',
+    LV20 = '20',
+    LV21 = '21',
+}
+enum E_levelTitle {
+    TITLE_0 = 'TITLE_0',
+    TITLE_1 = 'TITLE_1',
+    TITLE_2 = 'TITLE_2',
+    TITLE_3 = 'TITLE_3',
 }
 export {
     E_angels,
@@ -121,4 +137,5 @@ export {
     E_level,
     E_projectile,
     E_towerAttackProperties,
+    E_levelTitle,
 }

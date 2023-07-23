@@ -107,16 +107,19 @@ type T_tower = {
     width?: number
     height?: number
     initFrames: T_initFramesDictionary
-    attackSpeed?: number
-    attackRange?: number
-    damage?: number
+    data?: Record<
+        string,
+        {
+            currentLv: number
+            value: number
+        }
+    >
     behaviorKey?: E_behaviors
     angelKey?: E_angels
-    projectileType?: E_projectile
     opacity?: number
-    multipleTarget?: number
     placementTile?: PlacementTile
     isDisplayLevelUpTower?: boolean
+    levelUpTitleCondition?: Record<string, Record<string, number>>
 }
 type T_explosion = {
     name: string
@@ -272,6 +275,7 @@ type T_conditionLevelUp = {
 type T_levelData = {
     condition: T_conditionLevelUp
     addValue: number
+    textDiscription: string
     isMaxLevel?: boolean
 }
 

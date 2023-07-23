@@ -1,6 +1,6 @@
 import Thunder from '../../classes/projectile/Thunder.js'
 import getBaseTowerProperties from '../../data/baseProperties/characters/index.js'
-import { E_angels, E_behaviors, E_characters, E_towerAttackProperties } from '../../enum/index.js'
+import { E_angels, E_behaviors, E_characters, E_projectile, E_towerAttackProperties } from '../../enum/index.js'
 import { I_characterProperties, I_tower } from '../../types/interface.js'
 import Enemy from '../enemy/index.js'
 import Projectile from '../projectile/index.js'
@@ -11,16 +11,34 @@ export default class ObeliskThunderTower extends Tower {
     constructor({
         position,
         offset = { x: 10, y: 55 },
-        damage = 3000,
-        attackSpeed = 40,
-        attackRange = 300,
         behaviorKey = E_behaviors.IDLE,
         angelKey = E_angels.ANGEL_0,
         opacity = 1,
         placementTile,
     }: I_tower) {
         const baseTowerProperties: I_characterProperties = getBaseTowerProperties(E_characters.OBELISK_THUNDER)
-
+        const data = {
+            [E_towerAttackProperties.ATTACK_DAMAGE]: {
+                currentLv: 0,
+                value: 3000,
+            },
+            [E_towerAttackProperties.ATTACK_SPEED]: {
+                currentLv: 0,
+                value: 40,
+            },
+            [E_towerAttackProperties.ATTACK_RANGE]: {
+                currentLv: 0,
+                value: 300,
+            },
+            [E_towerAttackProperties.ATTACK_MULTI]: {
+                currentLv: 0,
+                value: 3,
+            },
+            [E_towerAttackProperties.PROJECTILE]: {
+                currentLv: 0,
+                value: E_projectile.THUNDER,
+            },
+        }
         super({
             name: 'Obelisk Thunder Tower',
             type: E_characters.OBELISK_THUNDER,
@@ -29,13 +47,10 @@ export default class ObeliskThunderTower extends Tower {
             width: baseTowerProperties.width,
             height: baseTowerProperties.height,
             initFrames: baseTowerProperties.initFrames,
-            damage,
-            attackSpeed,
-            attackRange,
+            data,
             behaviorKey,
             angelKey,
             opacity,
-            multipleTarget: 3,
             placementTile,
         })
         this.baseTowerProperties = baseTowerProperties

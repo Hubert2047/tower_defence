@@ -124,6 +124,9 @@ export default class TowerLevelUp extends Sprite {
             fontSize: 18,
             offset: { x: 0, y: -20 },
         })
+        tower.levelTitleEffect.position.x = this.position.x + 2.5 * TILE_SIZE
+        tower.levelTitleEffect.position.y = this.position.y - 3.5 * TILE_SIZE
+        tower.levelTitleEffect.update()
     }
     private findLevelUpIconCollisionWithMouse(
         mousePosition: T_position
@@ -148,9 +151,11 @@ export default class TowerLevelUp extends Sprite {
             return condition.value <= gemsInfo[condition.type].value
         })
         if (!hasFulfillCondition) return
-        activeLevelUpTower.data[collistionProperty].currentLv++
-        activeLevelUpTower.data[collistionProperty].value +=
-            baseTower.dataLv[collistionProperty][currentPropertyLv + 1].addValue
+        const addLevelOption = {
+            property: collistionProperty,
+            value: baseTower.dataLv[collistionProperty][currentPropertyLv + 1].addValue,
+        }
+        activeLevelUpTower.upPropertyLelvel(addLevelOption)
         nextLvCondition.forEach((condition) => {
             gemsInfo[condition.type].value -= condition.value
         })
@@ -184,10 +189,13 @@ export default class TowerLevelUp extends Sprite {
             x: this.position.x + 6 * TILE_SIZE,
             y: this.position.y - 2 * TILE_SIZE,
         }
-        const textString = `Level ${(activeLevelUpTower.data[collistionProperty].currentLv + 1).toString()} :  +${
-            baseTower.dataLv[collistionProperty][currentPropertyLv + 1].addValue
-        }  ${collistionProperty}`
-        this.drawLevel(textString, textLevelPostion, { x: 12, y: 22 })
+        const textString = `Level ${(
+            activeLevelUpTower.data[collistionProperty].currentLv + 1
+        ).toString()} :  ${baseTower.dataLv[collistionProperty][currentPropertyLv + 1].textDiscription.toString()}`
+        this.drawLevel(textString, textLevelPostion, {
+            x: 12,
+            y: 22,
+        })
     }
     private drawLevel(text: string, position: T_position, offset: T_position) {
         drawText({ text, position, color: 'green', fontSize: 14, offset })

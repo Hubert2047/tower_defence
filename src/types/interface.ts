@@ -16,9 +16,13 @@ interface I_projectile {
 interface I_tower {
     position: T_position
     offset?: T_position
-    damage?: number
-    attackSpeed?: number
-    attackRange?: number
+    data?: Record<
+        string,
+        {
+            currentLv: number
+            value: number
+        }
+    >
     behaviorKey?: E_behaviors
     angelKey?: E_angels
     opacity?: number

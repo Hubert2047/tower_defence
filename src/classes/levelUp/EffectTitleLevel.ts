@@ -1,4 +1,4 @@
-import { E_angels, E_behaviors } from '../../enum/index.js'
+import { E_angels, E_behaviors, E_levelTitle } from '../../enum/index.js'
 import { createFrames } from '../../helper/index.js'
 import { T_frame, T_initFramesDictionary, T_position } from '../../types/index.js'
 import Sprite from '../sprite/index.js'
@@ -8,21 +8,11 @@ type T_effectTitleLevel = {
     width?: number
     height?: number
     opacity?: number
-    behaviorKey?: E_behaviors
-    angelKey?: E_angels
+    currentLevelTitle: string
 }
 export default class EffectTitleLevel extends Sprite {
-    behaviorKey: E_behaviors
-    angelKey: E_angels
-    constructor({
-        position,
-        offset,
-        width,
-        height,
-        behaviorKey = E_behaviors.LEVEL_TITLE_1,
-        angelKey = E_angels.ANGEL_0,
-        opacity,
-    }: T_effectTitleLevel) {
+    currentLevelTitle: string
+    constructor({ position, offset, width, height, opacity = 0.75, currentLevelTitle }: T_effectTitleLevel) {
         const initFrames: T_initFramesDictionary = {
             [E_behaviors.LEVEL_TITLE_1]: {
                 [E_angels.ANGEL_0]: {
@@ -51,10 +41,24 @@ export default class EffectTitleLevel extends Sprite {
         }
         const frames: Map<string, Map<string, T_frame>> = createFrames({ initFrames })
         super({ position, offset, frames, width, height, opacity })
-        this.behaviorKey = behaviorKey
-        this.angelKey = angelKey
+        this.currentLevelTitle = currentLevelTitle
     }
     update() {
-        this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })
+        const currentBehavior = this.getCurrentBehavior()
+        if (currentBehavior) {
+            this.draw({ behaviorKey: currentBehavior, angelKey: E_angels.ANGEL_0 })
+        }
+    }
+    private getCurrentBehavior(): E_behaviors | undefined {
+        switch (this.currentLevelTitle) {
+            case E_levelTitle.TITLE_1:
+                return E_behaviors.LEVEL_TITLE_1
+            case E_levelTitle.TITLE_2:
+                return E_behaviors.LEVEL_TITLE_2
+            case E_levelTitle.TITLE_3:
+                return E_behaviors.LEVEL_TITLE_3
+            default:
+                return undefined
+        }
     }
 }

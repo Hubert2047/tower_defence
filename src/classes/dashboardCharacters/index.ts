@@ -89,6 +89,8 @@ export default class DashboardCharacter extends Sprite {
                 return E_characterRoles.TOWER
             case E_characters.FLYING_OBELISK:
                 return E_characterRoles.TOWER
+            case E_characters.GALATA:
+                return E_characterRoles.TOWER
             case E_characters.SHOVEL:
                 return E_characterRoles.DESTROY
             default:

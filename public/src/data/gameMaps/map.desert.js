@@ -377,13 +377,38 @@ const initDashboardCharacterInfo = [
             height: 64,
         },
     },
+    {
+        type: E_characters.GALATA,
+        name: 'Galata',
+        position: { x: 64 * 14, y: 64 * 12 },
+        width: 25,
+        height: 45,
+        offset: { x: -20, y: -12 },
+        dashboardBorderInfo: {
+            name: 'Border 1',
+            position: { x: 64 * 14, y: 64 * 12 },
+            offset: { x: 0, y: 0 },
+            initFrames: {
+                [E_behaviors.IDLE]: {
+                    [E_angels.ANGEL_0]: {
+                        imageSourceString: '../../../public/src/assets/images/borders/7.png',
+                        maxX: 1,
+                        maxY: 1,
+                        holdTime: 10,
+                    },
+                },
+            },
+            width: 64,
+            height: 64,
+        },
+    },
 ];
 const backgroundImage = new Image();
 const startGems = {
-    blueGems: 500,
-    redGems: 200,
-    yellowGems: 200,
-    coins: 1100,
+    blueGems: 50,
+    redGems: 20,
+    yellowGems: 20,
+    coins: 10,
 };
 backgroundImage.src = '../../public/src/assets/images/gameMap.png';
 const gateInfor = {

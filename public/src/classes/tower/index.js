@@ -1,50 +1,73 @@
 import DestroyExplosion from '../../classes/explosionProjectile/Destroy.js';
 import FireProjectile from '../../classes/projectile/Fire.js';
 import context2D from '../../context2D/index.js';
-import { E_angels, E_behaviors, E_characterRoles, E_projectile, E_towerAttackProperties, } from '../../enum/index.js';
+import { E_angels, E_behaviors, E_characterRoles, E_levelTitle, E_projectile, E_towerAttackProperties, } from '../../enum/index.js';
 import { calAngleFromPointAToPointB, calculateDistanceTwoPoint, createFrames } from '../../helper/index.js';
 import EffectTitleLevel from '../levelUp/EffectTitleLevel.js';
 import LevelUpIcon from '../levelUpIcon/index.js';
 import Sprite from '../sprite/index.js';
 export default class Tower extends Sprite {
-    constructor({ name, type, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, damage = 100, attackSpeed = 1, attackRange = 300, multipleTarget = 1, projectileType = E_projectile.FIRE, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile, isDisplayLevelUpTower, }) {
+    constructor({ name, type, position, offset = { x: 0, y: 0 }, width = 124, height = 124, initFrames, data = {
+        [E_towerAttackProperties.ATTACK_DAMAGE]: {
+            currentLv: 0,
+            value: 1000,
+        },
+        [E_towerAttackProperties.ATTACK_SPEED]: {
+            currentLv: 0,
+            value: 40,
+        },
+        [E_towerAttackProperties.ATTACK_RANGE]: {
+            currentLv: 0,
+            value: 300,
+        },
+        [E_towerAttackProperties.ATTACK_MULTI]: {
+            currentLv: 0,
+            value: 1,
+        },
+        [E_towerAttackProperties.PROJECTILE]: {
+            currentLv: 0,
+            value: E_projectile.FIRE,
+        },
+    }, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile, levelUpTitleCondition = {
+        [E_levelTitle.TITLE_1]: {
+            [E_towerAttackProperties.ATTACK_DAMAGE]: 10,
+            [E_towerAttackProperties.ATTACK_SPEED]: 10,
+            [E_towerAttackProperties.ATTACK_RANGE]: 10,
+            [E_towerAttackProperties.ATTACK_MULTI]: 1,
+            [E_towerAttackProperties.PROJECTILE]: 0,
+        },
+        [E_levelTitle.TITLE_2]: {
+            [E_towerAttackProperties.ATTACK_DAMAGE]: 15,
+            [E_towerAttackProperties.ATTACK_SPEED]: 15,
+            [E_towerAttackProperties.ATTACK_RANGE]: 15,
+            [E_towerAttackProperties.ATTACK_MULTI]: 3,
+            [E_towerAttackProperties.PROJECTILE]: 0,
+        },
+        [E_levelTitle.TITLE_3]: {
+            [E_towerAttackProperties.ATTACK_DAMAGE]: 20,
+            [E_towerAttackProperties.ATTACK_SPEED]: 20,
+            [E_towerAttackProperties.ATTACK_RANGE]: 20,
+            [E_towerAttackProperties.ATTACK_MULTI]: 5,
+            [E_towerAttackProperties.PROJECTILE]: 0,
+        },
+    }, isDisplayLevelUpTower, }) {
         const frames = createFrames({ initFrames });
         super({ position, offset, width, height, frames, opacity });
         this.name = name;
         this.type = type;
         this.role = E_characterRoles.TOWER;
-        this.data = {
-            [E_towerAttackProperties.ATTACK_DAMAGE]: {
-                currentLv: 0,
-                value: damage,
-            },
-            [E_towerAttackProperties.ATTACK_SPEED]: {
-                currentLv: 0,
-                value: attackSpeed,
-            },
-            [E_towerAttackProperties.ATTACK_RANGE]: {
-                currentLv: 0,
-                value: attackRange,
-            },
-            [E_towerAttackProperties.ATTACK_MULTI]: {
-                currentLv: 0,
-                value: multipleTarget,
-            },
-            [E_towerAttackProperties.PROJECTILE]: {
-                currentLv: 0,
-                value: projectileType,
-            },
-        };
+        this.data = data;
+        this.levelUpTitleCondition = levelUpTitleCondition;
+        const currentLevelTitle = this.getCurrentLevelTitle();
         this.levelTitleEffect = new EffectTitleLevel({
             position: { x: this.position.x, y: this.position.y },
             offset: { x: 32, y: 75 },
             height: 128,
             width: 128,
-            opacity: 0.6,
-            behaviorKey: E_behaviors.LEVEL_TITLE_1,
+            currentLevelTitle,
         });
         this.projectiles = [];
-        this.holdAttack = parseInt((1000 / attackSpeed).toString());
+        this.holdAttack = parseInt((1000 / this.data[E_towerAttackProperties.ATTACK_SPEED].value).toString());
         this.countAttackTime = this.holdAttack;
         this.explosions = [];
         this.behaviorKey = behaviorKey;
@@ -76,28 +99,6 @@ export default class Tower extends Sprite {
             context2D.fill();
         }
     }
-    createLevelEffect() {
-        const initFrames = {
-            [E_behaviors.IDLE]: {
-                [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../public/src/assets/images/levelUp/levelTitleEffect/purple_back.png',
-                    maxX: 5,
-                    maxY: 2,
-                    holdTime: 0,
-                },
-            },
-        };
-        const frames = createFrames({ initFrames });
-        const options = {
-            frames,
-            position: { x: this.position.x, y: this.position.y },
-            offset: { x: 32, y: 75 },
-            height: 128,
-            width: 128,
-            opacity: 0.6,
-        };
-        return new Sprite(options);
-    }
     createTowerDisplayLevelUp({ height = this.height, width = this.width, offset = { x: 0, y: 0 }, }) {
         const towerOption = {
             position: { x: 0, y: 0 },
@@ -124,7 +125,38 @@ export default class Tower extends Sprite {
                 this.levelUpIcon.update();
             }
         }
-        this.levelTitleEffect.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 });
+        this.levelTitleEffect.update();
+    }
+    upPropertyLelvel({ property, value }) {
+        if (property === E_towerAttackProperties.PROJECTILE) {
+            this.data[property].value = value;
+        }
+        else {
+            this.data[property].value += value;
+            this.data[property].currentLv++;
+        }
+        this.levelTitleEffect.currentLevelTitle = this.getCurrentLevelTitle();
+        if (this.displayLevelUpTower)
+            this.displayLevelUpTower.levelTitleEffect.currentLevelTitle = this.getCurrentLevelTitle();
+    }
+    getCurrentLevelTitle(levelTitleKeyIndex = 0) {
+        const dataPropertyKeys = Object.keys(this.data);
+        const levelTitleKeys = Object.keys(this.levelUpTitleCondition);
+        const hasFulfillCondition = dataPropertyKeys.every((dataPropertyKey) => {
+            return (this.data[dataPropertyKey].currentLv >=
+                this.levelUpTitleCondition[levelTitleKeys[levelTitleKeyIndex]][dataPropertyKey] ||
+                this.levelUpTitleCondition[levelTitleKeys[levelTitleKeyIndex]][dataPropertyKey] === 0);
+        });
+        if (!hasFulfillCondition && levelTitleKeyIndex === 0) {
+            return E_levelTitle.TITLE_0;
+        }
+        if (hasFulfillCondition && levelTitleKeyIndex < levelTitleKeys.length - 1) {
+            const nextIndex = levelTitleKeyIndex + 1;
+            return this.getCurrentLevelTitle(nextIndex);
+        }
+        if (hasFulfillCondition && levelTitleKeyIndex >= levelTitleKeys.length - 1)
+            return levelTitleKeys[levelTitleKeyIndex];
+        return levelTitleKeys[levelTitleKeyIndex - 1];
     }
     updateProjectile(shootingAudio) {
         for (var i = this.projectiles.length - 1; i >= 0; i--) {

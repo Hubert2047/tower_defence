@@ -20,6 +20,7 @@ import GreenTree from '../plant/GreenTree.js';
 import Plant from '../plant/index.js';
 import MonsterraTree from '../plant/MonsterraTree.js';
 import Sprite from '../sprite/index.js';
+import Galata from '../tower/Galata.js';
 import Tower from '../tower/index.js';
 export default class GameMap {
     constructor({ rounds, placementTiles2D, waypoints, backgroundImage, startGems, initDashboardCharacterInfo, gateInfor, }) {
@@ -520,6 +521,9 @@ export default class GameMap {
             case E_characters.OBELISK_THUNDER:
                 this.towers.push(new ObeliskThunder(options));
                 break;
+            case E_characters.GALATA:
+                this.towers.push(new Galata(options));
+                break;
             default:
                 isSuccess = false;
                 break;
@@ -663,6 +667,8 @@ export default class GameMap {
                 return MonsterraTree.prices <= this.gemsInfo[E_gems.BLUE].value;
             case E_characters.AUTUMN_TREE:
                 return AutumnTree.prices <= this.gemsInfo[E_gems.BLUE].value;
+            case E_characters.GALATA:
+                return Galata.prices <= this.gemsInfo[E_gems.BLUE].value;
             case E_characters.SHOVEL:
                 return Shovel.prices <= this.gemsInfo[E_gems.BLUE].value;
             default:
@@ -685,6 +691,8 @@ export default class GameMap {
                 return AutumnTree.prices;
             case E_characters.SHOVEL:
                 return Shovel.prices;
+            case E_characters.GALATA:
+                return Galata.prices;
         }
     }
     subtractDashboardEnemies(subtractEnemy) {

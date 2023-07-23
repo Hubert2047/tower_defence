@@ -1,10 +1,21 @@
-import getBaseTowerProperties from '../../data/baseProperties/characters/index.js';
-import { E_angels, E_behaviors, E_characters, E_projectile, E_towerAttackProperties } from '../../enum/index.js';
-import NuclearProjectile from '../projectile/Nuclear.js';
-import Tower from './index.js';
-class BloodMoonTower extends Tower {
-    constructor({ position, offset = { x: 10, y: 60 }, behaviorKey = E_behaviors.ATTACK, angelKey = E_angels.ANGEL_0, opacity = 1, placementTile, }) {
-        const baseTowerProperties = getBaseTowerProperties(E_characters.BLOOD_MOON);
+import getBaseTowerProperties from '../../data/baseProperties/characters/index.js'
+import { E_angels, E_behaviors, E_characters, E_projectile, E_towerAttackProperties } from '../../enum/index.js'
+import { I_characterProperties, I_tower } from '../../types/interface.js'
+import Enemy from '../enemy/index.js'
+import Projectile from '../projectile/index.js'
+import NuclearProjectile from '../projectile/Nuclear.js'
+import Tower from './index.js'
+
+export default class Galata extends Tower {
+    constructor({
+        position,
+        offset = { x: -12, y: 45 },
+        behaviorKey = E_behaviors.ATTACK,
+        angelKey = E_angels.ANGEL_0,
+        opacity = 1,
+        placementTile,
+    }: I_tower) {
+        const baseTowerProperties: I_characterProperties = getBaseTowerProperties(E_characters.GALATA)
         const data = {
             [E_towerAttackProperties.ATTACK_DAMAGE]: {
                 currentLv: 0,
@@ -26,10 +37,10 @@ class BloodMoonTower extends Tower {
                 currentLv: 0,
                 value: E_projectile.NUCLEAR,
             },
-        };
+        }
         super({
             name: 'Blood Moon Tower',
-            type: E_characters.BLOOD_MOON,
+            type: E_characters.GALATA,
             position,
             offset,
             width: baseTowerProperties.width,
@@ -40,10 +51,15 @@ class BloodMoonTower extends Tower {
             angelKey,
             opacity,
             placementTile,
-        });
-        this.displayLevelUpTower = this.createTowerDisplayLevelUp({ width: 90, height: 160, offset: { x: 12, y: 0 } });
+        })
+        this.displayLevelUpTower = this.createTowerDisplayLevelUp({
+            width: 48,
+            height: 150,
+            offset: { x: -10, y: -20 },
+        })
     }
-    createProjectiles(targetEnemies) {
+    public static prices = 10
+    public createProjectiles(targetEnemies: Enemy[]): Projectile[] {
         return targetEnemies.map((enemy) => {
             const projectileOptions = {
                 position: {
@@ -53,10 +69,8 @@ class BloodMoonTower extends Tower {
                 damage: this.data[E_towerAttackProperties.ATTACK_DAMAGE].value,
                 enemy,
                 offset: { x: 25, y: -40 },
-            };
-            return new NuclearProjectile(projectileOptions);
-        });
+            }
+            return new NuclearProjectile(projectileOptions)
+        })
     }
 }
-BloodMoonTower.prices = 10;
-export default BloodMoonTower;

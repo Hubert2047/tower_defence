@@ -222,6 +222,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
             },
             [E_level.LV2]: {
                 condition: [
@@ -231,6 +232,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
             },
             [E_level.LV3]: {
                 condition: [
@@ -240,6 +242,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
             },
             [E_level.LV4]: {
                 condition: [
@@ -249,6 +252,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
             },
             [E_level.LV5]: {
                 condition: [
@@ -258,6 +262,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
             },
             [E_level.LV6]: {
                 condition: [
@@ -267,6 +272,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
             },
             [E_level.LV7]: {
                 condition: [
@@ -276,6 +282,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
             },
             [E_level.LV8]: {
                 condition: [
@@ -285,6 +292,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
             },
             [E_level.LV9]: {
                 condition: [
@@ -294,6 +302,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
             },
             [E_level.LV10]: {
                 condition: [
@@ -303,6 +312,107 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
+            },
+            [E_level.LV11]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
+            },
+            [E_level.LV12]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
+            },
+            [E_level.LV13]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
+            },
+            [E_level.LV14]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
+            },
+            [E_level.LV15]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
+            },
+            [E_level.LV16]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
+            },
+            [E_level.LV17]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
+            },
+            [E_level.LV18]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
+            },
+            [E_level.LV19]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
+            },
+            [E_level.LV20]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 1000,
+                textDiscription: '+1000 Attack Damage',
                 isMaxLevel: true,
             },
         },
@@ -314,7 +424,8 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.PURPLE, value: 5 },
                     { type: E_gems.COIN, value: 0 },
                 ],
-                addValue: 20,
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
             },
             [E_level.LV2]: {
                 condition: [
@@ -323,7 +434,8 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.PURPLE, value: 5 },
                     { type: E_gems.COIN, value: 0 },
                 ],
-                addValue: 20,
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
             },
             [E_level.LV3]: {
                 condition: [
@@ -332,7 +444,8 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.PURPLE, value: 5 },
                     { type: E_gems.COIN, value: 0 },
                 ],
-                addValue: 20,
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
             },
             [E_level.LV4]: {
                 condition: [
@@ -341,7 +454,8 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.PURPLE, value: 5 },
                     { type: E_gems.COIN, value: 0 },
                 ],
-                addValue: 20,
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
             },
             [E_level.LV5]: {
                 condition: [
@@ -350,7 +464,8 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.PURPLE, value: 5 },
                     { type: E_gems.COIN, value: 0 },
                 ],
-                addValue: 20,
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
             },
             [E_level.LV6]: {
                 condition: [
@@ -359,7 +474,8 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.PURPLE, value: 5 },
                     { type: E_gems.COIN, value: 0 },
                 ],
-                addValue: 20,
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
             },
             [E_level.LV7]: {
                 condition: [
@@ -368,7 +484,8 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.PURPLE, value: 5 },
                     { type: E_gems.COIN, value: 0 },
                 ],
-                addValue: 20,
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
             },
             [E_level.LV8]: {
                 condition: [
@@ -377,7 +494,8 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.PURPLE, value: 5 },
                     { type: E_gems.COIN, value: 0 },
                 ],
-                addValue: 20,
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
             },
             [E_level.LV9]: {
                 condition: [
@@ -386,7 +504,8 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.PURPLE, value: 5 },
                     { type: E_gems.COIN, value: 0 },
                 ],
-                addValue: 20,
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
             },
             [E_level.LV10]: {
                 condition: [
@@ -395,7 +514,8 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.PURPLE, value: 5 },
                     { type: E_gems.COIN, value: 0 },
                 ],
-                addValue: 20,
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
             },
             [E_level.LV11]: {
                 condition: [
@@ -404,7 +524,98 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.PURPLE, value: 5 },
                     { type: E_gems.COIN, value: 0 },
                 ],
-                addValue: 20,
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
+            },
+            [E_level.LV12]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
+            },
+            [E_level.LV13]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
+            },
+            [E_level.LV14]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
+            },
+            [E_level.LV15]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
+            },
+            [E_level.LV16]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
+            },
+            [E_level.LV17]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
+            },
+            [E_level.LV18]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
+            },
+            [E_level.LV19]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
+            },
+            [E_level.LV20]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 5,
+                textDiscription: '+5 Attack Range',
                 isMaxLevel: true,
             },
         },
@@ -417,6 +628,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 50 },
                 ],
                 addValue: 1,
+                textDiscription: '+1 Attack Multi',
             },
             [E_level.LV2]: {
                 condition: [
@@ -426,6 +638,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 50 },
                 ],
                 addValue: 1,
+                textDiscription: '+1 Attack Multi',
             },
             [E_level.LV3]: {
                 condition: [
@@ -435,6 +648,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 50 },
                 ],
                 addValue: 1,
+                textDiscription: '+1 Attack Multi',
             },
             [E_level.LV4]: {
                 condition: [
@@ -444,6 +658,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 50 },
                 ],
                 addValue: 1,
+                textDiscription: '+1 Attack Multi',
             },
             [E_level.LV5]: {
                 condition: [
@@ -453,6 +668,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 50 },
                 ],
                 addValue: 1,
+                textDiscription: '+1 Attack Multi',
             },
             [E_level.LV6]: {
                 condition: [
@@ -462,6 +678,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 50 },
                 ],
                 addValue: 1,
+                textDiscription: '+1 Attack Multi',
             },
             [E_level.LV7]: {
                 condition: [
@@ -471,6 +688,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 50 },
                 ],
                 addValue: 1,
+                textDiscription: '+1 Attack Multi',
             },
             [E_level.LV8]: {
                 condition: [
@@ -480,6 +698,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 50 },
                 ],
                 addValue: 1,
+                textDiscription: '+1 Attack Multi',
             },
             [E_level.LV9]: {
                 condition: [
@@ -489,6 +708,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 50 },
                 ],
                 addValue: 1,
+                textDiscription: '+1 Attack Multi',
             },
             [E_level.LV10]: {
                 condition: [
@@ -498,6 +718,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 50 },
                 ],
                 addValue: 1,
+                textDiscription: '+1 Attack Multi',
             },
             [E_level.LV11]: {
                 condition: [
@@ -507,6 +728,97 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 50 },
                 ],
                 addValue: 1,
+                textDiscription: '+1 Attack Multi',
+            },
+            [E_level.LV12]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 200 },
+                    { type: E_gems.RED, value: 150 },
+                    { type: E_gems.PURPLE, value: 100 },
+                    { type: E_gems.COIN, value: 50 },
+                ],
+                addValue: 1,
+                textDiscription: '+1 Attack Multi',
+            },
+            [E_level.LV13]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 200 },
+                    { type: E_gems.RED, value: 150 },
+                    { type: E_gems.PURPLE, value: 100 },
+                    { type: E_gems.COIN, value: 50 },
+                ],
+                addValue: 1,
+                textDiscription: '+1 Attack Multi',
+            },
+            [E_level.LV14]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 200 },
+                    { type: E_gems.RED, value: 150 },
+                    { type: E_gems.PURPLE, value: 100 },
+                    { type: E_gems.COIN, value: 50 },
+                ],
+                addValue: 1,
+                textDiscription: '+1 Attack Multi',
+            },
+            [E_level.LV15]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 200 },
+                    { type: E_gems.RED, value: 150 },
+                    { type: E_gems.PURPLE, value: 100 },
+                    { type: E_gems.COIN, value: 50 },
+                ],
+                addValue: 1,
+                textDiscription: '+1 Attack Multi',
+            },
+            [E_level.LV16]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 200 },
+                    { type: E_gems.RED, value: 150 },
+                    { type: E_gems.PURPLE, value: 100 },
+                    { type: E_gems.COIN, value: 50 },
+                ],
+                addValue: 1,
+                textDiscription: '+1 Attack Multi',
+            },
+            [E_level.LV17]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 200 },
+                    { type: E_gems.RED, value: 150 },
+                    { type: E_gems.PURPLE, value: 100 },
+                    { type: E_gems.COIN, value: 50 },
+                ],
+                addValue: 1,
+                textDiscription: '+1 Attack Multi',
+            },
+            [E_level.LV18]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 200 },
+                    { type: E_gems.RED, value: 150 },
+                    { type: E_gems.PURPLE, value: 100 },
+                    { type: E_gems.COIN, value: 50 },
+                ],
+                addValue: 1,
+                textDiscription: '+1 Attack Multi',
+            },
+            [E_level.LV19]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 200 },
+                    { type: E_gems.RED, value: 150 },
+                    { type: E_gems.PURPLE, value: 100 },
+                    { type: E_gems.COIN, value: 50 },
+                ],
+                addValue: 1,
+                textDiscription: '+1 Attack Multi',
+            },
+            [E_level.LV20]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 200 },
+                    { type: E_gems.RED, value: 150 },
+                    { type: E_gems.PURPLE, value: 100 },
+                    { type: E_gems.COIN, value: 50 },
+                ],
+                addValue: 1,
+                textDiscription: '+1 Attack Multi',
                 isMaxLevel: true,
             },
         },
@@ -519,6 +831,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 10,
+                textDiscription: '+10 Attack Speed',
             },
             [E_level.LV2]: {
                 condition: [
@@ -528,6 +841,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 10,
+                textDiscription: '+10 Attack Speed',
             },
             [E_level.LV3]: {
                 condition: [
@@ -537,6 +851,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 10,
+                textDiscription: '+10 Attack Speed',
             },
             [E_level.LV4]: {
                 condition: [
@@ -546,6 +861,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 10,
+                textDiscription: '+10 Attack Speed',
             },
             [E_level.LV5]: {
                 condition: [
@@ -555,6 +871,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 10,
+                textDiscription: '+10 Attack Speed',
             },
             [E_level.LV6]: {
                 condition: [
@@ -564,6 +881,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 10,
+                textDiscription: '+10 Attack Speed',
             },
             [E_level.LV7]: {
                 condition: [
@@ -573,6 +891,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 10,
+                textDiscription: '+10 Attack Speed',
             },
             [E_level.LV8]: {
                 condition: [
@@ -582,6 +901,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 10,
+                textDiscription: '+10 Attack Speed',
             },
             [E_level.LV9]: {
                 condition: [
@@ -591,6 +911,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 10,
+                textDiscription: '+10 Attack Speed',
             },
             [E_level.LV10]: {
                 condition: [
@@ -600,6 +921,7 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 10,
+                textDiscription: '+10 Attack Speed',
             },
             [E_level.LV11]: {
                 condition: [
@@ -609,6 +931,97 @@ const ObeliskThunderProperties: I_characterProperties = {
                     { type: E_gems.COIN, value: 0 },
                 ],
                 addValue: 10,
+                textDiscription: '+10 Attack Speed',
+            },
+            [E_level.LV12]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 10,
+                textDiscription: '+10 Attack Speed',
+            },
+            [E_level.LV13]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 10,
+                textDiscription: '+10 Attack Speed',
+            },
+            [E_level.LV14]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 10,
+                textDiscription: '+10 Attack Speed',
+            },
+            [E_level.LV15]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 10,
+                textDiscription: '+10 Attack Speed',
+            },
+            [E_level.LV16]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 10,
+                textDiscription: '+10 Attack Speed',
+            },
+            [E_level.LV17]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 10,
+                textDiscription: '+10 Attack Speed',
+            },
+            [E_level.LV18]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 10,
+                textDiscription: '+10 Attack Speed',
+            },
+            [E_level.LV19]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 10,
+                textDiscription: '+10 Attack Speed',
+            },
+            [E_level.LV20]: {
+                condition: [
+                    { type: E_gems.BLUE, value: 20 },
+                    { type: E_gems.RED, value: 10 },
+                    { type: E_gems.PURPLE, value: 5 },
+                    { type: E_gems.COIN, value: 0 },
+                ],
+                addValue: 10,
+                textDiscription: '+10 Attack Speed',
                 isMaxLevel: true,
             },
         },
