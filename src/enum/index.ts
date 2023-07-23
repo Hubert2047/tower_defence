@@ -38,6 +38,9 @@ enum E_behaviors {
     IDLE = 'idle',
     HIT = 'gethit',
     DROP_CHEST = 'DROP_CHEST',
+    LEVEL_TITLE_1 = 'LEVEL_TITLE_1',
+    LEVEL_TITLE_2 = 'LEVEL_TITLE_2',
+    LEVEL_TITLE_3 = 'LEVEL_TITLE_3',
 }
 enum E_angels {
     ANGEL_0 = '0degree',
@@ -84,13 +87,14 @@ enum E_chests {
     PURPLE = 'purple',
 }
 enum E_towerAttackProperties {
-    ATTACK_RANGE = 'ATTACK_RANGE',
-    ATTACK_DAMAGE = 'ATTACK_DAMAGE',
-    ATTACK_SPEED = 'ATTACK_SPEED',
-    ATTACK_MULTI = 'ATTACK_MULTI',
-    PROJECTILE = 'PROJECTILE',
+    ATTACK_RANGE = 'Attack Range',
+    ATTACK_DAMAGE = 'Damage',
+    ATTACK_SPEED = 'Attack Speed',
+    ATTACK_MULTI = 'Multi-target',
+    PROJECTILE = 'Projectile',
 }
 enum E_level {
+    LV1 = '1',
     LV2 = '2',
     LV3 = '3',
     LV4 = '4',

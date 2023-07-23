@@ -10,10 +10,11 @@ import {
     E_towerAttackProperties,
 } from '../../enum/index.js'
 import { calAngleFromPointAToPointB, calculateDistanceTwoPoint, createFrames } from '../../helper/index.js'
-import { T_frame, T_initFramesDictionary, T_position, T_tower } from '../../types/index.js'
+import { T_frame, T_initFramesDictionary, T_position, T_sprite, T_tower } from '../../types/index.js'
 import { I_character, I_projectile } from '../../types/interface.js'
 import Enemy from '../enemy/index.js'
 import ExplosionProjectile from '../explosionProjectile/index.js'
+import EffectTitleLevel from '../levelUp/EffectTitleLevel.js'
 import LevelUpIcon from '../levelUpIcon/index.js'
 import PlacementTile from '../placementTile/index.js'
 import Projectile from '../projectile/index.js'
@@ -48,6 +49,7 @@ export default class Tower extends Sprite implements I_character {
     private levelUpIcon: LevelUpIcon
     public initFrames: T_initFramesDictionary
     public displayLevelUpTower: Tower | undefined
+    public levelTitleEffect: Sprite
     constructor({
         name,
         type,
@@ -74,26 +76,34 @@ export default class Tower extends Sprite implements I_character {
         this.role = E_characterRoles.TOWER
         this.data = {
             [E_towerAttackProperties.ATTACK_DAMAGE]: {
-                currentLv: 1,
+                currentLv: 0,
                 value: damage,
             },
             [E_towerAttackProperties.ATTACK_SPEED]: {
-                currentLv: 1,
+                currentLv: 0,
                 value: attackSpeed,
             },
             [E_towerAttackProperties.ATTACK_RANGE]: {
-                currentLv: 1,
+                currentLv: 0,
                 value: attackRange,
             },
             [E_towerAttackProperties.ATTACK_MULTI]: {
-                currentLv: 1,
+                currentLv: 0,
                 value: multipleTarget,
             },
             [E_towerAttackProperties.PROJECTILE]: {
-                currentLv: 1,
+                currentLv: 0,
                 value: projectileType,
             },
         }
+        this.levelTitleEffect = new EffectTitleLevel({
+            position: { x: this.position.x, y: this.position.y },
+            offset: { x: 32, y: 75 },
+            height: 128,
+            width: 128,
+            opacity: 0.6,
+            behaviorKey: E_behaviors.LEVEL_TITLE_1,
+        })
         this.projectiles = []
         this.holdAttack = parseInt((1000 / attackSpeed).toString())
         this.countAttackTime = this.holdAttack
@@ -103,6 +113,7 @@ export default class Tower extends Sprite implements I_character {
         this.angelKey = angelKey
         this.placementTile = placementTile
         this.levelUpIcon = new LevelUpIcon({
+            name: 'level up',
             position: { x: this.position.x, y: this.position.y },
             offset: { x: 4, y: 12 },
             height: 80,
@@ -131,6 +142,29 @@ export default class Tower extends Sprite implements I_character {
             context2D.fillStyle = 'rgba(225,225,225,0.15)'
             context2D.fill()
         }
+    }
+    private createLevelEffect() {
+        const initFrames: T_initFramesDictionary = {
+            [E_behaviors.IDLE]: {
+                [E_angels.ANGEL_0]: {
+                    imageSourceString: '../../public/src/assets/images/levelUp/levelTitleEffect/purple_back.png',
+                    maxX: 5,
+                    maxY: 2,
+                    holdTime: 0,
+                },
+            },
+        }
+
+        const frames = createFrames({ initFrames })
+        const options: T_sprite = {
+            frames,
+            position: { x: this.position.x, y: this.position.y },
+            offset: { x: 32, y: 75 },
+            height: 128,
+            width: 128,
+            opacity: 0.6,
+        }
+        return new Sprite(options)
     }
     public createTowerDisplayLevelUp({
         height = this.height,
@@ -173,6 +207,7 @@ export default class Tower extends Sprite implements I_character {
                 this.levelUpIcon.update()
             }
         }
+        this.levelTitleEffect.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
     }
     private updateProjectile(shootingAudio: HTMLAudioElement | HTMLElement | null) {
         for (var i = this.projectiles.length - 1; i >= 0; i--) {

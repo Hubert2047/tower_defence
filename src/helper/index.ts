@@ -42,9 +42,18 @@ interface healthBarOptions {
     borderRadius: number
     strokeStyle: string
 }
-function drawText({ center, text, position, color = 'black', fontSize = 16, offset = { x: 0, y: 0 } }: T_text) {
+function drawText({
+    center,
+    text,
+    position,
+    color = 'black',
+    fontSize = 16,
+    opacity = 1,
+    offset = { x: 0, y: 0 },
+}: T_text) {
     if (context2D) {
         context2D.font = `${fontSize}px Changa One`
+        context2D.globalAlpha = opacity
         context2D.fillStyle = color
         if (center) {
             const textWidth = context2D?.measureText(text).width ?? 2
@@ -52,6 +61,23 @@ function drawText({ center, text, position, color = 'black', fontSize = 16, offs
         } else {
             context2D.fillText(text, position.x + offset.x, position.y + offset.y)
         }
+        context2D.globalAlpha = 1
+    }
+}
+function formatNumberToK(num: number): string {
+    if (num >= 100000) {
+        const baseNumber = Math.floor(num / 1000)
+        return baseNumber + 'K'
+    } else if (num >= 10000) {
+        const baseNumber = Math.floor(num / 1000)
+        const remainder = num % 1000
+        if (remainder === 0) {
+            return baseNumber + 'K'
+        } else {
+            return baseNumber + 'K' + remainder.toString().charAt(0)
+        }
+    } else {
+        return num.toString()
     }
 }
 function shouldEventOccur(percentage: number): boolean {
@@ -425,6 +451,7 @@ export {
     deepClone,
     drawText,
     findChestInitFrame,
+    formatNumberToK,
     getAngleKeyByTwoPoint,
     getGameMapData,
     getVectorNomalized,

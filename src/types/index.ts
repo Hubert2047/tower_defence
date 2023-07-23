@@ -241,6 +241,7 @@ type T_text = {
     fontSize?: number
     color?: string
     center?: boolean
+    opacity?: number
 }
 type T_dashboardCharacters = {
     type: E_characters

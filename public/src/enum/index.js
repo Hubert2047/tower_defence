@@ -44,6 +44,9 @@ var E_behaviors;
     E_behaviors["IDLE"] = "idle";
     E_behaviors["HIT"] = "gethit";
     E_behaviors["DROP_CHEST"] = "DROP_CHEST";
+    E_behaviors["LEVEL_TITLE_1"] = "LEVEL_TITLE_1";
+    E_behaviors["LEVEL_TITLE_2"] = "LEVEL_TITLE_2";
+    E_behaviors["LEVEL_TITLE_3"] = "LEVEL_TITLE_3";
 })(E_behaviors || (E_behaviors = {}));
 var E_angels;
 (function (E_angels) {
@@ -96,14 +99,15 @@ var E_chests;
 })(E_chests || (E_chests = {}));
 var E_towerAttackProperties;
 (function (E_towerAttackProperties) {
-    E_towerAttackProperties["ATTACK_RANGE"] = "ATTACK_RANGE";
-    E_towerAttackProperties["ATTACK_DAMAGE"] = "ATTACK_DAMAGE";
-    E_towerAttackProperties["ATTACK_SPEED"] = "ATTACK_SPEED";
-    E_towerAttackProperties["ATTACK_MULTI"] = "ATTACK_MULTI";
-    E_towerAttackProperties["PROJECTILE"] = "PROJECTILE";
+    E_towerAttackProperties["ATTACK_RANGE"] = "Attack Range";
+    E_towerAttackProperties["ATTACK_DAMAGE"] = "Damage";
+    E_towerAttackProperties["ATTACK_SPEED"] = "Attack Speed";
+    E_towerAttackProperties["ATTACK_MULTI"] = "Multi-target";
+    E_towerAttackProperties["PROJECTILE"] = "Projectile";
 })(E_towerAttackProperties || (E_towerAttackProperties = {}));
 var E_level;
 (function (E_level) {
+    E_level["LV1"] = "1";
     E_level["LV2"] = "2";
     E_level["LV3"] = "3";
     E_level["LV4"] = "4";

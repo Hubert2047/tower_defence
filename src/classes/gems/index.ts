@@ -15,6 +15,8 @@ type T_gem = {
     moveSpeed?: number
     opacity?: number
     isDisplayGemNum?: boolean
+    width?: number
+    height?: number
 }
 export default class Gem extends Sprite {
     public behaviorKey: E_behaviors
@@ -37,6 +39,8 @@ export default class Gem extends Sprite {
         moveSpeed = 250,
         opacity = 1,
         isDisplayGemNum = true,
+        width,
+        height,
     }: T_gem) {
         const currentGemProperties = getBaseGemProperties(gemType)
         const frames: Map<string, Map<string, T_frame>> = createFrames({
@@ -45,8 +49,8 @@ export default class Gem extends Sprite {
         super({
             position,
             frames,
-            width: currentGemProperties.width,
-            height: currentGemProperties.height,
+            width: width ?? currentGemProperties.width,
+            height: height ?? currentGemProperties.height,
             offset,
             opacity,
         })

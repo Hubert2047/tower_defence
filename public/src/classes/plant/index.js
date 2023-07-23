@@ -23,6 +23,7 @@ export default class Plant extends Sprite {
         this.beingDestroyed = false;
         this.destroyExplosion = this.createDestroyExplosion();
         this.levelUpIcon = new LevelUpIcon({
+            name: 'level up',
             position: { x: this.position.x, y: this.position.y },
             offset: { x: 8, y: 30 },
             height: 80,

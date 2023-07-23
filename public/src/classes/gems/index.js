@@ -5,7 +5,7 @@ import { E_angels, E_behaviors, E_gems } from '../../enum/index.js';
 import { createFrames, drawText, getVectorNomalized } from '../../helper/index.js';
 import Sprite from '../sprite/index.js';
 export default class Gem extends Sprite {
-    constructor({ position, gemType, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, offset, gemNum = 1, moveSpeed = 250, opacity = 1, isDisplayGemNum = true, }) {
+    constructor({ position, gemType, behaviorKey = E_behaviors.IDLE, angelKey = E_angels.ANGEL_0, offset, gemNum = 1, moveSpeed = 250, opacity = 1, isDisplayGemNum = true, width, height, }) {
         const currentGemProperties = getBaseGemProperties(gemType);
         const frames = createFrames({
             initFrames: currentGemProperties.initFrames,
@@ -13,8 +13,8 @@ export default class Gem extends Sprite {
         super({
             position,
             frames,
-            width: currentGemProperties.width,
-            height: currentGemProperties.height,
+            width: width !== null && width !== void 0 ? width : currentGemProperties.width,
+            height: height !== null && height !== void 0 ? height : currentGemProperties.height,
             offset,
             opacity,
         });

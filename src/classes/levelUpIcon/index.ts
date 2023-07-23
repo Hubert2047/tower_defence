@@ -11,11 +11,14 @@ type T_levelUpIcon = {
     opacity?: number
     behaviorKey?: E_behaviors
     angelKey?: E_angels
+    name: string
 }
 export default class LevelUpIcon extends Sprite {
     behaviorKey: E_behaviors
     angelKey: E_angels
+    name: string
     constructor({
+        name,
         position,
         offset = { x: 0, y: 0 },
         behaviorKey = E_behaviors.IDLE,
@@ -46,6 +49,7 @@ export default class LevelUpIcon extends Sprite {
         super({ position, frames, width, height, offset, opacity })
         this.angelKey = angelKey
         this.behaviorKey = behaviorKey
+        this.name = name
     }
     update() {
         this.draw({ behaviorKey: this.behaviorKey, angelKey: this.angelKey })

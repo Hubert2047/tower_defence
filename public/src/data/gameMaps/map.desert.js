@@ -380,10 +380,10 @@ const initDashboardCharacterInfo = [
 ];
 const backgroundImage = new Image();
 const startGems = {
-    blueGems: 20,
-    redGems: 0,
-    yellowGems: 0,
-    coins: 0,
+    blueGems: 500,
+    redGems: 200,
+    yellowGems: 200,
+    coins: 1100,
 };
 backgroundImage.src = '../../public/src/assets/images/gameMap.png';
 const gateInfor = {

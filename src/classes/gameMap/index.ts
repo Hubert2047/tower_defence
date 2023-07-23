@@ -13,7 +13,7 @@ import context2D, { canvas, resetCanvas } from '../../context2D/index.js'
 import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js'
 import gatesBaseProperties from '../../data/baseProperties/gates/index.js'
 import { E_angels, E_behaviors, E_characterRoles, E_characters, E_enemy, E_gate, E_gems } from '../../enum/index.js'
-import { createFrames, drawText, randomNumberInRange } from '../../helper/index.js'
+import { createFrames, drawText, formatNumberToK, randomNumberInRange } from '../../helper/index.js'
 import {
     T_activeCharacterDestroyInfo,
     T_baseEnemyProperties,
@@ -110,7 +110,7 @@ export default class GameMap {
         this.gemsInfo = this.createGemInfo(startGems)
         this.currentDashboardEnemiesInfo = []
         this.menu = this.createMenu()
-        this.towerLevelUpMenu = new TowerLevelUpMenu({ position: { x: 64 * 5, y: 64 * 10 } })
+        this.towerLevelUpMenu = new TowerLevelUpMenu({ position: { x: 64 * 5, y: 64 * 9 } })
         this.displayRound = this.createDisplayRound()
         this._mouseOverTile = null
         this.mouseOverDashboardCharacter = null
@@ -123,8 +123,8 @@ export default class GameMap {
         this.baseIncreasedStrengthEnemies = {
             health: 500,
             damage: 100,
-            moveSpeed: 0.05,
-            attackSpeed: 0.05,
+            moveSpeed: 0.5,
+            attackSpeed: 0.5,
         }
         this.mousePosition = { x: 0, y: 0 }
         this.activeLevelUpTower = undefined
@@ -158,7 +158,7 @@ export default class GameMap {
         this.drawGemsAndMenu()
         this.updateGate()
         if (this.activeLevelUpTower) {
-            this.towerLevelUpMenu.update(this.activeLevelUpTower, this.gemsInfo)
+            this.towerLevelUpMenu.update(this.activeLevelUpTower, this.gemsInfo, this.mousePosition)
         }
         return this.getGameStatus()
     }
@@ -382,19 +382,19 @@ export default class GameMap {
         })
         const blueGemIcon = new Gem({
             position: BLUE_GEM_POSITION,
-            gemType: E_gems.COIN,
+            gemType: E_gems.BLUE,
             isDisplayGemNum: false,
             gemNum: 0,
         })
         const redGemIcon = new Gem({
             position: RED_GEM_POSITION,
-            gemType: E_gems.COIN,
+            gemType: E_gems.RED,
             isDisplayGemNum: false,
             gemNum: 0,
         })
         const yellowGemIcon = new Gem({
             position: PURPLE_GEM_POSITION,
-            gemType: E_gems.COIN,
+            gemType: E_gems.PURPLE,
             isDisplayGemNum: false,
             gemNum: 0,
         })
@@ -410,7 +410,7 @@ export default class GameMap {
         const keys = Object.keys(this.gemsInfo)
         keys.forEach((key) => {
             this.gemsInfo[key].icon.update()
-            const textString = this.gemsInfo[key].value.toString()
+            const textString = formatNumberToK(this.gemsInfo[key].value)
             const textOptions: T_text = {
                 text: textString,
                 position: {
@@ -440,7 +440,7 @@ export default class GameMap {
         const options: T_sprite = {
             frames,
             position: { x: 64 * 14, y: 64 * 1 },
-            offset: { x: 50, y: 26 },
+            offset: { x: 45, y: 26 },
             height: 120,
             width: 430,
         }
@@ -465,39 +465,6 @@ export default class GameMap {
             offset: { x: 0, y: 0 },
             height: 64,
             width: 128,
-        }
-        return new Sprite(options)
-    }
-    private createGemIcon({
-        gemSourceImage,
-        maxX,
-        maxY,
-        offset,
-        position,
-    }: {
-        gemSourceImage: string
-        offset: T_position
-        position: T_position
-        maxX: number
-        maxY: number
-    }) {
-        const initFrames: T_initFramesDictionary = {
-            [E_behaviors.IDLE]: {
-                [E_angels.ANGEL_0]: {
-                    imageSourceString: gemSourceImage,
-                    maxX,
-                    maxY,
-                    holdTime: 8,
-                },
-            },
-        }
-        const frames = createFrames({ initFrames })
-        const options: T_sprite = {
-            frames,
-            position: position,
-            offset,
-            height: 48,
-            width: 48,
         }
         return new Sprite(options)
     }
@@ -749,10 +716,6 @@ export default class GameMap {
         if (this.activeDashboardCharacter === null) return
         this.activeMouseOverCharacterInfo = this.handleFindMouseOverCharacterInfo(this.mousePosition)
     }
-    private handleMouseMoveOnActiveLevelUpTower() {
-        if (this.activeLevelUpTower === undefined) return
-        this.towerLevelUpMenu.drawGemConditions(this.activeLevelUpTower, this.mousePosition)
-    }
     //calculate function place
     private handleFindMouseOverCharacterInfo(mouse: T_position): T_activeCharacterDestroyInfo | null {
         let activeMouseOverCharacterInfo: T_activeCharacterDestroyInfo | null = null
@@ -831,6 +794,9 @@ export default class GameMap {
         return placementTiles
     }
     private handleCheckDisplayUpdateLevel() {
+        if (this.activeLevelUpTower) {
+            this.towerLevelUpMenu.checkOnClickLevelUpIcon(this.activeLevelUpTower, this.mousePosition, this.gemsInfo)
+        }
         if (this.towerLevelUpMenu.isClose(this.mousePosition)) {
             this.activeLevelUpTower = undefined
         }
@@ -848,9 +814,6 @@ export default class GameMap {
                 this.checkMouseOverCharacter()
                 this.checkMouseOverTile()
                 this.checkMouseOverDashboardCharacters()
-                if (this.activeLevelUpTower) {
-                    this.handleMouseMoveOnActiveLevelUpTower()
-                }
             })
             canvas.addEventListener('click', () => {
                 this.checkHavestGems()

@@ -33,10 +33,11 @@ function updateHealthBars({ sprite, health, remainHealth }) {
         drawRemainHealthBar({ sprite, drawOption, fullHealthWidth, remainHealthWidth, fillStyle: 'green' });
     }
 }
-function drawText({ center, text, position, color = 'black', fontSize = 16, offset = { x: 0, y: 0 } }) {
+function drawText({ center, text, position, color = 'black', fontSize = 16, opacity = 1, offset = { x: 0, y: 0 }, }) {
     var _a;
     if (context2D) {
         context2D.font = `${fontSize}px Changa One`;
+        context2D.globalAlpha = opacity;
         context2D.fillStyle = color;
         if (center) {
             const textWidth = (_a = context2D === null || context2D === void 0 ? void 0 : context2D.measureText(text).width) !== null && _a !== void 0 ? _a : 2;
@@ -45,6 +46,26 @@ function drawText({ center, text, position, color = 'black', fontSize = 16, offs
         else {
             context2D.fillText(text, position.x + offset.x, position.y + offset.y);
         }
+        context2D.globalAlpha = 1;
+    }
+}
+function formatNumberToK(num) {
+    if (num >= 100000) {
+        const baseNumber = Math.floor(num / 1000);
+        return baseNumber + 'K';
+    }
+    else if (num >= 10000) {
+        const baseNumber = Math.floor(num / 1000);
+        const remainder = num % 1000;
+        if (remainder === 0) {
+            return baseNumber + 'K';
+        }
+        else {
+            return baseNumber + 'K' + remainder.toString().charAt(0);
+        }
+    }
+    else {
+        return num.toString();
     }
 }
 function shouldEventOccur(percentage) {
@@ -338,4 +359,4 @@ function findChestInitFrame(chestType) {
             };
     }
 }
-export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createFrames, createImage, deepClone, drawText, findChestInitFrame, getAngleKeyByTwoPoint, getGameMapData, getVectorNomalized, randomNumberInRange, shouldEventOccur, updateHealthBars, };
+export { calAngleFromPointAToPointB, calFullHealthWidth, calculateDistanceTwoPoint, calculateHoldTime, createFrames, createImage, deepClone, drawText, findChestInitFrame, formatNumberToK, getAngleKeyByTwoPoint, getGameMapData, getVectorNomalized, randomNumberInRange, shouldEventOccur, updateHealthBars, };

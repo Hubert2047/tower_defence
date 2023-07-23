@@ -3,6 +3,7 @@ import FireProjectile from '../../classes/projectile/Fire.js';
 import context2D from '../../context2D/index.js';
 import { E_angels, E_behaviors, E_characterRoles, E_projectile, E_towerAttackProperties, } from '../../enum/index.js';
 import { calAngleFromPointAToPointB, calculateDistanceTwoPoint, createFrames } from '../../helper/index.js';
+import EffectTitleLevel from '../levelUp/EffectTitleLevel.js';
 import LevelUpIcon from '../levelUpIcon/index.js';
 import Sprite from '../sprite/index.js';
 export default class Tower extends Sprite {
@@ -14,26 +15,34 @@ export default class Tower extends Sprite {
         this.role = E_characterRoles.TOWER;
         this.data = {
             [E_towerAttackProperties.ATTACK_DAMAGE]: {
-                currentLv: 1,
+                currentLv: 0,
                 value: damage,
             },
             [E_towerAttackProperties.ATTACK_SPEED]: {
-                currentLv: 1,
+                currentLv: 0,
                 value: attackSpeed,
             },
             [E_towerAttackProperties.ATTACK_RANGE]: {
-                currentLv: 1,
+                currentLv: 0,
                 value: attackRange,
             },
             [E_towerAttackProperties.ATTACK_MULTI]: {
-                currentLv: 1,
+                currentLv: 0,
                 value: multipleTarget,
             },
             [E_towerAttackProperties.PROJECTILE]: {
-                currentLv: 1,
+                currentLv: 0,
                 value: projectileType,
             },
         };
+        this.levelTitleEffect = new EffectTitleLevel({
+            position: { x: this.position.x, y: this.position.y },
+            offset: { x: 32, y: 75 },
+            height: 128,
+            width: 128,
+            opacity: 0.6,
+            behaviorKey: E_behaviors.LEVEL_TITLE_1,
+        });
         this.projectiles = [];
         this.holdAttack = parseInt((1000 / attackSpeed).toString());
         this.countAttackTime = this.holdAttack;
@@ -43,6 +52,7 @@ export default class Tower extends Sprite {
         this.angelKey = angelKey;
         this.placementTile = placementTile;
         this.levelUpIcon = new LevelUpIcon({
+            name: 'level up',
             position: { x: this.position.x, y: this.position.y },
             offset: { x: 4, y: 12 },
             height: 80,
@@ -65,6 +75,28 @@ export default class Tower extends Sprite {
             context2D.fillStyle = 'rgba(225,225,225,0.15)';
             context2D.fill();
         }
+    }
+    createLevelEffect() {
+        const initFrames = {
+            [E_behaviors.IDLE]: {
+                [E_angels.ANGEL_0]: {
+                    imageSourceString: '../../public/src/assets/images/levelUp/levelTitleEffect/purple_back.png',
+                    maxX: 5,
+                    maxY: 2,
+                    holdTime: 0,
+                },
+            },
+        };
+        const frames = createFrames({ initFrames });
+        const options = {
+            frames,
+            position: { x: this.position.x, y: this.position.y },
+            offset: { x: 32, y: 75 },
+            height: 128,
+            width: 128,
+            opacity: 0.6,
+        };
+        return new Sprite(options);
     }
     createTowerDisplayLevelUp({ height = this.height, width = this.width, offset = { x: 0, y: 0 }, }) {
         const towerOption = {
@@ -92,6 +124,7 @@ export default class Tower extends Sprite {
                 this.levelUpIcon.update();
             }
         }
+        this.levelTitleEffect.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 });
     }
     updateProjectile(shootingAudio) {
         for (var i = this.projectiles.length - 1; i >= 0; i--) {

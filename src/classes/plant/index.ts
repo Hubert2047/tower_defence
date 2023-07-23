@@ -55,6 +55,7 @@ export default class Plant extends Sprite implements I_character {
         this.beingDestroyed = false
         this.destroyExplosion = this.createDestroyExplosion()
         this.levelUpIcon = new LevelUpIcon({
+            name: 'level up',
             position: { x: this.position.x, y: this.position.y },
             offset: { x: 8, y: 30 },
             height: 80,
