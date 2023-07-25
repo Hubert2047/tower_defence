@@ -1,5 +1,11 @@
 import getBaseTowerProperties from '../../data/baseProperties/characters/index.js'
-import { E_angels, E_behaviors, E_characters, E_projectile, E_towerAttackProperties } from '../../enum/index.js'
+import {
+    E_angels,
+    E_behaviors,
+    E_characters,
+    E_projectile,
+    E_towerAttackProperties,
+} from '../../enum/index.js'
 import { I_characterProperties, I_tower } from '../../types/interface.js'
 import Enemy from '../enemy/index.js'
 import Projectile from '../projectile/index.js'
@@ -15,7 +21,8 @@ export default class Galata extends Tower {
         opacity = 1,
         placementTile,
     }: I_tower) {
-        const baseTowerProperties: I_characterProperties = getBaseTowerProperties(E_characters.GALATA)
+        const baseTowerProperties: I_characterProperties =
+            getBaseTowerProperties(E_characters.GALATA)
         const data = {
             [E_towerAttackProperties.ATTACK_DAMAGE]: {
                 currentLv: 0,
@@ -39,7 +46,7 @@ export default class Galata extends Tower {
             },
         }
         super({
-            name: 'Blood Moon Tower',
+            name: 'Galata Tower',
             type: E_characters.GALATA,
             position,
             offset,

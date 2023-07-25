@@ -11,203 +11,235 @@ import { I_characterProperties } from '../../../types/interface.js'
 const GalataProperties: I_characterProperties = {
     type: E_characters.GALATA,
     width: 48,
-    height: 128,
+    height: 120,
     role: E_characterRoles.TOWER,
     initFrames: {
         [E_behaviors.ATTACK]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_22]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_45]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_67]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_112]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_135]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_157]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_202]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_225]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_247]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_270]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_292]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_315]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_337]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata.png',
                 maxX: 4,
                 maxY: 2,
-                holdTime: 3,
+                holdTime: 6,
             },
         },
         [E_behaviors.IDLE]: {
             [E_angels.ANGEL_0]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_22]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_45]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_67]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_90]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_112]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_135]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_157]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_180]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_202]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_225]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_247]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_270]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_292]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_315]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
             [E_angels.ANGEL_337]: {
-                imageSourceString: '../../../public/src/assets/images/towers/Galata/galata-idle.png',
+                imageSourceString:
+                    '../../../public/src/assets/images/towers/Galata/galata-idle.png',
                 maxX: 1,
                 maxY: 1,
-                holdTime: 3,
+                holdTime: 6,
             },
         },
     },

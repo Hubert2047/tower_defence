@@ -41,6 +41,7 @@ enum E_behaviors {
     LEVEL_TITLE_1 = 'LEVEL_TITLE_1',
     LEVEL_TITLE_2 = 'LEVEL_TITLE_2',
     LEVEL_TITLE_3 = 'LEVEL_TITLE_3',
+    HOVER = 'HOVER',
 }
 enum E_angels {
     ANGEL_0 = '0degree',
@@ -123,9 +124,18 @@ enum E_levelTitle {
     TITLE_2 = 'TITLE_2',
     TITLE_3 = 'TITLE_3',
 }
+enum E_buttons {
+    START,
+    CONTINUE,
+    MENU,
+    SETTING,
+    NEW_GAME,
+    SQUARE_SETTING
+}
 export {
     E_angels,
     E_behaviors,
+    E_buttons,
     E_characterRoles,
     E_characters,
     E_chests,
@@ -135,7 +145,7 @@ export {
     E_gate,
     E_gems,
     E_level,
+    E_levelTitle,
     E_projectile,
     E_towerAttackProperties,
-    E_levelTitle,
 }

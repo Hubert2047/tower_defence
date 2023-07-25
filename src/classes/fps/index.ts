@@ -1,10 +1,9 @@
 import { FPS } from '../../constants/index.js'
-import GameMap from '../gameMap/index.js'
 type T_RequestAnimationFrame = {
-    loopFunction: ({ gameMap }: { gameMap: GameMap }) => void
+    loopFunction: () => void
 }
 export default class RequestAnimationFrame {
-    loopFunction: ({ gameMap }: { gameMap: GameMap }) => void
+    loopFunction: () => void
     lastTime: number
     currentTime: number
     constructor({ loopFunction }: T_RequestAnimationFrame) {
@@ -12,15 +11,15 @@ export default class RequestAnimationFrame {
         this.lastTime = performance.now()
         this.currentTime = performance.now()
     }
-    public start({ gameMap }: { gameMap: GameMap }) {
+    public start() {
         this.currentTime = performance.now()
         const distance = this.currentTime - this.lastTime
         if (distance > 1000 / FPS) {
-            this.loopFunction({ gameMap })
+            this.loopFunction()
             this.lastTime = this.currentTime
         }
         requestAnimationFrame(() => {
-            this.start({ gameMap })
+            this.start()
         })
     }
 }

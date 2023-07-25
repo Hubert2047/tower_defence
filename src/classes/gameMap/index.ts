@@ -9,11 +9,25 @@ import {
     RED_GEM_POSITION,
     TILE_SIZE,
 } from '../../constants/index.js'
-import context2D, { canvas, resetCanvas } from '../../context2D/index.js'
+import context2D, { canvas } from '../../context2D/index.js'
 import getBaseEnemyProperties from '../../data/baseProperties/enemies/index.js'
 import gatesBaseProperties from '../../data/baseProperties/gates/index.js'
-import { E_angels, E_behaviors, E_characterRoles, E_characters, E_enemy, E_gate, E_gems } from '../../enum/index.js'
-import { createFrames, drawText, formatNumberToK, randomNumberInRange } from '../../helper/index.js'
+import {
+    E_angels,
+    E_behaviors,
+    E_buttons,
+    E_characterRoles,
+    E_characters,
+    E_enemy,
+    E_gate,
+    E_gems,
+} from '../../enum/index.js'
+import {
+    createFrames,
+    drawText,
+    formatNumberToK,
+    randomNumberInRange,
+} from '../../helper/index.js'
 import {
     T_activeCharacterDestroyInfo,
     T_baseEnemyProperties,
@@ -34,6 +48,7 @@ import {
     T_text,
 } from '../../types/index.js'
 import { I_character } from '../../types/interface.js'
+import Button from '../buttoms/index.js'
 import Border from '../dashboardBorder/index.js'
 import DashboardCharacter from '../dashboardCharacters/index.js'
 import Enemy from '../enemy/index.js'
@@ -91,6 +106,7 @@ export default class GameMap {
     private mousePosition: T_position
     private towerLevelUpMenu: TowerLevelUpMenu
     private activeLevelUpTower: Tower | undefined
+    private btns: Button[]
     constructor({
         rounds,
         placementTiles2D,
@@ -111,14 +127,18 @@ export default class GameMap {
         this.gemsInfo = this.createGemInfo(startGems)
         this.currentDashboardEnemiesInfo = []
         this.menu = this.createMenu()
-        this.towerLevelUpMenu = new TowerLevelUpMenu({ position: { x: 64 * 5, y: 64 * 9 } })
+        this.towerLevelUpMenu = new TowerLevelUpMenu({
+            position: { x: 64 * 5, y: 64 * 9 },
+        })
         this.displayRound = this.createDisplayRound()
         this._mouseOverTile = null
         this.mouseOverDashboardCharacter = null
         this.activeDashboardCharacter = null
         this.gateInfor = gateInfor
         this.activeMouseOverCharacterInfo = null
-        this.dashboardCharacters = this.createDashboardCharacters(initDashboardCharacterInfo)
+        this.dashboardCharacters = this.createDashboardCharacters(
+            initDashboardCharacterInfo
+        )
         this.gate = this.createGate()
         this.currentRound = 1
         this.baseIncreasedStrengthEnemies = {
@@ -131,6 +151,7 @@ export default class GameMap {
         this.activeLevelUpTower = undefined
         this.spawingCurrentRoundEnemies()
         this.handleAddEventGame()
+        this.btns = this.createBtns()
     }
     //get set place
     public get mouseOverTile(): PlacementTile | null {
@@ -143,7 +164,10 @@ export default class GameMap {
         return this._currentEnemiesData
     }
     public get isDestroyStatus(): boolean {
-        return this.activeDashboardCharacter !== null && this.activeDashboardCharacter.role === E_characterRoles.DESTROY
+        return (
+            this.activeDashboardCharacter !== null &&
+            this.activeDashboardCharacter.role === E_characterRoles.DESTROY
+        )
     }
     private get isThereObjectToDestroy(): boolean {
         return this.towers.length > 0 || this.plants.length > 0
@@ -158,10 +182,20 @@ export default class GameMap {
         this.updateDashboardCharacters()
         this.drawGemsAndMenu()
         this.updateGate()
+        this.updateBtns()
         if (this.activeLevelUpTower) {
-            this.towerLevelUpMenu.update(this.activeLevelUpTower, this.gemsInfo, this.mousePosition)
+            this.towerLevelUpMenu.update(
+                this.activeLevelUpTower,
+                this.gemsInfo,
+                this.mousePosition
+            )
         }
         return this.getGameStatus()
+    }
+    private updateBtns() {
+        this.btns.forEach((btn) => {
+            btn.update()
+        })
     }
     private updateAllCharacters(): void {
         const allCharacters: I_character[] = [...this.plants, ...this.towers]
@@ -187,7 +221,8 @@ export default class GameMap {
     }
     private updateTower(tower: Tower): void {
         const isDisplayAttackRangeCircleAndLevelUp =
-            this.activeMouseOverCharacterInfo?.activeMouseOverCharacter === tower &&
+            this.activeMouseOverCharacterInfo?.activeMouseOverCharacter ===
+                tower &&
             this.activeDashboardCharacter === null &&
             this.activeLevelUpTower === undefined
         tower.update({
@@ -198,8 +233,8 @@ export default class GameMap {
     }
     private updatePlant(plant: Plant): void {
         const isDisplayLevelUp =
-            this.activeMouseOverCharacterInfo?.activeMouseOverCharacter === plant &&
-            this.activeDashboardCharacter === null
+            this.activeMouseOverCharacterInfo?.activeMouseOverCharacter ===
+                plant && this.activeDashboardCharacter === null
         const gem = plant.update(isDisplayLevelUp)
         if (gem) {
             this.gemsInfo[gem.type].value += gem.value
@@ -211,81 +246,126 @@ export default class GameMap {
         }
     }
     private updateDashboardCharacters(): void {
-        this.dashboardCharacters.map((dashboardCharacterInfo: I_dashboardCharactersInfo) => {
-            const gemsToBuildCharacter = this.gemsToBuildCharacter(dashboardCharacterInfo.type)
-            let opacity = 1
-            const isThereNoObjectToDestroy =
-                dashboardCharacterInfo.dashboardCharacter.role === E_characterRoles.DESTROY &&
-                !this.isThereObjectToDestroy
-            if (!this.hasEnoughGems(dashboardCharacterInfo.type) || isThereNoObjectToDestroy) {
-                opacity = 0.4
+        this.dashboardCharacters.map(
+            (dashboardCharacterInfo: I_dashboardCharactersInfo) => {
+                const gemsToBuildCharacter = this.gemsToBuildCharacter(
+                    dashboardCharacterInfo.type
+                )
+                let opacity = 1
+                const isThereNoObjectToDestroy =
+                    dashboardCharacterInfo.dashboardCharacter.role ===
+                        E_characterRoles.DESTROY && !this.isThereObjectToDestroy
+                if (
+                    !this.hasEnoughGems(dashboardCharacterInfo.type) ||
+                    isThereNoObjectToDestroy
+                ) {
+                    opacity = 0.4
+                }
+                this.updateDashboardCharacterBorder(
+                    dashboardCharacterInfo,
+                    opacity
+                )
+                this.updateDashboardCharacter(dashboardCharacterInfo, opacity)
+                if (gemsToBuildCharacter !== undefined) {
+                    const text = gemsToBuildCharacter.toString()
+                    this.updateDashboardCharacterPricesText(
+                        dashboardCharacterInfo,
+                        text
+                    )
+                }
             }
-            this.updateDashboardCharacterBorder(dashboardCharacterInfo, opacity)
-            this.updateDashboardCharacter(dashboardCharacterInfo, opacity)
-            if (gemsToBuildCharacter !== undefined) {
-                const text = gemsToBuildCharacter.toString()
-                this.updateDashboardCharacterPricesText(dashboardCharacterInfo, text)
-            }
-        })
+        )
     }
-    private updateDashboardCharacterBorder(dashboardCharacterInfo: I_dashboardCharactersInfo, opacity: number) {
+    private updateDashboardCharacterBorder(
+        dashboardCharacterInfo: I_dashboardCharactersInfo,
+        opacity: number
+    ) {
         dashboardCharacterInfo.border.opacity = opacity
-        if (dashboardCharacterInfo.dashboardCharacter === this.activeDashboardCharacter) {
+        if (
+            dashboardCharacterInfo.dashboardCharacter ===
+            this.activeDashboardCharacter
+        ) {
             dashboardCharacterInfo.border.updateSelected()
         } else {
             dashboardCharacterInfo.border.update()
         }
     }
-    private updateDashboardCharacterPricesText(dashboardCharacterInfo: I_dashboardCharactersInfo, text: string) {
+    private updateDashboardCharacterPricesText(
+        dashboardCharacterInfo: I_dashboardCharactersInfo,
+        text: string
+    ) {
         if (!context2D) return
         const textWidth = context2D.measureText(text).width
         const textOptions: T_text = {
             text: text,
             position: {
-                x: dashboardCharacterInfo.border.position.x + dashboardCharacterInfo.border.width / 2 - textWidth / 2,
-                y: dashboardCharacterInfo.border.position.y - dashboardCharacterInfo.border.height,
+                x:
+                    dashboardCharacterInfo.border.position.x +
+                    dashboardCharacterInfo.border.width / 2 -
+                    textWidth / 2,
+                y:
+                    dashboardCharacterInfo.border.position.y -
+                    dashboardCharacterInfo.border.height,
             },
             color: '#250806',
             fontSize: 20,
         }
         drawText(textOptions)
     }
-    private updateDashboardCharacter(dashboardCharacterInfo: I_dashboardCharactersInfo, opacity: number) {
+    private updateDashboardCharacter(
+        dashboardCharacterInfo: I_dashboardCharactersInfo,
+        opacity: number
+    ) {
         dashboardCharacterInfo.dashboardCharacter.opacity = opacity
         const isDisplayDashboardShadow =
             this.activeDashboardCharacter !== null &&
             this.mouseOverDashboardCharacter === null &&
-            this.activeDashboardCharacter === dashboardCharacterInfo.dashboardCharacter
-        dashboardCharacterInfo.dashboardCharacter.update({ isDisplayDashboardShadow, mouse: this.mousePosition })
+            this.activeDashboardCharacter ===
+                dashboardCharacterInfo.dashboardCharacter
+        dashboardCharacterInfo.dashboardCharacter.update({
+            isDisplayDashboardShadow,
+            mouse: this.mousePosition,
+        })
     }
     private updateScreenGame(): void {
-        resetCanvas()
         this.createBackground()
     }
     private updateDashboardEnemies(): void {
-        this.currentDashboardEnemiesInfo.forEach((dashboardEnemyInfor, index) => {
-            dashboardEnemyInfor.dashboardEnemyBorder.update()
-            dashboardEnemyInfor.dashboardEnemy.draw({ behaviorKey: E_behaviors.RUN, angelKey: E_angels.ANGEL_90 })
-            const textString = dashboardEnemyInfor.remainEnemiesTotal.toString()
-            const textWidth = context2D?.measureText(textString).width ?? 2
-            const textOptions: T_text = {
-                text: textString,
-                position: {
-                    x:
-                        dashboardEnemyInfor.dashboardEnemyBorder.position.x +
-                        dashboardEnemyInfor.dashboardEnemyBorder.width / 2 -
-                        textWidth / 2,
-                    y: dashboardEnemyInfor.dashboardEnemyBorder.position.y - 5,
-                },
-                color: '#8B4513',
-                fontSize: 20,
+        this.currentDashboardEnemiesInfo.forEach(
+            (dashboardEnemyInfor, index) => {
+                dashboardEnemyInfor.dashboardEnemyBorder.update()
+                dashboardEnemyInfor.dashboardEnemy.draw({
+                    behaviorKey: E_behaviors.RUN,
+                    angelKey: E_angels.ANGEL_90,
+                })
+                const textString =
+                    dashboardEnemyInfor.remainEnemiesTotal.toString()
+                const textWidth = context2D?.measureText(textString).width ?? 2
+                const textOptions: T_text = {
+                    text: textString,
+                    position: {
+                        x:
+                            dashboardEnemyInfor.dashboardEnemyBorder.position
+                                .x +
+                            dashboardEnemyInfor.dashboardEnemyBorder.width / 2 -
+                            textWidth / 2,
+                        y:
+                            dashboardEnemyInfor.dashboardEnemyBorder.position
+                                .y - 5,
+                    },
+                    color: '#8B4513',
+                    fontSize: 20,
+                }
+                drawText(textOptions)
             }
-            drawText(textOptions)
-        })
+        )
     }
     private updatePlacementTiles(): void {
         this.placementTiles.forEach((placementTile) => {
-            placementTile.update(this.activeDashboardCharacter, this.mousePosition)
+            placementTile.update(
+                this.activeDashboardCharacter,
+                this.mousePosition
+            )
         })
     }
 
@@ -301,18 +381,25 @@ export default class GameMap {
                 this._currentEnemiesData.splice(i, 1)
                 this.subtractDashboardEnemies(currentEnemy)
                 if (currentEnemy.gem !== null) {
-                    this.gemsInfo[currentEnemy.gem.type].value += currentEnemy.gem.value
+                    this.gemsInfo[currentEnemy.gem.type].value +=
+                        currentEnemy.gem.value
                 }
             }
         }
     }
     private drawGemsAndMenu(): void {
-        this.menu.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
+        this.menu.draw({
+            behaviorKey: E_behaviors.IDLE,
+            angelKey: E_angels.ANGEL_0,
+        })
         this.drawGems()
         this.drawDisplayRound()
     }
     private drawDisplayRound() {
-        this.displayRound.draw({ behaviorKey: E_behaviors.IDLE, angelKey: E_angels.ANGEL_0 })
+        this.displayRound.draw({
+            behaviorKey: E_behaviors.IDLE,
+            angelKey: E_angels.ANGEL_0,
+        })
         const textString = `Round  ${this.currentRound.toString()}`
         const textWidth = context2D?.measureText(textString).width ?? 10
 
@@ -321,10 +408,26 @@ export default class GameMap {
             color: 'white',
             fontSize: 14,
             position: {
-                x: this.displayRound.position.x + this.displayRound.width / 2 - textWidth / 3,
-                y: this.displayRound.position.y - this.displayRound.height / 2 + 4,
+                x:
+                    this.displayRound.position.x +
+                    this.displayRound.width / 2 -
+                    textWidth / 3,
+                y:
+                    this.displayRound.position.y -
+                    this.displayRound.height / 2 +
+                    4,
             },
         })
+    }
+    private createBtns(): Button[] {
+        const squareSettingBtn = new Button({
+            position: { x: 19 * TILE_SIZE, y: 12 * TILE_SIZE },
+            width: (TILE_SIZE * 2) / 3,
+            height: (TILE_SIZE * 2) / 3,
+            offset: { x: -12, y: -6 },
+            type: E_buttons.SQUARE_SETTING,
+        })
+        return [squareSettingBtn]
     }
     private createGate(): Gate {
         const gateBaseProperties = gatesBaseProperties(E_gate.GIRL_HERO)
@@ -363,7 +466,8 @@ export default class GameMap {
                 width: dashboardCharacter.dashboardBorderInfo.width,
                 height: dashboardCharacter.dashboardBorderInfo.height,
             }
-            const newDashboardCharacter: DashboardCharacter = new DashboardCharacter(characterOptions)
+            const newDashboardCharacter: DashboardCharacter =
+                new DashboardCharacter(characterOptions)
 
             const newBorder: Border = new Border(borderOptions)
             dashboardCharacters.push({
@@ -429,7 +533,8 @@ export default class GameMap {
         const initFrames: T_initFramesDictionary = {
             [E_behaviors.IDLE]: {
                 [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../public/src/assets/images/screen/layout_target.png',
+                    imageSourceString:
+                        '../../public/src/assets/images/screen/layout_target.png',
                     maxX: 1,
                     maxY: 1,
                     holdTime: 4,
@@ -451,7 +556,8 @@ export default class GameMap {
         const initFrames: T_initFramesDictionary = {
             [E_behaviors.IDLE]: {
                 [E_angels.ANGEL_0]: {
-                    imageSourceString: '../../public/src/assets/images/stuff/display-round.png',
+                    imageSourceString:
+                        '../../public/src/assets/images/stuff/display-round.png',
                     maxX: 1,
                     maxY: 1,
                     holdTime: 4,
@@ -491,41 +597,71 @@ export default class GameMap {
         this.currentDashboardEnemiesInfo = []
         const currentRound: T_round = this.rounds[0]
         this.shuffleArray(currentRound.enemies)
-        currentRound.enemies.slice(0, 8).forEach((enemyInfo: T_enemyInfo, index: number) => {
-            const baseEnemyProperty: T_baseEnemyProperties | undefined = getBaseEnemyProperties(enemyInfo.enemyType)
-            if (baseEnemyProperty) {
-                //create dashboard enemies and its border
-                const dashboardEnemy: Enemy = this.createDashboardEnemy(enemyInfo, baseEnemyProperty, index)
-                const dashboardEnemyBorderOptions: T_dashboardBorder = {
-                    name: baseEnemyProperty.dashboardBorderInfo.name,
-                    position: { x: 64 * index, y: 64 },
-                    initFrames: baseEnemyProperty.dashboardBorderInfo.initFrames,
-                    offset: baseEnemyProperty.dashboardBorderInfo.offset,
-                    width: baseEnemyProperty.dashboardBorderInfo.width,
-                    height: baseEnemyProperty.dashboardBorderInfo.height,
+        currentRound.enemies
+            .slice(0, 8)
+            .forEach((enemyInfo: T_enemyInfo, index: number) => {
+                const baseEnemyProperty: T_baseEnemyProperties | undefined =
+                    getBaseEnemyProperties(enemyInfo.enemyType)
+                if (baseEnemyProperty) {
+                    //create dashboard enemies and its border
+                    const dashboardEnemy: Enemy = this.createDashboardEnemy(
+                        enemyInfo,
+                        baseEnemyProperty,
+                        index
+                    )
+                    const dashboardEnemyBorderOptions: T_dashboardBorder = {
+                        name: baseEnemyProperty.dashboardBorderInfo.name,
+                        position: { x: 64 * index, y: 64 },
+                        initFrames:
+                            baseEnemyProperty.dashboardBorderInfo.initFrames,
+                        offset: baseEnemyProperty.dashboardBorderInfo.offset,
+                        width: baseEnemyProperty.dashboardBorderInfo.width,
+                        height: baseEnemyProperty.dashboardBorderInfo.height,
+                    }
+                    const minEnemies =
+                        1 + this.currentRound > 15 ? 15 : 1 + this.currentRound
+                    const maxEnemies =
+                        this.currentRound * 1 + 10 > 30
+                            ? 30
+                            : this.currentRound * 1 + 10
+                    const enemies = parseInt(
+                        randomNumberInRange(minEnemies, maxEnemies).toString()
+                    )
+                    const dashboardEnemyBorder = new Border(
+                        dashboardEnemyBorderOptions
+                    )
+                    this.currentDashboardEnemiesInfo.push({
+                        enemyType: enemyInfo.enemyType,
+                        dashboardEnemy,
+                        dashboardEnemyBorder,
+                        remainEnemiesTotal: enemies,
+                    })
+                    //create battle enemies
+                    for (let i = 0; i < enemies; i++) {
+                        const battleEnemy = this.createBattleEnemy(
+                            enemyInfo,
+                            baseEnemyProperty,
+                            i
+                        )
+                        this._currentEnemiesData.push(battleEnemy)
+                    }
                 }
-                const minEnemies = 1 + this.currentRound > 15 ? 15 : 1 + this.currentRound
-                const maxEnemies = this.currentRound * 1 + 10 > 30 ? 30 : this.currentRound * 1 + 10
-                const enemies = parseInt(randomNumberInRange(minEnemies, maxEnemies).toString())
-                const dashboardEnemyBorder = new Border(dashboardEnemyBorderOptions)
-                this.currentDashboardEnemiesInfo.push({
-                    enemyType: enemyInfo.enemyType,
-                    dashboardEnemy,
-                    dashboardEnemyBorder,
-                    remainEnemiesTotal: enemies,
-                })
-                //create battle enemies
-                for (let i = 0; i < enemies; i++) {
-                    const battleEnemy = this.createBattleEnemy(enemyInfo, baseEnemyProperty, i)
-                    this._currentEnemiesData.push(battleEnemy)
-                }
-            }
-        })
+            })
     }
-    private createBattleEnemy(enemyInfo: T_enemyInfo, baseEnemyProperty: T_baseEnemyProperties, index: number): Enemy {
-        const space: number = randomNumberInRange(enemyInfo.spaceMin, enemyInfo.spaceMax)
+    private createBattleEnemy(
+        enemyInfo: T_enemyInfo,
+        baseEnemyProperty: T_baseEnemyProperties,
+        index: number
+    ): Enemy {
+        const space: number = randomNumberInRange(
+            enemyInfo.spaceMin,
+            enemyInfo.spaceMax
+        )
         const randomNum: number = index === 0 ? 0 : randomNumberInRange(6, 10)
-        const position: T_position = { x: enemyInfo.basePosition.x - space * randomNum, y: enemyInfo.basePosition.y }
+        const position: T_position = {
+            x: enemyInfo.basePosition.x - space * randomNum,
+            y: enemyInfo.basePosition.y,
+        }
         const battleEnemyOptions: T_enemy = {
             name: baseEnemyProperty.name,
             enemyType: enemyInfo.enemyType,
@@ -534,11 +670,20 @@ export default class GameMap {
             initFrames: baseEnemyProperty.initFrames,
             width: baseEnemyProperty.width,
             height: baseEnemyProperty.height,
-            moveSpeed: enemyInfo.moveSpeed + this.baseIncreasedStrengthEnemies.moveSpeed * this.currentRound,
-            attackSpeed: enemyInfo.attackSpeed + this.baseIncreasedStrengthEnemies.attackSpeed * this.currentRound,
-            damage: enemyInfo.damage + this.baseIncreasedStrengthEnemies.damage * this.currentRound,
+            moveSpeed:
+                enemyInfo.moveSpeed +
+                this.baseIncreasedStrengthEnemies.moveSpeed * this.currentRound,
+            attackSpeed:
+                enemyInfo.attackSpeed +
+                this.baseIncreasedStrengthEnemies.attackSpeed *
+                    this.currentRound,
+            damage:
+                enemyInfo.damage +
+                this.baseIncreasedStrengthEnemies.damage * this.currentRound,
             coins: enemyInfo.coins,
-            health: enemyInfo.health + this.baseIncreasedStrengthEnemies.health * this.currentRound,
+            health:
+                enemyInfo.health +
+                this.baseIncreasedStrengthEnemies.health * this.currentRound,
         }
         return new Enemy(battleEnemyOptions)
     }
@@ -561,10 +706,21 @@ export default class GameMap {
     }
     public handleCharacterRoleBehavior(): void {
         if (!this.activeDashboardCharacter) return
-        const isDestroyRole = this.activeDashboardCharacter.role === E_characterRoles.DESTROY
-        if (!this.mouseOverTile || (!isDestroyRole && this.mouseOverTile.isOccupied)) return
-        const gemsToBuildCharacter = this.gemsToBuildCharacter(this.activeDashboardCharacter.type)
-        if (gemsToBuildCharacter === undefined || this.gemsInfo[E_gems.BLUE].value < gemsToBuildCharacter) return
+        const isDestroyRole =
+            this.activeDashboardCharacter.role === E_characterRoles.DESTROY
+        if (
+            !this.mouseOverTile ||
+            (!isDestroyRole && this.mouseOverTile.isOccupied)
+        )
+            return
+        const gemsToBuildCharacter = this.gemsToBuildCharacter(
+            this.activeDashboardCharacter.type
+        )
+        if (
+            gemsToBuildCharacter === undefined ||
+            this.gemsInfo[E_gems.BLUE].value < gemsToBuildCharacter
+        )
+            return
         const options = {
             position: this.mouseOverTile.position,
             placementTile: this.mouseOverTile,
@@ -572,10 +728,16 @@ export default class GameMap {
         let isSuccess = true
         switch (this.activeDashboardCharacter.role) {
             case E_characterRoles.TOWER:
-                isSuccess = this.handleBuildTowers({ options, type: this.activeDashboardCharacter.type })
+                isSuccess = this.handleBuildTowers({
+                    options,
+                    type: this.activeDashboardCharacter.type,
+                })
                 break
             case E_characterRoles.PLANTED:
-                isSuccess = this.handleBuildPlants({ options, type: this.activeDashboardCharacter.type })
+                isSuccess = this.handleBuildPlants({
+                    options,
+                    type: this.activeDashboardCharacter.type,
+                })
                 break
             case E_characterRoles.DESTROY:
                 isSuccess = this.handleDestroyStuff()
@@ -585,7 +747,10 @@ export default class GameMap {
             this.gemsInfo[E_gems.BLUE].value -= gemsToBuildCharacter
             this.mouseOverTile.isOccupied = true
         }
-        if (!this.activeDashboardCharacter || !this.hasEnoughGems(this.activeDashboardCharacter.type)) {
+        if (
+            !this.activeDashboardCharacter ||
+            !this.hasEnoughGems(this.activeDashboardCharacter.type)
+        ) {
             this.activeDashboardCharacter = null
             if (canvas) canvas.style.cursor = 'pointer'
         }
@@ -645,7 +810,10 @@ export default class GameMap {
         if (!this.activeMouseOverCharacterInfo) return false
         for (let i = this.allCharacters.length - 1; i >= 0; i--) {
             let currentCharacter: I_character = this.allCharacters[i]
-            if (currentCharacter === this.activeMouseOverCharacterInfo.activeMouseOverCharacter) {
+            if (
+                currentCharacter ===
+                this.activeMouseOverCharacterInfo.activeMouseOverCharacter
+            ) {
                 currentCharacter.beingDestroyed = true
             }
         }
@@ -667,11 +835,15 @@ export default class GameMap {
             this._mouseOverTile = null
             return
         }
-        this._mouseOverTile = this.placementTiles.find((tile) => tile.hasCollision(this.mousePosition)) ?? null
+        this._mouseOverTile =
+            this.placementTiles.find((tile) =>
+                tile.hasCollision(this.mousePosition)
+            ) ?? null
     }
     private checkToHandleBuildCharacter(): void {
         //click ouside can plant character and select character in dashboard
-        const isDestroyRole = this.mouseOverDashboardCharacter?.role === E_characterRoles.DESTROY
+        const isDestroyRole =
+            this.mouseOverDashboardCharacter?.role === E_characterRoles.DESTROY
 
         if (
             !this.mouseOverTile &&
@@ -713,17 +885,24 @@ export default class GameMap {
     private checkMouseOverDashboardCharacters() {
         this.mouseOverDashboardCharacter =
             this.dashboardCharacters.find((dashboardCharacterInfo) =>
-                dashboardCharacterInfo.dashboardCharacter.hasCollision(this.mousePosition)
+                dashboardCharacterInfo.dashboardCharacter.hasCollision(
+                    this.mousePosition
+                )
             )?.dashboardCharacter ?? null
     }
     private checkMouseOverCharacter() {
-        this.activeMouseOverCharacterInfo = this.handleFindMouseOverCharacterInfo(this.mousePosition)
+        this.activeMouseOverCharacterInfo =
+            this.handleFindMouseOverCharacterInfo(this.mousePosition)
         if (this.activeDashboardCharacter === null) return
-        this.activeMouseOverCharacterInfo = this.handleFindMouseOverCharacterInfo(this.mousePosition)
+        this.activeMouseOverCharacterInfo =
+            this.handleFindMouseOverCharacterInfo(this.mousePosition)
     }
     //calculate function place
-    private handleFindMouseOverCharacterInfo(mouse: T_position): T_activeCharacterDestroyInfo | null {
-        let activeMouseOverCharacterInfo: T_activeCharacterDestroyInfo | null = null
+    private handleFindMouseOverCharacterInfo(
+        mouse: T_position
+    ): T_activeCharacterDestroyInfo | null {
+        let activeMouseOverCharacterInfo: T_activeCharacterDestroyInfo | null =
+            null
         for (let i = 0; i < this.allCharacters.length; i++) {
             const currentCharacter = this.allCharacters[i]
             if (currentCharacter.placementTile === undefined) continue
@@ -732,7 +911,10 @@ export default class GameMap {
                     role: currentCharacter.role,
                     activeMouseOverCharacter: currentCharacter,
                 }
-                if (this.activeDashboardCharacter?.role === E_characterRoles.DESTROY) {
+                if (
+                    this.activeDashboardCharacter?.role ===
+                    E_characterRoles.DESTROY
+                ) {
                     currentCharacter.opacity = 0.4
                 }
             } else {
@@ -796,7 +978,11 @@ export default class GameMap {
         placementTiles2D.forEach((row: number[], y: number) => {
             row.forEach((symbol: number, x: number) => {
                 if (symbol === 1) {
-                    placementTiles.push(new PlacementTile({ position: { x: x * TILE_SIZE, y: y * TILE_SIZE } }))
+                    placementTiles.push(
+                        new PlacementTile({
+                            position: { x: x * TILE_SIZE, y: y * TILE_SIZE },
+                        })
+                    )
                 }
             })
         })
@@ -804,14 +990,25 @@ export default class GameMap {
     }
     private handleCheckDisplayUpdateLevel() {
         if (this.activeLevelUpTower) {
-            this.towerLevelUpMenu.checkOnClickLevelUpIcon(this.activeLevelUpTower, this.mousePosition, this.gemsInfo)
+            this.towerLevelUpMenu.checkOnClickLevelUpIcon(
+                this.activeLevelUpTower,
+                this.mousePosition,
+                this.gemsInfo
+            )
         }
         if (this.towerLevelUpMenu.isClose(this.mousePosition)) {
             this.activeLevelUpTower = undefined
         }
-        if (this.activeMouseOverCharacterInfo?.activeMouseOverCharacter && this.activeDashboardCharacter === null) {
-            if (this.activeMouseOverCharacterInfo.activeMouseOverCharacter instanceof Tower) {
-                this.activeLevelUpTower = this.activeMouseOverCharacterInfo.activeMouseOverCharacter
+        if (
+            this.activeMouseOverCharacterInfo?.activeMouseOverCharacter &&
+            this.activeDashboardCharacter === null
+        ) {
+            if (
+                this.activeMouseOverCharacterInfo
+                    .activeMouseOverCharacter instanceof Tower
+            ) {
+                this.activeLevelUpTower =
+                    this.activeMouseOverCharacterInfo.activeMouseOverCharacter
             }
         }
     }
