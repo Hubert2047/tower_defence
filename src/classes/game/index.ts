@@ -14,9 +14,7 @@ export default class Game {
     mousePosition: T_position
     constructor() {
         this.gameMap = null
-        this.backgroundImageGame = createImage(
-            '../../../public/src/assets/images/background/in_game.png'
-        )
+        this.backgroundImageGame = createImage('../../../public/src/assets/images/background/in_game.png')
         this.btns = this.createBtns()
         this.mousePosition = { x: 0, y: 0 }
         this.activeHoverBtn = null
@@ -37,7 +35,7 @@ export default class Game {
         }
     }
     private updateBtn() {
-        for (let i = 0; i > this.btns.length; i++) {
+        for (let i = 0; i < this.btns.length; i++) {
             const btn = this.btns[i]
             if (!btn.isDisplay) continue
             if (btn.element === this.activeHoverBtn) {
@@ -80,10 +78,7 @@ export default class Game {
         }
     }
     private checkBtnHover() {
-        this.activeHoverBtn =
-            this.btns.find((btn) =>
-                btn.element.hasCollision(this.mousePosition)
-            )?.element ?? null
+        this.activeHoverBtn = this.btns.find((btn) => btn.element.hasCollision(this.mousePosition))?.element ?? null
     }
     private handleOnBtnClick() {
         if (this.activeHoverBtn) {
