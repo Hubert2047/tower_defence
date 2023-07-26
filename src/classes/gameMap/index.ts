@@ -107,6 +107,7 @@ export default class GameMap {
     private towerLevelUpMenu: TowerLevelUpMenu
     private activeLevelUpTower: Tower | undefined
     private btns: Button[]
+    private activeHoverBtn: Button | null
     constructor({
         rounds,
         placementTiles2D,
@@ -149,6 +150,7 @@ export default class GameMap {
         }
         this.mousePosition = { x: 0, y: 0 }
         this.activeLevelUpTower = undefined
+        this.activeHoverBtn = null
         this.spawingCurrentRoundEnemies()
         this.handleAddEventGame()
         this.btns = this.createBtns()
@@ -194,6 +196,12 @@ export default class GameMap {
     }
     private updateBtns() {
         this.btns.forEach((btn) => {
+            if (btn === this.activeHoverBtn) {
+                btn.behaviorKey = E_behaviors.HOVER
+                if (canvas) canvas.style.cursor = 'pointer'
+            } else {
+                btn.behaviorKey = E_behaviors.IDLE
+            }
             btn.update()
         })
     }
@@ -897,6 +905,11 @@ export default class GameMap {
         this.activeMouseOverCharacterInfo =
             this.handleFindMouseOverCharacterInfo(this.mousePosition)
     }
+    private checkBtnHover() {
+        this.activeHoverBtn =
+            this.btns.find((btn) => btn.hasCollision(this.mousePosition)) ??
+            null
+    }
     //calculate function place
     private handleFindMouseOverCharacterInfo(
         mouse: T_position
@@ -988,6 +1001,17 @@ export default class GameMap {
         })
         return placementTiles
     }
+    private handleOnBtnClick() {
+        if (this.activeHoverBtn) {
+            switch (this.activeHoverBtn.type) {
+                case E_buttons.SQUARE_SETTING:
+                    this.handleOnSquareSettingClick()
+            }
+        }
+    }
+    private handleOnSquareSettingClick() {
+        console.log('run in')
+    }
     private handleCheckDisplayUpdateLevel() {
         if (this.activeLevelUpTower) {
             this.towerLevelUpMenu.checkOnClickLevelUpIcon(
@@ -1020,11 +1044,13 @@ export default class GameMap {
                 this.checkMouseOverCharacter()
                 this.checkMouseOverTile()
                 this.checkMouseOverDashboardCharacters()
+                this.checkBtnHover()
             })
             canvas.addEventListener('click', () => {
                 this.checkHavestGems()
                 this.checkToHandleBuildCharacter()
                 this.handleCheckDisplayUpdateLevel()
+                this.handleOnBtnClick()
             })
         }
     }
