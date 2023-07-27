@@ -5,10 +5,11 @@ import { createImage, getGameMapData } from '../../helper/index.js'
 import { T_position } from '../../types/index.js'
 import Button from '../buttoms/index.js'
 import GameMap from '../gameMap/index.js'
+type T_buttons = { isDisplay: boolean; element: Button }
 export default class Game {
     gameMap: GameMap | null
     backgroundGameImage: HTMLImageElement
-    btns: Button[]
+    btns: T_buttons[]
     activeHoverBtn: Button | null
     mousePosition: T_position
     constructor() {
@@ -17,6 +18,8 @@ export default class Game {
         this.btns = this.createBtns()
         this.mousePosition = { x: 0, y: 0 }
         this.activeHoverBtn = null
+        this.handleMouseMove = this.handleMouseMove.bind(this)
+        this.handleMouseClick = this.handleMouseClick.bind(this)
         this.handleAddEventGame()
     }
     public update() {
@@ -33,23 +36,25 @@ export default class Game {
     }
     private handleHasGame() {
         if (!this.gameMap) return
-        this.removeCurrentEvents()
+        // this.removeCurrentEvents()
         const [isGameOver, isVictory] = this.gameMap.updateMap()
         if (isGameOver) return
         if (isVictory) return
     }
     private updateBtns() {
-        this.btns.forEach((btn) => {
-            if (btn === this.activeHoverBtn) {
-                btn.behaviorKey = E_behaviors.HOVER
+        for (let i = 0; i < this.btns.length; i++) {
+            const btn = this.btns[i]
+            if (!btn.isDisplay) continue
+            if (btn.element === this.activeHoverBtn) {
+                btn.element.behaviorKey = E_behaviors.HOVER
                 if (canvas) canvas.style.cursor = 'pointer'
             } else {
-                btn.behaviorKey = E_behaviors.IDLE
+                btn.element.behaviorKey = E_behaviors.IDLE
             }
-            btn.update()
-        })
+            btn.element.update()
+        }
     }
-    private createBtns(): Button[] {
+    private createBtns(): T_buttons[] {
         const newGameBtn = new Button({
             position: { x: 8 * TILE_SIZE, y: 5 * TILE_SIZE },
             width: 4 * TILE_SIZE,
@@ -68,7 +73,11 @@ export default class Game {
             height: 1 * TILE_SIZE,
             type: E_buttons.SETTING,
         })
-        return [newGameBtn, menuBtn, settingBtn]
+        return [
+            { isDisplay: true, element: newGameBtn },
+            { isDisplay: true, element: menuBtn },
+            { isDisplay: true, element: settingBtn },
+        ]
     }
     private createGameBackground() {
         if (context2D) {
@@ -76,7 +85,7 @@ export default class Game {
         }
     }
     private checkBtnHover() {
-        this.activeHoverBtn = this.btns.find((btn) => btn.hasCollision(this.mousePosition)) ?? null
+        this.activeHoverBtn = this.btns.find((btn) => btn.element.hasCollision(this.mousePosition))?.element ?? null
     }
     private handleOnBtnClick() {
         if (this.activeHoverBtn) {
@@ -91,20 +100,24 @@ export default class Game {
         const currentMapData = getGameMapData(gameMapType)
         if (currentMapData) this.gameMap = new GameMap(currentMapData)
     }
-    private removeCurrentEvents() {
-        canvas?.removeEventListener('mousemove', this.handleMouseMove)
-        canvas?.removeEventListener('click', this.handleMouseClick)
-    }
+    // private removeEvents() {
+    //     if (canvas) {
+    //         canvas.removeEventListener('click', this.handleMouseClick)
+    //         canvas.removeEventListener('mousemove', this.handleMouseMove)
+    //     }
+    // }
     private handleAddEventGame() {
         if (canvas) {
-            canvas.addEventListener('mousemove', this.handleMouseMove.bind(this))
-            canvas.addEventListener('click', this.handleMouseClick.bind(this))
+            canvas.addEventListener('mousemove', this.handleMouseMove)
+            canvas.addEventListener('click', this.handleMouseClick)
         }
     }
     private handleMouseClick() {
+        if (this.gameMap) return
         this.handleOnBtnClick()
     }
     private handleMouseMove(event: MouseEvent) {
+        if (this.gameMap) return
         this.mousePosition.x = event.offsetX
         this.mousePosition.y = event.offsetY
         this.checkBtnHover()
