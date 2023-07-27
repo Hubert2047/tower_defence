@@ -3,15 +3,15 @@ type T_RequestAnimationFrame = {
     loopFunction: () => void
 }
 export default class RequestAnimationFrame {
-    loopFunction: () => void
-    lastTime: number
-    currentTime: number
+    private loopFunction: () => void
+    private lastTime: number
+    private currentTime: number
     constructor({ loopFunction }: T_RequestAnimationFrame) {
         this.loopFunction = loopFunction
         this.lastTime = performance.now()
         this.currentTime = performance.now()
     }
-    public start() {
+    public start(): void {
         this.currentTime = performance.now()
         const distance = this.currentTime - this.lastTime
         if (distance > 1000 / FPS) {

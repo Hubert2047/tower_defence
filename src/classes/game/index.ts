@@ -7,15 +7,13 @@ import Button from '../buttoms/index.js'
 import GameMap from '../gameMap/index.js'
 export default class Game {
     gameMap: GameMap | null
-    backgroundImageGame: HTMLImageElement
+    backgroundGameImage: HTMLImageElement
     btns: Button[]
     activeHoverBtn: Button | null
     mousePosition: T_position
     constructor() {
         this.gameMap = null
-        this.backgroundImageGame = createImage(
-            '../../../public/src/assets/images/background/in_game.png'
-        )
+        this.backgroundGameImage = createImage('../../../public/src/assets/images/background/in_game.png')
         this.btns = this.createBtns()
         this.mousePosition = { x: 0, y: 0 }
         this.activeHoverBtn = null
@@ -24,16 +22,23 @@ export default class Game {
     public update() {
         resetCanvas()
         if (!this.gameMap) {
-            this.createBackgroundGame()
-            this.updateBtn()
-        } else {
-            this.removeEvents()
-            const [isGameOver, isVictory] = this.gameMap.updateMap()
-            if (isGameOver) return
-            if (isVictory) return
+            this.handleNoGameMap()
+            return
         }
+        this.handleHasGame()
     }
-    private updateBtn() {
+    private handleNoGameMap() {
+        this.createGameBackground()
+        this.updateBtns()
+    }
+    private handleHasGame() {
+        if (!this.gameMap) return
+        this.removeCurrentEvents()
+        const [isGameOver, isVictory] = this.gameMap.updateMap()
+        if (isGameOver) return
+        if (isVictory) return
+    }
+    private updateBtns() {
         this.btns.forEach((btn) => {
             if (btn === this.activeHoverBtn) {
                 btn.behaviorKey = E_behaviors.HOVER
@@ -65,15 +70,13 @@ export default class Game {
         })
         return [newGameBtn, menuBtn, settingBtn]
     }
-    private createBackgroundGame() {
+    private createGameBackground() {
         if (context2D) {
-            context2D.drawImage(this.backgroundImageGame, 0, 0)
+            context2D.drawImage(this.backgroundGameImage, 0, 0)
         }
     }
     private checkBtnHover() {
-        this.activeHoverBtn =
-            this.btns.find((btn) => btn.hasCollision(this.mousePosition)) ??
-            null
+        this.activeHoverBtn = this.btns.find((btn) => btn.hasCollision(this.mousePosition)) ?? null
     }
     private handleOnBtnClick() {
         if (this.activeHoverBtn) {
@@ -88,16 +91,13 @@ export default class Game {
         const currentMapData = getGameMapData(gameMapType)
         if (currentMapData) this.gameMap = new GameMap(currentMapData)
     }
-    private removeEvents() {
+    private removeCurrentEvents() {
         canvas?.removeEventListener('mousemove', this.handleMouseMove)
         canvas?.removeEventListener('click', this.handleMouseClick)
     }
     private handleAddEventGame() {
         if (canvas) {
-            canvas.addEventListener(
-                'mousemove',
-                this.handleMouseMove.bind(this)
-            )
+            canvas.addEventListener('mousemove', this.handleMouseMove.bind(this))
             canvas.addEventListener('click', this.handleMouseClick.bind(this))
         }
     }
